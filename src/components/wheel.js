@@ -40,59 +40,70 @@ class Wheel extends Container {
         this.clearAnimations()
         this.playStartAnimations()
 
-        this.createStreams()
+        this.enableStreams()
     }
 
     // Inner logic
-    createStreams() {
+    enableStreams() {
         this.$ = new Subject()
+        this.subs = []
 
-        this.$
+        this.subs.push(
+        this.switchSub = this.$
             .filter(e => e.type !== 'SWITCH')
-            .subscribe(e => console.log(e))
+            .subscribe(e => console.log(e)))
 
-        this.$
+        this.subs.push(
+        this.startBeginSub = this.$
             .filter(e => e.type === 'START_BEGIN')
             .subscribe(e => {
                 this.clearElementsParams()
                 this.isRolling = true
-            })
+            }))
 
-        this.$
+        this.subs.push(
+        this.startCompleteSub = this.$
             .filter(e => e.type === 'START_COMPLETE')
             .subscribe(e => {
                 this.updateElementsParams('start')
                 this.loops = 0
                 this.minLoops = 0
                 this.checkForLoop()
-            })
+            }))
 
-        this.$
+        this.subs.push(
+        this.loopBeginSub = this.$
             .filter(e => e.type === 'LOOP_BEGIN')
             .subscribe(e => {
                 this.isLooping = true
                 this.loops++
-            })
+            }))
 
-        this.$
+        this.subs.push(
+        this.loopCompleteSub = this.$
             .filter(e => e.type === 'LOOP_COMPLETE')
             .subscribe(e => {
                 this.updateElementsParams('loop')
                 this.checkForLoop()
-            })
+            }))
 
-        this.$
+        this.subs.push(
+        this.endBeginSub = this.$
             .filter(e => e.type === 'END_BEGIN')
             .subscribe(e => {
                 this.isLooping = false
-            })
+            }))
 
-        this.$
+        this.subs.push(
+        this.endCompleteSub = this.$
             .filter(e => e.type === 'END_COMPLETE')
             .subscribe(e => {
                 this.isRolling = false
                 this.reset()
-            })
+            }))
+    }
+    disableStreams() {
+        this.subs.forEach(sub => sub.unsubscribe())
     }
 
     // Animation array construct
@@ -236,16 +247,16 @@ class Wheel extends Container {
         this.tw.end   = this.end
 
         this.tw.start.cb = {
-            begin:    _ => this.$.next({ type: 'START_BEGIN' }),
-            complete: _ => this.$.next({ type: 'START_COMPLETE' })
+            begin:    _ => this.$.next({ type: 'START_BEGIN',    wheel: this }),
+            complete: _ => this.$.next({ type: 'START_COMPLETE', wheel: this })
         }
         this.tw.loop.cb = {
-            begin:    _ => this.$.next({ type: 'LOOP_BEGIN',    count: this.loops }),
-            complete: _ => this.$.next({ type: 'LOOP_COMPLETE', count: this.loops })
+            begin:    _ => this.$.next({ type: 'LOOP_BEGIN',    wheel: this, count: this.loops }),
+            complete: _ => this.$.next({ type: 'LOOP_COMPLETE', wheel: this, count: this.loops })
         }
         this.tw.end.cb = {
-            begin:    _ => this.$.next({ type: 'END_BEGIN' }),
-            complete: _ => this.$.next({ type: 'END_COMPLETE' })
+            begin:    _ => this.$.next({ type: 'END_BEGIN',    wheel: this }),
+            complete: _ => this.$.next({ type: 'END_COMPLETE', wheel: this })
         }
 
         this.createTweenModifiers()

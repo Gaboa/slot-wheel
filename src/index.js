@@ -53,7 +53,7 @@ game.loader.load(
                             { type: 'blur', el: 'k' },
                             { type: 'blur', el: 'a' }
                         ],
-                        amount: 5,
+                        amount: 15,
                         time:   0.12,
                         ease:   Linear.easeNone
                     },
