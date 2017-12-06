@@ -11,12 +11,14 @@ class Element extends Container {
 
         width,
         height,
-        index
+        index,
+        anim
     }) {
         super({ container, x, y })
 
         this.w = width
         this.h = height
+        this.anim = anim
         this.index = index
         this.color = colors[index % 5]
 
@@ -36,7 +38,7 @@ class Element extends Container {
     }
 
     addText() {
-        this.t = new Text(this.index, { align: 'center', fill: '#555' })
+        this.t = new Text(this.anim, { align: 'center', fill: '#555' })
         this.t.x = this.w * 0.5
         this.t.y = this.h * 0.5
         this.t.anchor.set(0.5)
@@ -53,4 +55,32 @@ class Element extends Container {
     }
 }
 
-export { Element }
+
+
+class SpriteElement extends Sprite {
+    constructor({
+        container,
+        x = 0,
+        y = 0,
+
+        width,
+        height,
+        index,
+        anim
+    }) {
+        super({ container, x, y, texture: 'static_j' })
+        this.w = width
+        this.h = height
+        this.anim = anim
+        this.index = index
+        this.anchor.set(0.5)
+
+        if (anim)
+            this.play(this.anim)
+    }
+    play(anim) {
+        this.texture = PIXI.utils.TextureCache[`${anim.type}_${anim.el}`]
+    }
+}
+
+export { Element, SpriteElement }
