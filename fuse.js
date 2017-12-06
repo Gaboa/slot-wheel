@@ -18,12 +18,14 @@ const fuse = FuseBox.init({
   ]
 });
 
+let randomPort = Math.round(Math.random() * 7000 + 1000)
+
 fuse.dev({
-  port: 8000
+  port: randomPort
 },
   server => {
     browserSync.init({
-      proxy: `localhost:${8000}`
+      proxy: `localhost:${randomPort}`
     });
   });
 
