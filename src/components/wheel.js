@@ -1,10 +1,13 @@
 import { Container } from '../utils'
-import { Element } from './index'
 
 import { Subject } from 'rxjs'
-import { Rectangle, Graphics } from 'pixi.js'
-import { TweenMax, TimelineLite } from 'gsap'
+import { Graphics } from 'pixi.js'
+import { TweenMax } from 'gsap'
 import ModifiersPlugin from 'gsap/ModifiersPlugin'
+
+// TODO: Add methods to change setup params
+// TODO: Add methods to work with different loop animations
+// TODO: Add streams to check what happens in wheel  
 
 class Wheel extends Container {
     constructor({
@@ -13,7 +16,6 @@ class Wheel extends Container {
         y,
 
         direction,
-
         el,
 
         start,
@@ -26,26 +28,108 @@ class Wheel extends Container {
         this.el = el
 
         this.start = start
-        this.loop = loop
-        this.end = end
+        this.loop  = loop
+        this.end   = end
 
-        this.createMetrics()
+        this.createWheelMetric()
         this.createTweenConfig()
+
         this.createElements()
         this.positionElements()
+
+        this.clearAnimations()
+        this.playStartAnimations()
 
         this.createStreams()
     }
 
-    // TODO: Add methods to work with animation array
-    // TODO: Check different sides of rolling
-    // TODO: Add methods to work with elements
-    // TODO: Add methods to work with different loop animations
-    // TODO: Add methods to change setup params
-    // TODO: Add streams to check what happens in wheel  
+    // Inner logic
+    createStreams() {
+        this.$ = new Subject()
+
+        this.$
+            .filter(e => e.type !== 'SWITCH')
+            .subscribe(e => console.log(e))
+
+        this.$
+            .filter(e => e.type === 'START_BEGIN')
+            .subscribe(e => {
+                this.clearElementsParams()
+                this.isRolling = true
+            })
+
+        this.$
+            .filter(e => e.type === 'START_COMPLETE')
+            .subscribe(e => {
+                this.updateElementsParams('start')
+                this.loops = 0
+                this.minLoops = 0
+                this.checkForLoop()
+            })
+
+        this.$
+            .filter(e => e.type === 'LOOP_BEGIN')
+            .subscribe(e => {
+                this.isLooping = true
+                this.loops++
+            })
+
+        this.$
+            .filter(e => e.type === 'LOOP_COMPLETE')
+            .subscribe(e => {
+                this.updateElementsParams('loop')
+                this.checkForLoop()
+            })
+
+        this.$
+            .filter(e => e.type === 'END_BEGIN')
+            .subscribe(e => {
+                this.isLooping = false
+            })
+
+        this.$
+            .filter(e => e.type === 'END_COMPLETE')
+            .subscribe(e => {
+                this.isRolling = false
+                this.reset()
+            })
+    }
+
+    // Animation array construct
+    addStartAnimations(start) {
+        if (start)
+        this.anims = [...this.anims, ...start]
+        else console.warn(`Wrong 'start' anims param: ${start}`)
+    }
+    addLoopAnimations(loop) {
+        if (loop)
+        this.anims = [...this.anims, ...loop]
+        else console.warn(`Wrong 'loop' anims param: ${loop}`)        
+    }
+    addEndAnimations(end) {
+        if (end)
+        this.anims = [...this.anims, ...end]
+        else console.warn(`Wrong 'end' anims param: ${end}`)                
+    }
+    playStartAnimations() {
+        this.addStartAnimations(this.start.anims)
+        this.els.forEach((el, i) => el.play(this.anims[i]))
+    }
+    getRandomLoopAnim() {
+        return this.loop.anims[Math.round(Math.random() * (this.loop.anims.length - 1))]
+    }
+    getRandomLoopAnims(amount) {
+        let result = []
+        for (let i = 0; i < amount; i++)
+            result.push(this.getRandomLoopAnim())
+        return result
+    }
+    clearAnimations() {
+        this.anims = []
+    }
 
     // Inner metrics
-    createMetrics() {
+    createWheelMetric() {
         if (this.direction === 'left'
          || this.direction === 'right') {
             this.w = this.el.amount * this.el.width
@@ -74,65 +158,6 @@ class Wheel extends Container {
             this.pivot.y = -(this.h - this.el.height) * 0.5
     }
 
-    // Inner logic
-    createStreams() {
-        this.$ = new Subject()
-
-        this.$
-            // .filter(e => e.type !== 'SWITCH')
-            .subscribe(e => console.log(e))
-
-        this.$
-            .filter(e => e.type === 'START_BEGIN')
-            .subscribe(e => {
-                this.isRolling = true
-                this.els.forEach(el => {
-                    el.switchCount = 0
-                    el.prevX = 0
-                    el.prevY = 0
-                })
-            })
-
-        this.$
-            .filter(e => e.type === 'START_COMPLETE')
-            .subscribe(e => {
-                this.els.forEach(el => {
-                    el.prevX += +this.tw.start.deltaX.split('=')[1]
-                    el.prevY += +this.tw.start.deltaY.split('=')[1]
-                })
-                this.loopCount = 0
-                this.checkForLoop()
-            })
-        
-        this.$
-            .filter(e => e.type === 'LOOP_BEGIN')
-            .subscribe(e => {
-                this.isLooping = true
-            })
-        
-        this.$
-            .filter(e => e.type === 'LOOP_COMPLETE')
-            .subscribe(e => {
-                this.els.forEach(el => {
-                    el.prevX += +this.tw.loop.deltaX.split('=')[1]
-                    el.prevY += +this.tw.loop.deltaY.split('=')[1]
-                })
-                this.checkForLoop()
-            })
-
-        this.$
-            .filter(e => e.type === 'END_BEGIN')
-            .subscribe(e => {
-                this.isLooping = false
-            })
-        
-        this.$
-            .filter(e => e.type === 'END_COMPLETE')
-            .subscribe(e => {
-                this.isRolling = false
-            })
-    }
-
     // Mask
     addMask() {
         if (this.mask) return null
@@ -149,37 +174,17 @@ class Wheel extends Container {
     }
     removeMask() {
         if (!this.mask) return null
-        this.mask = null
         this.removeChild(this.mask)
-    }
-
-    // Border
-    addBorder() {
-        if (this.border) return null
-        this.border = new Graphics()
-        this.border.lineStyle(2, 0xffffff)
-        if (this.direction === 'right')
-            this.border.drawRect(this.outW - 0.5 * this.el.width, -0.5 * this.inH, this.inW, this.inH)
-        if (this.direction === 'left')
-            this.border.drawRect(-this.w + this.outW + 0.5 * this.el.width, -0.5 * this.inH, this.inW, this.inH)
-        if (this.direction === 'down')
-            this.border.drawRect(-0.5 * this.inW, this.outH - 0.5 * this.el.height, this.inW, this.inH)
-        if (this.direction === 'up')
-            this.border.drawRect(-0.5 * this.inW, -this.h + this.outH + 0.5 * this.el.height, this.inW, this.inH)
-        this.addChild(this.border)
-    }
-    removeBorder() {
-        if (!this.border) return null
-        this.removeChild(this.border)
+        this.mask = null
     }
 
     // Elements
     createElements() {
         this.els = []
         for (let i = 0; i < this.el.amount; i++) {
-            const element = new Element({
+            const element = new this.el.Element({
                 container: this,
-                width: this.el.width,
+                width:  this.el.width,
                 height: this.el.height,
                 index: i
             })
@@ -188,13 +193,39 @@ class Wheel extends Container {
     }
     positionElements() {
         if (this.direction === 'right')
-            this.els.forEach((el, i) => el.x = el.w * (this.el.amount - i - 1))
+            this.els.forEach((el, i) => el.x = el.w * i)
         if (this.direction === 'left')
             this.els.forEach((el, i) => el.x = -el.w * (this.el.amount - i - 1))
         if (this.direction === 'down')
             this.els.forEach((el, i) => el.y = el.h * i)
         if (this.direction === 'up')
             this.els.forEach((el, i) => el.y = -el.h * (this.el.amount - i - 1))
+    }
+    clearElementsParams() {
+        this.els.forEach(el => {
+            el.switchCount = 0
+            el.prevX = 0
+            el.prevY = 0
+        })
+    }
+    updateElementsParams(name) {
+        if (this.direction === 'right'
+         || this.direction === 'down') {
+            this.els.forEach(el => {
+                el.prevX += +this.tw[name].deltaX.split('=')[1]
+                el.prevY += +this.tw[name].deltaY.split('=')[1]
+            })
+        }
+        if (this.direction === 'left'
+         || this.direction === 'up') {
+            this.els.forEach(el => {
+                el.prevX -= +this.tw[name].deltaX.split('=')[1]
+                el.prevY -= +this.tw[name].deltaY.split('=')[1]
+            })
+        }
+    }
+    get elements() {
+        return this.els.slice(this.el.aside, this.el.amount - this.el.aside)
     }
 
     // Tweens
@@ -209,8 +240,8 @@ class Wheel extends Container {
             complete: _ => this.$.next({ type: 'START_COMPLETE' })
         }
         this.tw.loop.cb = {
-            begin:    _ => this.$.next({ type: 'LOOP_BEGIN',    count: this.loopCount }),
-            complete: _ => this.$.next({ type: 'LOOP_COMPLETE', count: this.loopCount })
+            begin:    _ => this.$.next({ type: 'LOOP_BEGIN',    count: this.loops }),
+            complete: _ => this.$.next({ type: 'LOOP_COMPLETE', count: this.loops })
         }
         this.tw.end.cb = {
             begin:    _ => this.$.next({ type: 'END_BEGIN' }),
@@ -284,26 +315,37 @@ class Wheel extends Container {
         }, 0, cb.complete)
     }
     addStartTween() {
+        this.addStartAnimations([...this.start.anims, ...this.getRandomLoopAnims(this.start.amount)])
         this.addTween(this.tw.start)
     }
     addLoopTween() {
+        this.addLoopAnimations(this.getRandomLoopAnims(this.loop.amount))
         this.addTween(this.tw.loop)
     }
     addEndTween() {
+        this.addEndAnimations([...this.getRandomLoopAnims(this.end.amount - this.el.amount), ...this.end.anims])
         this.addTween(this.tw.end)
     }
 
+    // Main methods
     roll() {
         if (this.isRolling) return null
-        this.generateAnims()
+        this.clearAnimations()
         this.addStartTween()
     }
+    reset() {
+        if (this.end.anims)
+            this.start.anims = [...this.end.anims]
+        this.end.anims = null
+        this.els.forEach((el, i) => el.index = i )
+    }
+
+    // Checkers methods
     checkForLoop() {
-        this.loopCount++
-        if (this.loopCount <= 15) {
-            this.addLoopTween()
-        } else {
+        if (this.end.anims && this.loops >= this.minLoops ) {
             this.addEndTween()
+        } else {
+            this.addLoopTween()
         }
     }
     checkForSwitch({
@@ -313,31 +355,23 @@ class Wheel extends Container {
         y
     }) {
         let switchCount
-        if (this.direction === 'right'
-         || this.direction === 'left')
+        if (wheel.direction === 'right'
+         || wheel.direction === 'left')
             switchCount = Math.floor(Math.abs((el.prevX + x) / wheel.w))
-        if (this.direction === 'down'
-         || this.direction === 'up')
+        if (wheel.direction === 'down'
+         || wheel.direction === 'up')
             switchCount = Math.floor(Math.abs((el.prevY + y) / wheel.h))
 
         if (switchCount > el.switchCount) {
-            wheel.$.next({ type: 'SWITCH', el, index: el.index, count: switchCount })
             el.switchCount = switchCount
-            el.play(this.anims[el.index + this.el.amount * el.switchCount])
+            el.index += wheel.el.amount
+            el.anim = wheel.anims[el.index]
+            el.play(el.anim)
+            wheel.$.next({ type: 'SWITCH', el, index: el.index, count: switchCount, anim: el.anim, anims: wheel.anims })
         }
 
     }
 
-    generateAnims() {
-        this.anims = []
-        const totalAmount = 
-            this.el.amount +
-            this.tw.start.amount +
-            this.tw.loop.amount * 15 +
-            this.tw.end.amount
-        for (let i = 0; i < totalAmount; i++)
-            this.anims.push(i)
-    }
 }
 
 export { Wheel }
