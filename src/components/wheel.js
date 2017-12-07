@@ -7,7 +7,7 @@ import ModifiersPlugin from 'gsap/ModifiersPlugin'
 
 // TODO: Add methods to change setup params
 // TODO: Add methods to work with different loop animations
-// TODO: Add streams to check what happens in wheel  
+// TODO: Add streams to check what happens in wheel
 
 class Wheel extends Container {
     constructor({
@@ -15,7 +15,7 @@ class Wheel extends Container {
         x,
         y,
 
-        direction,
+        dir,
         el,
 
         start,
@@ -24,8 +24,8 @@ class Wheel extends Container {
     }) {
         super({ container, x , y })
 
-        this.direction = direction
-        this.el = el
+        this.dir = dir
+        this.el  = el
 
         this.start = start
         this.loop  = loop
@@ -110,17 +110,14 @@ class Wheel extends Container {
     addStartAnimations(start) {
         if (start)
         this.anims = [...this.anims, ...start]
-        else console.warn(`Wrong 'start' anims param: ${start}`)
     }
     addLoopAnimations(loop) {
         if (loop)
         this.anims = [...this.anims, ...loop]
-        else console.warn(`Wrong 'loop' anims param: ${loop}`)        
     }
     addEndAnimations(end) {
         if (end)
         this.anims = [...this.anims, ...end]
-        else console.warn(`Wrong 'end' anims param: ${end}`)                
     }
     playStartAnimations() {
         this.addStartAnimations(this.start.anims)
@@ -141,8 +138,8 @@ class Wheel extends Container {
 
     // Inner metrics
     createWheelMetric() {
-        if (this.direction === 'left'
-         || this.direction === 'right') {
+        if (this.dir === 'left'
+         || this.dir === 'right') {
             this.w = this.el.amount * this.el.width
             this.h = this.el.height
             this.outW = this.el.aside * this.el.width
@@ -150,8 +147,8 @@ class Wheel extends Container {
             this.inW = this.w - 2 * this.outW
             this.inH = this.h
         }
-        if (this.direction === 'up'
-         || this.direction === 'down') {
+        if (this.dir === 'up'
+         || this.dir === 'down') {
             this.w = this.el.width
             this.h = this.el.amount * this.el.height
             this.outW = 0
@@ -159,13 +156,13 @@ class Wheel extends Container {
             this.inW = this.w
             this.inH = this.h - 2 * this.outH
         }
-        if (this.direction === 'right')
+        if (this.dir === 'right')
             this.pivot.x = (this.w - this.el.width) * 0.5
-        if (this.direction === 'left')
+        if (this.dir === 'left')
             this.pivot.x = -(this.w - this.el.width) * 0.5
-        if (this.direction === 'down')
+        if (this.dir === 'down')
             this.pivot.y = (this.h - this.el.height) * 0.5
-        if (this.direction === 'up')
+        if (this.dir === 'up')
             this.pivot.y = -(this.h - this.el.height) * 0.5
     }
 
@@ -173,13 +170,13 @@ class Wheel extends Container {
     addMask() {
         if (this.mask) return null
         this.mask = new Graphics()
-        if (this.direction === 'right')
+        if (this.dir === 'right')
             this.mask.drawRect(this.outW - 0.5 * this.el.width, -0.5 * this.inH, this.inW, this.inH)
-        if (this.direction === 'left')
+        if (this.dir === 'left')
             this.mask.drawRect(-this.w + this.outW + 0.5 * this.el.width, -0.5 * this.inH, this.inW, this.inH)
-        if (this.direction === 'down')
+        if (this.dir === 'down')
             this.mask.drawRect(-0.5 * this.inW, this.outH - 0.5 * this.el.height, this.inW, this.inH)
-        if (this.direction === 'up')
+        if (this.dir === 'up')
             this.mask.drawRect(-0.5 * this.inW, -this.h + this.outH + 0.5 * this.el.height, this.inW, this.inH)
         this.addChild(this.mask)
     }
@@ -203,13 +200,13 @@ class Wheel extends Container {
         }
     }
     positionElements() {
-        if (this.direction === 'right')
+        if (this.dir === 'right')
             this.els.forEach((el, i) => el.x = el.w * i)
-        if (this.direction === 'left')
+        if (this.dir === 'left')
             this.els.forEach((el, i) => el.x = -el.w * (this.el.amount - i - 1))
-        if (this.direction === 'down')
+        if (this.dir === 'down')
             this.els.forEach((el, i) => el.y = el.h * i)
-        if (this.direction === 'up')
+        if (this.dir === 'up')
             this.els.forEach((el, i) => el.y = -el.h * (this.el.amount - i - 1))
     }
     clearElementsParams() {
@@ -220,15 +217,15 @@ class Wheel extends Container {
         })
     }
     updateElementsParams(name) {
-        if (this.direction === 'right'
-         || this.direction === 'down') {
+        if (this.dir === 'right'
+         || this.dir === 'down') {
             this.els.forEach(el => {
                 el.prevX += +this.tw[name].deltaX.split('=')[1]
                 el.prevY += +this.tw[name].deltaY.split('=')[1]
             })
         }
-        if (this.direction === 'left'
-         || this.direction === 'up') {
+        if (this.dir === 'left'
+         || this.dir === 'up') {
             this.els.forEach(el => {
                 el.prevX -= +this.tw[name].deltaX.split('=')[1]
                 el.prevY -= +this.tw[name].deltaY.split('=')[1]
@@ -267,27 +264,27 @@ class Wheel extends Container {
         
     }
     createTweenDelta(name) {
-        if (this.direction === 'right') {
+        if (this.dir === 'right') {
             this.tw[name].deltaX = `+=${this.tw[name].amount * this.el.width}`
             this.tw[name].deltaY = ``
         }
-        if (this.direction === 'left') {
+        if (this.dir === 'left') {
             this.tw[name].deltaX = `-=${this.tw[name].amount * this.el.width}`
             this.tw[name].deltaY = ``
         }
-        if (this.direction === 'up') {
+        if (this.dir === 'up') {
             this.tw[name].deltaX = ``
             this.tw[name].deltaY = `-=${this.tw[name].amount * this.el.height}`
         }
-        if (this.direction === 'down') {
+        if (this.dir === 'down') {
             this.tw[name].deltaX = ``
             this.tw[name].deltaY = `+=${this.tw[name].amount * this.el.height}`
         }
     }
     createTweenModifiers() {
         const wheel = this
-        if (this.direction === 'right'
-         || this.direction === 'left') {
+        if (this.dir === 'right'
+         || this.dir === 'left') {
             this.tw.modifiers = {
                 x(x) {
                     wheel.checkForSwitch({ wheel, el: this.t, x })
@@ -295,8 +292,8 @@ class Wheel extends Container {
                 }
             }
         }
-        if (this.direction === 'down'
-         || this.direction === 'up') {
+        if (this.dir === 'down'
+         || this.dir === 'up') {
             this.tw.modifiers = {
                 y(y) {
                     wheel.checkForSwitch({ wheel, el: this.t, y })

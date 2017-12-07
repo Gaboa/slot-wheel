@@ -23,7 +23,7 @@ game.loader.load(
                     x: game.view.width  * 0.5 + (i - 1) * 256,
                     y: game.view.height * 0.5,
                 
-                    direction: 'down',
+                    dir: 'down',
                 
                     el: {
                         Element: SpriteElement,
