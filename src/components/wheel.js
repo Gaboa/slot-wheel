@@ -7,7 +7,7 @@ import ModifiersPlugin from 'gsap/ModifiersPlugin'
 
 // TODO: Add methods to change setup params
 // TODO: Add methods to work with different loop animations
-// TODO: Add streams to check what happens in wheel
+// TODO: Add streams to check what happens in wheel  
 
 class Wheel extends Container {
     constructor({
@@ -15,6 +15,7 @@ class Wheel extends Container {
         x,
         y,
 
+        index,
         dir,
         el,
 
@@ -24,8 +25,9 @@ class Wheel extends Container {
     }) {
         super({ container, x , y })
 
-        this.dir = dir
-        this.el  = el
+        this.index = index
+        this.dir   = dir
+        this.el    = el
 
         this.start = start
         this.loop  = loop
@@ -106,6 +108,14 @@ class Wheel extends Container {
         this.subs.forEach(sub => sub.unsubscribe())
     }
 
+    // Direction
+    get isHorizontal() {
+        return this.dir === 'left' || this.dir === 'right'
+    }
+    get isVertical() {
+        return this.dir === 'up' || this.dir === 'down'
+    }
+
     // Animation array construct
     addStartAnimations(start) {
         if (start)
@@ -138,8 +148,7 @@ class Wheel extends Container {
 
     // Inner metrics
     createWheelMetric() {
-        if (this.dir === 'left'
-         || this.dir === 'right') {
+        if (this.isHorizontal) {
             this.w = this.el.amount * this.el.width
             this.h = this.el.height
             this.outW = this.el.aside * this.el.width
@@ -147,8 +156,7 @@ class Wheel extends Container {
             this.inW = this.w - 2 * this.outW
             this.inH = this.h
         }
-        if (this.dir === 'up'
-         || this.dir === 'down') {
+        if (this.isVertical) {
             this.w = this.el.width
             this.h = this.el.amount * this.el.height
             this.outW = 0
@@ -244,16 +252,16 @@ class Wheel extends Container {
         this.tw.end   = this.end
 
         this.tw.start.cb = {
-            begin:    _ => this.$.next({ type: 'START_BEGIN',    wheel: this }),
-            complete: _ => this.$.next({ type: 'START_COMPLETE', wheel: this })
+            begin:    _ => this.$.next({ type: 'START_BEGIN',    wheel: this, index: this.index }),
+            complete: _ => this.$.next({ type: 'START_COMPLETE', wheel: this, index: this.index })
         }
         this.tw.loop.cb = {
-            begin:    _ => this.$.next({ type: 'LOOP_BEGIN',    wheel: this, count: this.loops }),
-            complete: _ => this.$.next({ type: 'LOOP_COMPLETE', wheel: this, count: this.loops })
+            begin:    _ => this.$.next({ type: 'LOOP_BEGIN',    wheel: this, index: this.index, count: this.loops }),
+            complete: _ => this.$.next({ type: 'LOOP_COMPLETE', wheel: this, index: this.index, count: this.loops })
         }
         this.tw.end.cb = {
-            begin:    _ => this.$.next({ type: 'END_BEGIN',    wheel: this }),
-            complete: _ => this.$.next({ type: 'END_COMPLETE', wheel: this })
+            begin:    _ => this.$.next({ type: 'END_BEGIN',    wheel: this, index: this.index }),
+            complete: _ => this.$.next({ type: 'END_COMPLETE', wheel: this, index: this.index })
         }
 
         this.createTweenModifiers()
@@ -283,8 +291,7 @@ class Wheel extends Container {
     }
     createTweenModifiers() {
         const wheel = this
-        if (this.dir === 'right'
-         || this.dir === 'left') {
+        if (this.isHorizontal) {
             this.tw.modifiers = {
                 x(x) {
                     wheel.checkForSwitch({ wheel, el: this.t, x })
@@ -292,8 +299,7 @@ class Wheel extends Container {
                 }
             }
         }
-        if (this.dir === 'down'
-         || this.dir === 'up') {
+        if (this.isVertical) {
             this.tw.modifiers = {
                 y(y) {
                     wheel.checkForSwitch({ wheel, el: this.t, y })
@@ -313,14 +319,13 @@ class Wheel extends Container {
         modifiers,
         cb
     }) {
-        const wheel = this
-        cb.begin()
+        cb.begin.call(this)
         this.tween = TweenMax.staggerTo(this.els, time, {
             ease,
             x: deltaX,
             y: deltaY,
             modifiers
-        }, 0, cb.complete)
+        }, 0, cb.complete.bind(this))
     }
     addStartTween() {
         this.addStartAnimations([...this.start.anims, ...this.getRandomLoopAnims(this.start.amount)])
@@ -363,11 +368,11 @@ class Wheel extends Container {
         y
     }) {
         let switchCount
-        if (wheel.direction === 'right'
-         || wheel.direction === 'left')
+        if (wheel.dir === 'right'
+         || wheel.dir === 'left')
             switchCount = Math.floor(Math.abs((el.prevX + x) / wheel.w))
-        if (wheel.direction === 'down'
-         || wheel.direction === 'up')
+        if (wheel.dir === 'down'
+         || wheel.dir === 'up')
             switchCount = Math.floor(Math.abs((el.prevY + y) / wheel.h))
 
         if (switchCount > el.switchCount) {
