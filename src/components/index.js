@@ -1,4 +1,5 @@
 import { Element, SpriteElement } from "./element"
 import { Wheel } from "./wheel"
+import { Screen } from "./screen"
 
-export { Wheel, Element, SpriteElement }
+export { Screen, Wheel, Element, SpriteElement }
