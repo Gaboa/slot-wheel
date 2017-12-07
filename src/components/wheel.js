@@ -5,9 +5,10 @@ import { Graphics } from 'pixi.js'
 import { TweenMax } from 'gsap'
 import ModifiersPlugin from 'gsap/ModifiersPlugin'
 
-// TODO: Add methods to change setup params
+// TODO: Add methods to change setup params ( different loop configs for some reasons )
 // TODO: Add methods to work with different loop animations
-// TODO: Add streams to check what happens in wheel  
+// TODO: Add streams to check what happens in wheel
+// TODO: Add fast and immediate rolling methods  
 
 class Wheel extends Container {
     constructor({

@@ -54,6 +54,13 @@ const defaultConfig = {
 
 }
 
+// TODO: Add different masking methods and methods to work eith side elements
+// TODO: Add handy methods to work with elements detection in every wheel direction
+// TODO: Add methods to collect elements in some line configurations
+// TODO: Add streams logic
+// TODO: Add minLoops count for loop anims in wheels
+// TODO: Add fast and immediate roll methods
+
 class Screen extends Container {
 
     constructor({
@@ -143,7 +150,10 @@ class Screen extends Container {
 
     // Screen data manipulation
     setStartScreen(data) {
-        if (!this.checkScreenData(data)) console.warn('Screen data is wrong!'. data)
+        if (!this.checkScreenData(data)) {
+            console.warn('Screen data is wrong!', data)
+            return null
+        }
         if (this.isHorizontal) {
             data.forEach((row, i) => {
                 this.wheels[i].clearAnimations()
@@ -161,7 +171,10 @@ class Screen extends Container {
         }
     }
     setEndScreen(data) {
-        if (!this.checkScreenData(data)) console.warn('Screen data is wrong!'. data)
+        if (!this.checkScreenData(data)) {
+            console.warn('Screen data is wrong!', data)
+            return null
+        }
         if (this.isHorizontal) {
             data.forEach((row, i) => this.wheels[i].end.anims = row)
         }
