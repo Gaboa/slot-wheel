@@ -8,7 +8,7 @@ import ModifiersPlugin from 'gsap/ModifiersPlugin'
 // TODO: Add methods to change setup params ( different loop configs for some reasons )
 // TODO: Add methods to work with different loop animations
 // TODO: Add streams to check what happens in wheel
-// TODO: Add fast and immediate rolling methods  
+// TODO: Add fast and immediate rolling methods
 
 class Wheel extends Container {
     constructor({
@@ -40,7 +40,6 @@ class Wheel extends Container {
         this.createElements()
         this.positionElements()
 
-        this.clearAnimations()
         this.playStartAnimations()
 
         this.enableStreams()
@@ -52,13 +51,10 @@ class Wheel extends Container {
         this.subs = []
 
         this.subs.push(
-        this.switchSub = this.$
-            .filter(e => e.type !== 'SWITCH')
-            .subscribe(e => console.log(e)))
-
-        this.subs.push(
-        this.startBeginSub = this.$
-            .filter(e => e.type === 'START_BEGIN')
+        this.startStartSub = this.$
+            .filter(e => e.type === 'WHEEL')
+            .filter(e => e.tween === 'START')
+            .filter(e => e.state === 'START')
             .subscribe(e => {
                 this.clearElementsParams()
                 this.isRolling = true
@@ -66,7 +62,9 @@ class Wheel extends Container {
 
         this.subs.push(
         this.startCompleteSub = this.$
-            .filter(e => e.type === 'START_COMPLETE')
+            .filter(e => e.type === 'WHEEL')
+            .filter(e => e.tween === 'START')
+            .filter(e => e.state === 'COMPLETE')
             .subscribe(e => {
                 this.updateElementsParams('start')
                 this.loops = 0
@@ -75,8 +73,10 @@ class Wheel extends Container {
             }))
 
         this.subs.push(
-        this.loopBeginSub = this.$
-            .filter(e => e.type === 'LOOP_BEGIN')
+        this.loopStartSub = this.$
+            .filter(e => e.type === 'WHEEL')
+            .filter(e => e.tween === 'LOOP')
+            .filter(e => e.state === 'START')
             .subscribe(e => {
                 this.isLooping = true
                 this.loops++
@@ -84,26 +84,32 @@ class Wheel extends Container {
 
         this.subs.push(
         this.loopCompleteSub = this.$
-            .filter(e => e.type === 'LOOP_COMPLETE')
+            .filter(e => e.type === 'WHEEL')
+            .filter(e => e.tween === 'LOOP')
+            .filter(e => e.state === 'COMPLETE')
             .subscribe(e => {
                 this.updateElementsParams('loop')
                 this.checkForLoop()
             }))
 
         this.subs.push(
-        this.endBeginSub = this.$
-            .filter(e => e.type === 'END_BEGIN')
+        this.endStartSub = this.$
+            .filter(e => e.type === 'WHEEL')
+            .filter(e => e.tween === 'END')
+            .filter(e => e.state === 'START')
             .subscribe(e => {
                 this.isLooping = false
             }))
 
         this.subs.push(
         this.endCompleteSub = this.$
-            .filter(e => e.type === 'END_COMPLETE')
+            .filter(e => e.type === 'WHEEL')
+            .filter(e => e.tween === 'END')
+            .filter(e => e.state === 'COMPLETE')
             .subscribe(e => {
-                this.isRolling = false
-                this.reset()
-            }))
+                    this.isRolling = false
+                    this.reset()
+                }))
     }
     disableStreams() {
         this.subs.forEach(sub => sub.unsubscribe())
@@ -120,7 +126,7 @@ class Wheel extends Container {
     // Animation array construct
     addStartAnimations(start) {
         if (start)
-        this.anims = [...this.anims, ...start]
+        this.anims = [...start]
     }
     addLoopAnimations(loop) {
         if (loop)
@@ -142,9 +148,6 @@ class Wheel extends Container {
         for (let i = 0; i < amount; i++)
             result.push(this.getRandomLoopAnim())
         return result
-    }
-    clearAnimations() {
-        this.anims = []
     }
 
     // Inner metrics
@@ -253,16 +256,16 @@ class Wheel extends Container {
         this.tw.end   = this.end
 
         this.tw.start.cb = {
-            begin:    _ => this.$.next({ type: 'START_BEGIN',    wheel: this, index: this.index }),
-            complete: _ => this.$.next({ type: 'START_COMPLETE', wheel: this, index: this.index })
+            begin:    _ => this.$.next({ type: 'WHEEL', tween: 'START', state: 'START',    wheel: this, index: this.index }),
+            complete: _ => this.$.next({ type: 'WHEEL', tween: 'START', state: 'COMPLETE', wheel: this, index: this.index })
         }
         this.tw.loop.cb = {
-            begin:    _ => this.$.next({ type: 'LOOP_BEGIN',    wheel: this, index: this.index, count: this.loops }),
-            complete: _ => this.$.next({ type: 'LOOP_COMPLETE', wheel: this, index: this.index, count: this.loops })
+            begin:    _ => this.$.next({ type: 'WHEEL', tween: 'LOOP', state: 'START',    wheel: this, index: this.index, count: this.loops }),
+            complete: _ => this.$.next({ type: 'WHEEL', tween: 'LOOP', state: 'COMPLETE', wheel: this, index: this.index, count: this.loops })
         }
         this.tw.end.cb = {
-            begin:    _ => this.$.next({ type: 'END_BEGIN',    wheel: this, index: this.index }),
-            complete: _ => this.$.next({ type: 'END_COMPLETE', wheel: this, index: this.index })
+            begin:    _ => this.$.next({ type: 'WHEEL', tween: 'END', state: 'START',    wheel: this, index: this.index }),
+            complete: _ => this.$.next({ type: 'WHEEL', tween: 'END', state: 'COMPLETE', wheel: this, index: this.index })
         }
 
         this.createTweenModifiers()
@@ -327,6 +330,7 @@ class Wheel extends Container {
             y: deltaY,
             modifiers
         }, 0, cb.complete.bind(this))
+        this.tween.forEach(tw => tw.timeScale(this.speed || 1))
     }
     addStartTween() {
         this.addStartAnimations([...this.start.anims, ...this.getRandomLoopAnims(this.start.amount)])
@@ -344,8 +348,10 @@ class Wheel extends Container {
     // Main methods
     roll() {
         if (this.isRolling) return null
-        this.clearAnimations()
         this.addStartTween()
+    }
+    fast() {
+        
     }
     reset() {
         if (this.end.anims)
@@ -381,7 +387,7 @@ class Wheel extends Container {
             el.index += wheel.el.amount
             el.anim = wheel.anims[el.index]
             el.play(el.anim)
-            wheel.$.next({ type: 'SWITCH', el, index: el.index, count: switchCount, anim: el.anim, anims: wheel.anims })
+            wheel.$.next({ type: 'WHEEL_EL_SWITCH', el, index: el.index, count: switchCount, anim: el.anim, anims: wheel.anims })
         }
 
     }
