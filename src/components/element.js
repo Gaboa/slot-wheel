@@ -75,6 +75,8 @@ class SpriteElement extends Sprite {
         this.index = index
         this.anchor.set(0.5)
 
+        this.scale.set(0.5)
+
         if (anim)
             this.play(this.anim)
     }
