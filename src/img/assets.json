@@ -1,0 +1,84 @@
+{"frames": {
+
+"bar":
+{
+	"frame": {"x":1391,"y":1047,"w":560,"h":12},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":560,"h":12},
+	"sourceSize": {"w":560,"h":12}
+},
+"button":
+{
+	"frame": {"x":1621,"y":368,"w":204,"h":203},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":204,"h":203},
+	"sourceSize": {"w":204,"h":203}
+},
+"churchill":
+{
+	"frame": {"x":1621,"y":1,"w":255,"h":365},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":255,"h":365},
+	"sourceSize": {"w":255,"h":365}
+},
+"continue":
+{
+	"frame": {"x":1621,"y":573,"w":296,"h":109},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":296,"h":109},
+	"sourceSize": {"w":296,"h":109}
+},
+"copy":
+{
+	"frame": {"x":1621,"y":684,"w":319,"h":95},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":319,"h":95},
+	"sourceSize": {"w":319,"h":95}
+},
+"lantern":
+{
+	"frame": {"x":1285,"y":1,"w":334,"h":852},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":334,"h":852},
+	"sourceSize": {"w":334,"h":852}
+},
+"logo":
+{
+	"frame": {"x":1391,"y":855,"w":379,"h":190},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":379,"h":190},
+	"sourceSize": {"w":379,"h":190}
+},
+"machine_bg":
+{
+	"frame": {"x":1,"y":1,"w":1282,"h":861},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1282,"h":861},
+	"sourceSize": {"w":1282,"h":861}
+},
+"panel":
+{
+	"frame": {"x":1,"y":864,"w":1388,"h":242},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1388,"h":242},
+	"sourceSize": {"w":1388,"h":242}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "assets.png",
+	"format": "RGBA8888",
+	"size": {"w":1952,"h":1107},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:15b2a29fefd1607f0cae791bea8ac585:fc40d732eec291adb21375b6ab086da4:a759b6bbc8381ac9c472b28f589ad0d6$"
+}
+}
