@@ -1,14 +1,19 @@
 import { Container } from '../utils'
 
-import { Subject } from 'rxjs'
 import { Graphics } from 'pixi.js'
 import { TweenMax } from 'gsap'
+import { Subject } from 'rxjs'
 import ModifiersPlugin from 'gsap/ModifiersPlugin'
 
-// TODO: Add methods to change setup params ( different loop configs for some reasons )
+// Loop effects in wheel
+// TODO: Add methods to change params for start, end, loop tweens
 // TODO: Add methods to work with different loop animations
-// TODO: Add streams to check what happens in wheel
-// TODO: Add fast and immediate rolling methods
+// TODO: Add SlowMo loop effect
+// TODO: Add Waiting loop effect
+// Elements utils methods
+// TODO: Add methods to get el
+// TODO: Add methods to get el position
+// TODO: Add methods to reset el position
 
 class Wheel extends Container {
     constructor({
@@ -41,7 +46,6 @@ class Wheel extends Container {
         this.positionElements()
 
         this.playStartAnimations()
-
         this.enableStreams()
     }
 
@@ -50,31 +54,33 @@ class Wheel extends Container {
         this.$ = new Subject()
         this.subs = []
 
+        // Start tween
         this.subs.push(
         this.startStartSub = this.$
-            .filter(e => e.type === 'WHEEL')
+            .filter(e => e.from  === 'WHEEL')
             .filter(e => e.tween === 'START')
             .filter(e => e.state === 'START')
             .subscribe(e => {
                 this.clearElementsParams()
                 this.isRolling = true
+                this.minLoops = 0
+                this.loops = 0
             }))
 
         this.subs.push(
         this.startCompleteSub = this.$
-            .filter(e => e.type === 'WHEEL')
+            .filter(e => e.from  === 'WHEEL')
             .filter(e => e.tween === 'START')
             .filter(e => e.state === 'COMPLETE')
             .subscribe(e => {
                 this.updateElementsParams('start')
-                this.loops = 0
-                this.minLoops = 0
                 this.checkForLoop()
             }))
-
+        
+        // Loop tween
         this.subs.push(
         this.loopStartSub = this.$
-            .filter(e => e.type === 'WHEEL')
+            .filter(e => e.from  === 'WHEEL')
             .filter(e => e.tween === 'LOOP')
             .filter(e => e.state === 'START')
             .subscribe(e => {
@@ -84,7 +90,7 @@ class Wheel extends Container {
 
         this.subs.push(
         this.loopCompleteSub = this.$
-            .filter(e => e.type === 'WHEEL')
+            .filter(e => e.from  === 'WHEEL')
             .filter(e => e.tween === 'LOOP')
             .filter(e => e.state === 'COMPLETE')
             .subscribe(e => {
@@ -92,9 +98,10 @@ class Wheel extends Container {
                 this.checkForLoop()
             }))
 
+        // End tween
         this.subs.push(
         this.endStartSub = this.$
-            .filter(e => e.type === 'WHEEL')
+            .filter(e => e.from  === 'WHEEL')
             .filter(e => e.tween === 'END')
             .filter(e => e.state === 'START')
             .subscribe(e => {
@@ -103,12 +110,12 @@ class Wheel extends Container {
 
         this.subs.push(
         this.endCompleteSub = this.$
-            .filter(e => e.type === 'WHEEL')
+            .filter(e => e.from  === 'WHEEL')
             .filter(e => e.tween === 'END')
             .filter(e => e.state === 'COMPLETE')
             .subscribe(e => {
                     this.isRolling = false
-                    this.reset()
+                    this.checkWheelEnd()
                 }))
     }
     disableStreams() {
@@ -256,16 +263,16 @@ class Wheel extends Container {
         this.tw.end   = this.end
 
         this.tw.start.cb = {
-            begin:    _ => this.$.next({ type: 'WHEEL', tween: 'START', state: 'START',    wheel: this, index: this.index }),
-            complete: _ => this.$.next({ type: 'WHEEL', tween: 'START', state: 'COMPLETE', wheel: this, index: this.index })
+            begin:    _ => this.$.next({ from: 'WHEEL', tween: 'START', state: 'START',    wheel: this, index: this.index }),
+            complete: _ => this.$.next({ from: 'WHEEL', tween: 'START', state: 'COMPLETE', wheel: this, index: this.index })
         }
         this.tw.loop.cb = {
-            begin:    _ => this.$.next({ type: 'WHEEL', tween: 'LOOP', state: 'START',    wheel: this, index: this.index, count: this.loops }),
-            complete: _ => this.$.next({ type: 'WHEEL', tween: 'LOOP', state: 'COMPLETE', wheel: this, index: this.index, count: this.loops })
+            begin:    _ => this.$.next({ from: 'WHEEL', tween: 'LOOP', state: 'START',    wheel: this, index: this.index, count: this.loops }),
+            complete: _ => this.$.next({ from: 'WHEEL', tween: 'LOOP', state: 'COMPLETE', wheel: this, index: this.index, count: this.loops })
         }
         this.tw.end.cb = {
-            begin:    _ => this.$.next({ type: 'WHEEL', tween: 'END', state: 'START',    wheel: this, index: this.index }),
-            complete: _ => this.$.next({ type: 'WHEEL', tween: 'END', state: 'COMPLETE', wheel: this, index: this.index })
+            begin:    _ => this.$.next({ from: 'WHEEL', tween: 'END', state: 'START',    wheel: this, index: this.index }),
+            complete: _ => this.$.next({ from: 'WHEEL', tween: 'END', state: 'COMPLETE', wheel: this, index: this.index })
         }
 
         this.createTweenModifiers()
@@ -348,10 +355,8 @@ class Wheel extends Container {
     // Main methods
     roll() {
         if (this.isRolling) return null
+        this.reset()
         this.addStartTween()
-    }
-    fast() {
-        
     }
     reset() {
         if (this.end.anims)
@@ -361,8 +366,14 @@ class Wheel extends Container {
     }
 
     // Checkers methods
+    checkWheelEnd() {
+        let check = this.els.every((el, i) => _.isEqual(el.anim, this.end.anims[i]))
+        if (!check) console.warn('Wheel check failed!!! Index: ', this.index)
+        if (!check) this.$.next({ from: 'WHEEL', state: 'error', index: this.index })
+        return check
+    }
     checkForLoop() {
-        if (this.end.anims && this.loops >= this.minLoops ) {
+        if (this.end.anims && this.loops - 1 >= this.minLoops ) {
             this.addEndTween()
         } else {
             this.addLoopTween()
@@ -383,11 +394,12 @@ class Wheel extends Container {
             switchCount = Math.floor(Math.abs((el.prevY + y) / wheel.h))
 
         if (switchCount > el.switchCount) {
+            let delta = switchCount - el.switchCount // This is for very fast tweens where delta could be > 1
             el.switchCount = switchCount
-            el.index += wheel.el.amount
+            el.index += delta * wheel.el.amount
             el.anim = wheel.anims[el.index]
             el.play(el.anim)
-            wheel.$.next({ type: 'WHEEL_EL_SWITCH', el, index: el.index, count: switchCount, anim: el.anim, anims: wheel.anims })
+            wheel.$.next({ from: 'WHEEL', state: 'SWITCH', el, index: el.index, count: switchCount, anim: el.anim, anims: wheel.anims })
         }
 
     }
