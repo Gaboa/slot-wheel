@@ -9,7 +9,7 @@
     "**/**.js"
   ],
   "scripts": {
-    "start": "rimraf .fusebox & node fuse"
+    "start": "poi src/index.js"
   },
   "dependencies": {
     "gsap": "^1.20.3",
