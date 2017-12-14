@@ -1,5 +1,6 @@
 import { Container, Sprite } from '../utils'
 import { Graphics, Text } from 'pixi.js'
+import { Subject } from 'rxjs'
 
 const colors = [0xff00ff, 0x00ffff, 0xffff00, 0x444444, 0x0000ff]
 
@@ -71,17 +72,34 @@ class SpriteElement extends Sprite {
         super({ container, x, y, texture: 'static_j' })
         this.w = width
         this.h = height
-        this.anim = anim
+
         this.index = index
         this.anchor.set(0.5)
 
-        this.scale.set(0.5)
-
         if (anim)
             this.play(this.anim)
+        
+        this.enableStreams()
+    }
+    enableStreams() {
+        this.$ = new Subject()
+        this.subs = []
+    }
+    disableStreams() {
+        this.subs.forEach(sub => sub.unsubscribe())
     }
     play(anim) {
+        this.anim = anim
         this.texture = PIXI.utils.TextureCache[`${anim.type}_${anim.el}`]
+        this.$.next({ from: 'EL', state: 'play', anim, el: this })
+    }
+    show() {
+        this.visible = true
+        this.$.next({ from: 'EL', state: 'show', el: this })
+    }
+    hide() {
+        this.visible = false
+        this.$.next({ from: 'EL', state: 'hide', el: this })
     }
 }
 
