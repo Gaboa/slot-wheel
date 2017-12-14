@@ -10,3 +10,7 @@ body {
     height: 100vh;
     background-color: #666;
 }
+
+canvas {
+    max-width: 100%;
+}
