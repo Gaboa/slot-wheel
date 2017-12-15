@@ -78,8 +78,8 @@ const defaultConfig = {
 
 }
 
+// TODO: Work on advanced loop methods
 // TODO: Add methods to handle some advanced wheel effects
-// TODO: Add soft mask methods and different mask variants
 // TODO: Add events for start and end of forced loops in wheels, and slowMo loops
 
 class Screen extends Container {

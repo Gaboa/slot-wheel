@@ -7,10 +7,7 @@ import { TweenMax } from 'gsap'
 import { Subject } from 'rxjs'
 
 // Loop effects in wheel
-// TODO: Add methods to change params for start, end, loop tweens
-// TODO: Add methods to work with different loop animations
-// TODO: Add SlowMo loop effect
-// TODO: Add Waiting loop effect
+// TODO: Add events for advanced loop methods
 
 class Wheel extends Container {
     constructor({

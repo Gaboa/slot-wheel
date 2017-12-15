@@ -22,7 +22,7 @@ game.loader
             y: 0.5,
             config: {
                 amount: 5,
-                dir: 'up',
+                dir: 'down',
 
                 loop: {
                     amount: 20,
