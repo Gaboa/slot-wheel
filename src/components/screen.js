@@ -1,10 +1,11 @@
-import defaultsDeep from 'lodash.defaultsdeep';
+import defaultsDeep from 'lodash.defaultsdeep'
+import isEqual from 'lodash.isequal'
 import { Subject } from 'rxjs/Subject'
 import { Observable } from 'rxjs/Observable'
 import { TweenMax } from 'gsap/TweenMax'
-import { Container } from "../utils"
-import { Wheel } from "./wheel"
-import { SpriteElement } from "./element"
+import { Wheel } from './wheel'
+import { SpriteElement } from './element'
+import { Container } from '../utils'
 
 const defaultConfig = {
     Wheel,
@@ -63,6 +64,12 @@ const defaultConfig = {
         fast: 2
     },
 
+    lines: [
+        [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }, { x: 4, y: 0 }],
+        [{ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }, { x: 4, y: 1 }],
+        [{ x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 2 }]
+    ],
+
     log: {
         el: false,
         wheel: false,
@@ -71,11 +78,9 @@ const defaultConfig = {
 
 }
 
-// TODO: Add different masking methods and methods to work eith side elements
-// TODO: Add handy methods to work with elements detection in every wheel direction
-// TODO: Add methods to collect elements in some line configurations
-// TODO: Add methods to manipulate elements
 // TODO: Add methods to handle some advanced wheel effects
+// TODO: Add soft mask methods and different mask variants
+// TODO: Add events for start and end of forced loops in wheels, and slowMo loops
 
 class Screen extends Container {
 
@@ -194,13 +199,105 @@ class Screen extends Container {
         return this.config.dir === 'up' || this.config.dir === 'down'
     }
 
+    // Rows and Cols
+    get allRows() {
+        if (this.isHorizontal)
+            return this.wheels.map(w => w.els)
+        if (this.isVertical)
+            return this.transformScreen(this.wheels, 'els')
+    }
+    get rows() {
+        if (this.isHorizontal)
+            return this.wheels.map(w => w.elements)
+        if (this.isVertical)
+            return this.transformScreen(this.wheels, 'elements')
+    }
+    row(i) {
+        return this.rows[i]
+    }
+    get allCols() {
+        if (this.isHorizontal)
+            return this.transformScreen(this.wheels, 'els')
+        if (this.isVertical)
+            return this.wheels.map(w => w.els)
+    }
+    get cols() {
+        if (this.isHorizontal)
+            return this.transformScreen(this.wheels, 'elements')
+        if (this.isVertical)
+            return this.wheels.map(w => w.elements)
+    }
+    col(i) {
+        return this.cols[i]
+    }
+
     // Elements
-    get elements() {
+    get sideElements() {
         const result = []
-        this.wheels.forEach(w => result.push(w.elements))
+        this.wheels
+            .map(wheel => wheel.els.filter(el => !wheel.elements.includes(el)))
+            .forEach(arr => arr.forEach(el => result.push(el)))
         return result
     }
-    el(x, y) {}
+    get allElements() {
+        const result = []
+        if (this.isHorizontal)
+            this.wheels.forEach(w => w.els.forEach(el => result.push(el)))
+        if (this.isVertical)
+            this.transformScreen(this.wheels, 'els').forEach(w => w.forEach(el => result.push(el)))
+        return result
+    }
+    get elements() {
+        const result = []
+        if (this.isHorizontal)
+            this.wheels.forEach(w => w.elements.forEach(el => result.push(el)))
+        if (this.isVertical)
+            this.transformScreen(this.wheels, 'elements').forEach(w => w.forEach(el => result.push(el)))
+        return result
+    }
+    element(x, y) {
+        return this.elements[x + y * this.cols.length]
+    }
+
+    // Elements positions
+    elementPosition(x, y) {
+        if (this.isHorizontal)
+            return this.wheels[y].elementPosition(x)
+        if (this.isVertical)
+            return this.wheels[x].elementPosition(y)
+    }
+    resetElementPosition(x, y) {
+        if (this.isHorizontal)
+            this.wheels[y].resetElementPosition(x)
+        if (this.isVertical)
+            this.wheels[x].resetElementPosition(y)
+    }
+
+    // Getters for Elements
+    getElementsFromLine({ number, amount }) {
+        const result = []
+        this.config.lines[number]
+            .filter((el, i) => i < amount)
+            .forEach(el => result.push(this.element(el.x, el.y)))
+        return result
+    }
+    getElementsFromLines(config) {
+        const set = new Set()
+        config.forEach(line => this.getElementsFromLine(line).forEach(el => set.add(el)))
+        return Array.from(set)
+    }
+    getElementsWithAnim(anim) {
+        return this.elements.filter(el => isEqual(anim, el.anim))
+    }
+    getLastElementWithAnim(anim) {
+        const lastCol = this.cols[this.cols.length - 1]
+        const filteredLastCol = lastCol.filter(el => isEqual(el.anim, anim))
+        return filteredLastCol[filteredLastCol.length - 1]
+    }
+    getLastElementFromLine(config) {
+        const lineEls = this.getElementsFromLine(config)
+        return lineEls[lineEls.length - 1]
+    }
 
     // Mask
     addMask() { this.wheels.forEach(w => w.addMask()) }
@@ -213,7 +310,7 @@ class Screen extends Container {
             const wheel = new this.config.Wheel(defaultsDeep({
                 container: this,
                 index: i
-            }, this.config))
+            }, this.config))    
             this.wheels.push(wheel)
         }
     }
@@ -251,6 +348,21 @@ class Screen extends Container {
     }
     setRollSpeed(speed) {
         this.wheels.forEach(wheel => wheel.speed = speed)
+    }
+
+    // Advanced wheel methods
+    setForcedLoops(arr) {
+        this.wheels.forEach((wheel, i) => wheel.forcedLoops = arr[i])
+    }
+    // Если тайминг анимаций будет отличаться от дефолтных, то это поламает механизм поочередной остановки колес
+    // Лучше использовать для вручную управляемых эффектов докручивания колес
+    changeLoopConfig(wheel, config) {
+        wheel.loop = config
+        wheel.createTweenConfig()
+    }
+    resetLoopConfig(wheel) {
+        wheel.loop = this.config.loop
+        wheel.createTweenConfig()
     }
 
     // Screen data manipulation
@@ -304,6 +416,16 @@ class Screen extends Container {
         const result = []
         data.forEach((row, rowIndex) => {
             row.forEach((el, colIndex) => {
+                result[colIndex] = result[colIndex] || []
+                result[colIndex][rowIndex] = el
+            })
+        })
+        return result
+    }
+    transformScreen(data, name) {
+        const result = []
+        data.forEach((row, rowIndex) => {
+            row[name].forEach((el, colIndex) => {
                 result[colIndex] = result[colIndex] || []
                 result[colIndex][rowIndex] = el
             })
