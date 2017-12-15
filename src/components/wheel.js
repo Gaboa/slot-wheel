@@ -60,6 +60,7 @@ class Wheel extends Container {
             .subscribe(e => {
                 this.clearElementsParams()
                 this.isRolling = true
+                this.forcedLoops = 0
                 this.minLoops = 0
                 this.loops = 0
             }))
@@ -387,7 +388,9 @@ class Wheel extends Container {
         return check
     }
     checkForLoop() {
-        if (this.end.anims && this.loops - 1 >= this.minLoops ) {
+        if (this.end.anims
+         && this.loops >= this.minLoops + 1
+         && this.loops >= this.forcedLoops ) {
             this.addEndTween()
         } else {
             this.addLoopTween()
