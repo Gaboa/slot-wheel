@@ -1,9 +1,10 @@
-import * as _ from 'lodash'
+import defaultsDeep from 'lodash.defaultsdeep';
+import { Subject } from 'rxjs/Subject'
+import { Observable } from 'rxjs/Observable'
+import { TweenMax } from 'gsap/TweenMax'
 import { Container } from "../utils"
 import { Wheel } from "./wheel"
 import { SpriteElement } from "./element"
-import { TweenMax } from 'gsap'
-import { Observable, Subject } from 'rxjs'
 
 const defaultConfig = {
     Wheel,
@@ -87,7 +88,7 @@ class Screen extends Container {
     }) {
         super({ container, x, y })
 
-        this.config = _.defaultsDeep(config, defaultConfig)
+        this.config = defaultsDeep(config, defaultConfig)
 
         this.createWheels()
         this.positionWheels()
@@ -209,7 +210,7 @@ class Screen extends Container {
     createWheels() {
         this.wheels = []
         for (let i = 0; i < this.config.amount; i++) {
-            const wheel = new this.config.Wheel(_.defaultsDeep({
+            const wheel = new this.config.Wheel(defaultsDeep({
                 container: this,
                 index: i
             }, this.config))
@@ -239,10 +240,12 @@ class Screen extends Container {
 
     // Roll methods
     roll() {
+        if (this.isRolling) return null
         this.setRollSpeed(this.config.roll.normal)
         this.tw = TweenMax.staggerTo(this.wheels, 0.1, { alpha: 1, onStart() { this.target.roll() } }, this.config.dt)
     }
     fast() {
+        if (this.isRolling) return null
         this.roll()
         this.setRollSpeed(this.config.roll.fast)
     }
