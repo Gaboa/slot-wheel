@@ -1,19 +1,16 @@
 import { Container } from '../utils'
 
+import ModifiersPlugin from 'gsap/ModifiersPlugin'
+import isEqual from 'lodash.isequal'
 import { Graphics } from 'pixi.js'
 import { TweenMax } from 'gsap'
 import { Subject } from 'rxjs'
-import ModifiersPlugin from 'gsap/ModifiersPlugin'
 
 // Loop effects in wheel
 // TODO: Add methods to change params for start, end, loop tweens
 // TODO: Add methods to work with different loop animations
 // TODO: Add SlowMo loop effect
 // TODO: Add Waiting loop effect
-// Elements utils methods
-// TODO: Add methods to get el
-// TODO: Add methods to get el position
-// TODO: Add methods to reset el position
 
 class Wheel extends Container {
     constructor({
@@ -254,6 +251,23 @@ class Wheel extends Container {
     get elements() {
         return this.els.slice(this.el.aside, this.el.amount - this.el.aside)
     }
+    element(i) {
+        return this.els[i]
+    }
+    elementPosition(i) {
+        return this.els[i].position
+    }
+    resetElementPosition(i) {
+        const el = this.element(i)
+        if (this.dir === 'right')
+            el.position.set(el.w * i, 0)
+        if (this.dir === 'left')
+            el.position.set(-el.w * (this.el.amount - i - 1), 0)
+        if (this.dir === 'down')
+            el.position.set(0, el.h * i)
+        if (this.dir === 'up')
+            el.position.set(0, -el.h * (this.el.amount - i - 1))
+    }
 
     // Tweens
     createTweenConfig() {
@@ -367,7 +381,7 @@ class Wheel extends Container {
 
     // Checkers methods
     checkWheelEnd() {
-        let check = this.els.every((el, i) => _.isEqual(el.anim, this.end.anims[i]))
+        let check = this.els.every((el, i) => isEqual(el.anim, this.end.anims[i]))
         if (!check) console.warn('Wheel check failed!!! Index: ', this.index)
         if (!check) this.$.next({ from: 'WHEEL', state: 'error', index: this.index })
         return check
