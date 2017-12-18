@@ -12,12 +12,13 @@
     "start": "poi"
   },
   "dependencies": {
+    "axios": "^0.17.1",
     "gsap": "^1.20.3",
-    "lodash": "^4.17.4",
     "lodash.defaultsdeep": "^4.6.0",
     "lodash.isequal": "^4.5.0",
     "pixi.js": "^4.6.2",
-    "rxjs": "^5.5.5"
+    "rxjs": "^5.5.5",
+    "url-search-params-polyfill": "^2.0.1"
   },
   "devDependencies": {
     "poi": "^9.6.1"
