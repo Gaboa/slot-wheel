@@ -1,0 +1,6 @@
+export { StateManager } from './state'
+export { DataManager } from './data'
+export { DeviceManager } from './device'
+export { RequestManager } from './request'
+export { AudioManager } from './audio'
+export { ParsingManager } from './parser'
