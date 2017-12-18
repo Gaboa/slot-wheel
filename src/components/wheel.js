@@ -8,6 +8,7 @@ import { Subject } from 'rxjs'
 
 // Loop effects in wheel
 // TODO: Add events for advanced loop methods
+// TODO: Add counting loops by time
 
 class Wheel extends Container {
     constructor({

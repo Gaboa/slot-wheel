@@ -81,6 +81,7 @@ const defaultConfig = {
 // TODO: Work on advanced loop methods
 // TODO: Add methods to handle some advanced wheel effects
 // TODO: Add events for start and end of forced loops in wheels, and slowMo loops
+// TODO: Add in loop config coef for timing ( x2, x3 )
 
 class Screen extends Container {
 
