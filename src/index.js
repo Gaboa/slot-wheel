@@ -2,6 +2,7 @@ import './index.css'
 import { Application } from 'pixi.js'
 import { TweenMax } from 'gsap'
 
+import { StateManager } from './game'
 import { Screen, Wheel, SpriteElement } from './components'
 
 const game = new Application({
@@ -30,7 +31,7 @@ game.loader
                 },
 
                 roll: {
-                    normal: 0.3,
+                    normal: 1,
                     fast: 1.5
                 },
 
@@ -60,3 +61,5 @@ window.endVerticalData = [
     [{ type: 'static', el: '1' }, { type: 'static', el: '2' }, { type: 'static', el: '3' }, { type: 'static', el: '4' }, { type: 'static', el: '5' }  ],
     [{ type: 'static', el: '1' }, { type: 'static', el: '2' }, { type: 'static', el: '3' }, { type: 'static', el: '4' }, { type: 'static', el: '5' }  ]
 ]
+
+window.state = new StateManager({  })
