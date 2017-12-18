@@ -1,7 +1,3 @@
-import { Sprite } from './sprite'
-import { Container } from './container'
-
-export {
-    Container,
-    Sprite
-}
+export { Sprite } from './sprite'
+export { Container } from './container'
+export { ReactiveObject, ReactiveProperty } from './reactive'
