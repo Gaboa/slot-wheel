@@ -1,17 +1,17 @@
 import './index.css'
-import { Application } from 'pixi.js'
+
 import { TweenMax } from 'gsap'
+import { Game } from './game'
+import { Screen } from './components'
 
-import { StateManager } from './game'
-import { Screen, Wheel, SpriteElement } from './components'
-
-const game = new Application({
-    width:  1280,
-    height: 720
+const game = new Game({
+    id: '#app',
+    fps: 30,
+    device: {
+        mode: 'aspect'
+    }
 })
-window.GAME_WIDTH = 1280
-window.GAME_HEIGHT = 720
-document.body.appendChild(game.view)
+
 game.loader.baseUrl = 'src/'
 game.loader
     .add({ url: 'img/elements.json' })
@@ -32,7 +32,7 @@ game.loader
 
                 roll: {
                     normal: 1,
-                    fast: 1.5
+                    fast:   1.5
                 },
 
                 log: {
@@ -49,17 +49,15 @@ game.loader
     }
 )
 
-window.endHorizontalData = [
+window.endH = [
     [{ type: 'static', el: '2' }, { type: 'static', el: '4' }, { type: 'static', el: '6' }, { type: 'static', el: '8' }, { type: 'static', el: '10' } ],
     [{ type: 'static', el: '2' }, { type: 'static', el: '4' }, { type: 'static', el: '6' }, { type: 'static', el: '8' }, { type: 'static', el: '10' } ],
     [{ type: 'static', el: '2' }, { type: 'static', el: '4' }, { type: 'static', el: '6' }, { type: 'static', el: '8' }, { type: 'static', el: '10' } ]
 ]
-window.endVerticalData = [
+window.endV = [
     [{ type: 'static', el: '1' }, { type: 'static', el: '2' }, { type: 'static', el: '3' }, { type: 'static', el: '4' }, { type: 'static', el: '5' }  ],
     [{ type: 'static', el: '1' }, { type: 'static', el: '2' }, { type: 'static', el: '3' }, { type: 'static', el: '4' }, { type: 'static', el: '5' }  ],
     [{ type: 'static', el: '1' }, { type: 'static', el: '2' }, { type: 'static', el: '3' }, { type: 'static', el: '4' }, { type: 'static', el: '5' }  ],
     [{ type: 'static', el: '1' }, { type: 'static', el: '2' }, { type: 'static', el: '3' }, { type: 'static', el: '4' }, { type: 'static', el: '5' }  ],
     [{ type: 'static', el: '1' }, { type: 'static', el: '2' }, { type: 'static', el: '3' }, { type: 'static', el: '4' }, { type: 'static', el: '5' }  ]
 ]
-
-window.state = new StateManager({  })
