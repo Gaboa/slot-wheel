@@ -2,7 +2,7 @@
 // TODO: Add methods for parsing saved data
 // TODO: Add methods for parsing roll data
 
-class ParsingManager {
+class ParserManager {
     constructor({
 
     }) {
@@ -10,4 +10,4 @@ class ParsingManager {
     }
 }
 
-export { ParsingManager }
+export { ParserManager }
