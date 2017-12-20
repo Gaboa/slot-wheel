@@ -4,7 +4,7 @@ import { ReactiveObject } from '../utils'
 // TODO: Set init config for state
 // TODO: Add state checks for invalid state modes
 // TODO: Add methods to add and remove state fields
-// TODO: Add methods to validate new state value 
+// TODO: Add methods to validate new state value
 
 const defaultState = {
     isIdle: true,
@@ -12,14 +12,17 @@ const defaultState = {
     isFR: false,
     isAutoplay: false,
     isMenu: false,
-    isTransition: false
+    isTransition: false,
+    settings: {
+        isSound: true,
+        isMusic: true,
+        isEffects: true
+    }
 }
 
 class StateManager {
 
-    constructor({
-        state
-    }) {
+    constructor(state) {
         new ReactiveObject({
             context: this,
             object: defaultsDeep(state, defaultState)

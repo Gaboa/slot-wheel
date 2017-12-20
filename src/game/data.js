@@ -10,8 +10,11 @@ import { ReactiveObject } from '../utils'
 
 const defaultData = {
     sid: null,
+    screen: null,
     balance: {
         currency: '$',
+        level: 1,
+        value: 1,
         coin: {
             sum: null,
             bet: null,
@@ -27,9 +30,7 @@ const defaultData = {
 
 class DataManager {
 
-    constructor({
-        data
-    }) {
+    constructor(data) {
         new ReactiveObject({
             context: this,
             object: defaultsDeep(data, defaultData)
