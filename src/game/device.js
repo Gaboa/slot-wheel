@@ -1,9 +1,8 @@
 import defaultsDeep from 'lodash.defaultsdeep'
-import { Subject } from 'rxjs'
+import { BehaviorSubject } from 'rxjs'
 
 // TODO: Add method for entering fullscreen on iOS
-// TODO: Add orientation handlers
-// TODO: Add methods to handle tab visibility and tab leaving
+// TODO: Add scale mode for HD desktop version for more fullscreen variant
 
 const defaultConfig = {
     fullhd: {
@@ -17,7 +16,7 @@ const defaultConfig = {
     mobile: 'hd',
     desktop: 'fullhd',
     mode: 'aspect', // We have two modes: aspect and fullscreen
-    id: '',
+    view: null,
     renderer: null
 }
 
@@ -25,11 +24,13 @@ class DeviceManager {
     
     constructor(config) {
         this.config = defaultsDeep(config, defaultConfig)
-        this.view = document.querySelector(`${this.config.id} canvas`)
 
+        this.enableStreams()
         this.setGlobalParams()
         this.setScaleMode()
-        this.enableStreams()
+        this.setOrientation()
+        this.setTabLeave()
+        this.setTabVisible()
     }
 
     setGlobalParams() {
@@ -46,24 +47,59 @@ class DeviceManager {
             window.GAME_RES = this.config.desktop
         }
     }
-
+    
     setScaleMode() {
         if (this.config.mode === 'fullscreen') {
             this.setFullscreenMode()
             window.addEventListener('resize', this.setFullscreenMode.bind(this))
         }
     }
-
+    
     setFullscreenMode() {
-        this.config.renderer.resize(window.innerWidth, window.innerHeight)        
+        if (!this.config.renderer) return null
+        this.config.renderer.resize(window.innerWidth, window.innerHeight)
+        window.GAME_WIDTH  = window.innerWidth
+        window.GAME_HEIGHT = window.innerHeight
+        this.$.next({ from: 'DEVICE', type: 'RESIZE', width: window.GAME_WIDTH, height: window.GAME_HEIGHT })
+    }
+
+    setOrientation() {
+        this.$.next({ from: 'DEVICE', type: 'ORIENTATION',  value: screen.orientation.type.split('-')[0] })
+        window.addEventListener('orientationchange', e => {
+            this.$.next({ from: 'DEVICE', type: 'ORIENTATION',  value: screen.orientation.type.split('-')[0] })
+        })
+    }
+    
+    setTabLeave() {
+        window.addEventListener('beforeunload', e => {
+            this.$.next({ from: 'DEVICE', type: 'LEAVE' })
+        })
+    }
+
+    setTabVisible() {
+        let hidden, visibilityChange
+        if (typeof document.hidden !== 'undefined') {
+            hidden = 'hidden'
+            visibilityChange = 'visibilitychange'
+        } else if (typeof document.msHidden !== 'undefined') {
+            hidden = 'msHidden'
+            visibilityChange = 'msvisibilitychange'
+        } else if (typeof document.webkitHidden !== 'undefined') {
+            hidden = 'webkitHidden'
+            visibilityChange = 'webkitvisibilitychange'
+        }
+
+        document.addEventListener(visibilityChange, e => {
+            this.$.next({ from: 'DEVICE', type: 'VISIBLE', value: !document[hidden] })
+        })
     }
 
     enableStreams() {
-        this.$ = new Subject()
+        this.$ = new BehaviorSubject()
     }
 
     disableStreams() {
-
+        this.$.complete()
     }
 
     get isMobile() {
@@ -76,12 +112,12 @@ class DeviceManager {
 
     enterFullscreen() {
         if (this.isIOS) return null
-        if (this.view.requestFullScreen)
-            this.view.requestFullScreen()
-        else if (this.view.mozRequestFullScreen)
-            this.view.mozRequestFullScreen()
-        else if (this.view.webkitRequestFullScreen)
-            this.view.webkitRequestFullScreen()
+        if (this.config.view.requestFullScreen)
+            this.config.view.requestFullScreen()
+        else if (this.config.view.mozRequestFullScreen)
+            this.config.view.mozRequestFullScreen()
+        else if (this.config.view.webkitRequestFullScreen)
+            this.config.view.webkitRequestFullScreen()
         this.$.next({ from: 'DEVICE', mode: 'fullscreen', state: 'start' })
     }
     
