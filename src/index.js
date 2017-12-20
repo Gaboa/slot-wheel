@@ -20,6 +20,8 @@ const game = new Game({
     }
 })
 
+// game.level = new Preload
+
 game.loader.baseUrl = 'src/'
 game.loader
     .add({ url: 'img/elements.json' })
@@ -75,6 +77,7 @@ game.loader
             .pluck('Screen')
             .subscribe(s => game.data.screen = s)
 
+        
         game.data.screen$
             .filter(e => Array.isArray(e))
             .map(s => s.map(r => r.map(el => { return { type: 'static', el } })))
@@ -90,20 +93,13 @@ game.loader
             .subscribe(s => scr.setEndScreen(s))
 
         // Sound setings state
+        // To change isSound to false you need to do isMusic = false, isEffects = false
         game.state.settings.isEffects$
             .combineLatest(game.state.settings.isMusic$)
             .subscribe(data => {
                 if (data.every(e => e === false)) game.state.settings.isSound = false
                 else game.state.settings.isSound = true
             })
-            
-        // game.state.settings.isMusic$
-        //     .combineLatest(game.state.settings.isEffects$)
-        //     .subscribe(data => {
-        //         if (!data[0] && !data[1]) game.state.settings.isSound = false
-        //         else game.state.settings.isSound = true
-        //     })
-            
 
         window.scr = scr
         window.game = game
