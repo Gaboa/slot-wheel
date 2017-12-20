@@ -37,7 +37,7 @@ class ReactiveObject {
         for (const prop in object) {
             if (object.hasOwnProperty(prop)) {
                 const value = object[prop]
-                if (typeof value === 'object' && value !== null)
+                if (typeof value === 'object' && value !== null && !Array.isArray(value))
                     new ReactiveObject({ context: context[prop] = {}, object: value })
                 else
                     new ReactiveProperty({ context, prop, value })
