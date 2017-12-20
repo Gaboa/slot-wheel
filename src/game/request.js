@@ -11,8 +11,8 @@ class RequestManager {
         mode,
         debug = { active: false }
     }) {
-        this.url = url
-        this.mode = mode
+        this.url   = url
+        this.mode  = mode
         this.debug = debug
 
         this.getSearchParams()
