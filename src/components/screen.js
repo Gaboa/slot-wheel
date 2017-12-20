@@ -374,7 +374,6 @@ class Screen extends Container {
         }
         if (this.isHorizontal) {
             data.forEach((row, i) => {
-                this.wheels[i].clearAnimations()
                 this.wheels[i].start.anims = row
                 this.wheels[i].playStartAnimations()
             })
@@ -382,7 +381,6 @@ class Screen extends Container {
         if (this.isVertical) {
             data = this.transformScreenData(data)
             data.forEach((col, i) => {
-                this.wheels[i].clearAnimations()
                 this.wheels[i].start.anims = col
                 this.wheels[i].playStartAnimations()
             })
@@ -394,11 +392,11 @@ class Screen extends Container {
             return null
         }
         if (this.isHorizontal) {
-            data.forEach((row, i) => this.wheels[i].end.anims = row)
+            data.forEach((row, i) => this.wheels[i].setEndAnimations(row))
         }
         if (this.isVertical) {
             data = this.transformScreenData(data)
-            data.forEach((col, i) => this.wheels[i].end.anims = col)
+            data.forEach((col, i) => this.wheels[i].setEndAnimations(col))
         }
     }
     checkScreenData(data) {

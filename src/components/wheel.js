@@ -111,6 +111,7 @@ class Wheel extends Container {
             .filter(e => e.state === 'COMPLETE')
             .subscribe(e => {
                     this.isRolling = false
+                    this.isDataReceived = false
                     this.checkWheelEnd()
                 }))
     }
@@ -151,6 +152,10 @@ class Wheel extends Container {
         for (let i = 0; i < amount; i++)
             result.push(this.getRandomLoopAnim())
         return result
+    }
+    setEndAnimations(anims) {
+        this.end.anims = anims
+        this.isDataReceived = true
     }
 
     // Inner metrics
@@ -374,7 +379,8 @@ class Wheel extends Container {
     reset() {
         if (this.end.anims)
             this.start.anims = [...this.end.anims]
-        this.end.anims = null
+        if (!this.isDataReceived)
+            this.end.anims = null
         this.els.forEach((el, i) => el.index = i )
     }
 
