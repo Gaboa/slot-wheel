@@ -3,8 +3,8 @@ import { Container as PIXI_Container } from "pixi.js";
 class Container extends PIXI_Container {
     constructor({
         container,
-        x,
-        y,
+        x = 0,
+        y = 0,
         index
     }) {
         super()
@@ -18,11 +18,11 @@ class Container extends PIXI_Container {
 
         // Relative coords
         if (Math.abs(this.x) < 1 && window.GAME_WIDTH)
-            this.x = x * GAME_WIDTH
+            this.x = Math.round(x * GAME_WIDTH)
         else
             this.x = x
         if (Math.abs(this.y) < 1 && window.GAME_HEIGHT)
-            this.y = y * GAME_HEIGHT
+            this.y = Math.round(y * GAME_HEIGHT)
         else
             this.y = y
     }

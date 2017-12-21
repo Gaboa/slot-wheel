@@ -1,3 +1,5 @@
 export { Sprite } from './sprite'
+export { Graphics } from './graphics'
+export { Text } from './text'
 export { Container } from './container'
 export { ReactiveObject, ReactiveProperty } from './reactive'
