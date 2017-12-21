@@ -6,6 +6,7 @@ import { DeviceManager } from './device'
 import { RequestManager } from './request'
 import { StateManager } from './state'
 import { DataManager } from './data'
+import { ParserManager } from './parser'
 
 class Game extends Application {
 
@@ -40,22 +41,20 @@ class Game extends Application {
         this.StateManager   = state.Manager   || StateManager
         this.DataManager    = data.Manager    || DataManager
 
-        // Parser
         // Audio
 
         this.device = new DeviceManager(defaultsDeep({ view: this.view, renderer: this.renderer }, device))
         this.request = new RequestManager(defaultsDeep({}, request))
         this.state = new StateManager(defaultsDeep({}, state))
         this.data = new DataManager(defaultsDeep({}, data))
+        this.parser = new ParserManager(defaultsDeep({ game: this }, parser))
     }
 
     start(fps) {
         this.fps = fps || this.fps
         this.frameCount = this.frameCount || 0
 
-        this.ticker.start()
         TweenMax.resumeAll(true)
-
         this.animate(performance.now())
     }
 
