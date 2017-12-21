@@ -10,11 +10,24 @@ import { ReactiveObject } from '../utils'
 
 const defaultData = {
     sid: null,
+    lines: null,
     screen: null,
     balance: {
         currency: '$',
-        level: 1,
-        value: 1,
+        level: {
+            current: 1,
+            index: 0,
+            arr: null,
+            min: true,
+            max: false
+        },
+        value: {
+            current: 1,
+            index: 0,
+            arr: null,
+            min: true,
+            max: false
+        },
         coin: {
             sum: null,
             bet: null,
