@@ -1,7 +1,7 @@
 import './index.css'
 
 import { Game } from './game'
-import { Screen } from './components'
+import { Preload, Root } from './levels'
 
 const game = new Game({
     id: '#app',
@@ -20,101 +20,39 @@ const game = new Game({
     }
 })
 
-// game.level = new Preload
+window.game = game
 
-game.loader.baseUrl = 'src/'
-game.loader
-    .add({ url: 'img/elements.json' })
-    .load((loader, resources) =>  {
-
-        const scr = new Screen({
-            container: game.stage,
-            x: 0.5,
-            y: 0.5,
-            config: {
-                amount: 5,
-                dir: 'down',
-
-                loop: {
-                    amount: 20,
-                    time:   0.5
-                },
-
-                roll: {
-                    normal: 0.2,
-                    fast:   1.5
-                },
-
-                log: {
-                    screen: false,
-                    wheel: false,
-                    el: false
-                }
-            },
-            dt: 0.075
-        })
-
-        game.request.sendInit()
-
-        scr.$
-            .filter(e => e.from === 'SCREEN')
-            .filter(e => e.state === 'START')
-            .subscribe(e => game.request.sendRoll({
-                value: game.data.balance.value,
-                level: game.data.balance.level
-            }))
-
-        game.request.$
-            .filter(res => res.type === 'INIT')
-            .map(res => res.data)
-            .pluck('FirstScreen')
-            .take(1)
-            .subscribe(s => game.data.screen = s)
-
-        game.request.$
-            .filter(res => res.type === 'ROLL')
-            .map(res => res.data)
-            .pluck('Screen')
-            .subscribe(s => game.data.screen = s)
-
-        
-        game.data.screen$
-            .filter(e => Array.isArray(e))
-            .map(s => s.map(r => r.map(el => { return { type: 'static', el } })))
-            .take(1)
-            .do(e => console.log('I have init screen: ', e))
-            .subscribe(s => scr.setStartScreen(s))
-            
-        game.data.screen$
-            .filter(e => Array.isArray(e))
-            .map(s => s.map(r => r.map(el => { return { type: 'static', el } })))
-            .skip(1)
-            .do(e => console.log('I have roll screen: ', e))
-            .subscribe(s => scr.setEndScreen(s))
-
-        // Sound setings state
-        // To change isSound to false you need to do isMusic = false, isEffects = false
-        game.state.settings.isEffects$
-            .combineLatest(game.state.settings.isMusic$)
-            .subscribe(data => {
-                if (data.every(e => e === false)) game.state.settings.isSound = false
-                else game.state.settings.isSound = true
-            })
-
-        window.scr = scr
-        window.game = game
+game.level = new Preload({
+    game,
+    base: `src/img/${GAME_RES}`,
+    config: {
+        preload: [
+            { name: 'preload_bg',    url: 'preload/bg.jpg' },
+            { name: 'preload_bar',   url: 'preload/bar.png' },
+            { name: 'preload_light', url: 'preload/light.png' },
+            { url: 'preload/preload.json' }
+        ],
+        common: [
+            { url: 'elements.json' }
+        ]
     }
-)
+})
 
-window.endH = [
-    [{ type: 'static', el: '2' }, { type: 'static', el: '4' }, { type: 'static', el: '6' }, { type: 'static', el: '8' }, { type: 'static', el: '10' } ],
-    [{ type: 'static', el: '2' }, { type: 'static', el: '4' }, { type: 'static', el: '6' }, { type: 'static', el: '8' }, { type: 'static', el: '10' } ],
-    [{ type: 'static', el: '2' }, { type: 'static', el: '4' }, { type: 'static', el: '6' }, { type: 'static', el: '8' }, { type: 'static', el: '10' } ]
-]
-window.endV = [
-    [{ type: 'static', el: '1' }, { type: 'static', el: '2' }, { type: 'static', el: '3' }, { type: 'static', el: '4' }, { type: 'static', el: '5' }  ],
-    [{ type: 'static', el: '1' }, { type: 'static', el: '2' }, { type: 'static', el: '3' }, { type: 'static', el: '4' }, { type: 'static', el: '5' }  ],
-    [{ type: 'static', el: '1' }, { type: 'static', el: '2' }, { type: 'static', el: '3' }, { type: 'static', el: '4' }, { type: 'static', el: '5' }  ],
-    [{ type: 'static', el: '1' }, { type: 'static', el: '2' }, { type: 'static', el: '3' }, { type: 'static', el: '4' }, { type: 'static', el: '5' }  ],
-    [{ type: 'static', el: '1' }, { type: 'static', el: '2' }, { type: 'static', el: '3' }, { type: 'static', el: '4' }, { type: 'static', el: '5' }  ]
-]
+game.request.$
+    .filter(e => e.type === 'INIT')
+    .map(res => res.data)
+    .subscribe(res => game.parser.init(res))
+
+game.request.$
+    .filter(e => e.type === 'ROLL')
+    .map(res => res.data)
+    .subscribe(res => game.parser.roll(res))
+
+game.level.$
+    .filter(e => e === 'REMOVED')
+    .take(1)
+    .subscribe(e => {
+        game.level = new Root({
+            game
+        })
+    })
