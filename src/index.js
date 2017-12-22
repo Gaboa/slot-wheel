@@ -33,7 +33,8 @@ game.level = new Preload({
             { url: 'preload/preload.json' }
         ],
         common: [
-            { url: 'elements.json' }
+            { url: 'elements.json' },
+            { url: 'footer/buttons.json' }
         ]
     }
 })
