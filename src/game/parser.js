@@ -19,11 +19,11 @@ class ParserManager {
 
         this.data.balance.currency = this.currency(res.Balance.Currency)
 
-        this.data.balance.level.arr = res.Balance.CoinValue
-        this.data.balance.level.current = res.Balance.CoinValue[0]
+        this.data.balance.level.arr = res.Balance.BetLevel
+        this.data.balance.level.current = res.Balance.BetLevel[0]
         this.data.balance.level.index = 0
-        this.data.balance.value.arr = res.Balance.BetLevel
-        this.data.balance.value.current = res.Balance.BetLevel[0]
+        this.data.balance.value.arr = res.Balance.CoinValue
+        this.data.balance.value.current = res.Balance.CoinValue[0]
         this.data.balance.value.index = 0
 
         this.data.balance.coin.sum = res.Balance.ScoreCoins

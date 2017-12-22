@@ -42,7 +42,6 @@ class Game extends Application {
         this.DataManager    = data.Manager    || DataManager
 
         // Audio
-
         this.device = new DeviceManager(defaultsDeep({ view: this.view, renderer: this.renderer }, device))
         this.request = new RequestManager(defaultsDeep({}, request))
         this.state = new StateManager(defaultsDeep({}, state))
@@ -54,7 +53,8 @@ class Game extends Application {
         this.fps = fps || this.fps
         this.frameCount = this.frameCount || 0
 
-        TweenMax.resumeAll(true)
+        TweenMax.ticker.fps(fps)
+        TweenMax.ticker.wake()
         this.animate(performance.now())
     }
 
@@ -68,7 +68,7 @@ class Game extends Application {
 
     stop() {
         this.ticker.stop()
-        TweenMax.pauseAll(true)
+        TweenMax.ticker.sleep()
         cancelAnimationFrame(this.rafID)
     }
 

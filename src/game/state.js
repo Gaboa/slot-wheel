@@ -14,6 +14,8 @@ const defaultState = {
     isMenu: false,
     isTransition: false,
     settings: {
+        isFullscreen: false,
+        isFast: false,
         isSound: true,
         isMusic: true,
         isEffects: true
