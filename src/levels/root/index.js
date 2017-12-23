@@ -1,29 +1,226 @@
+import defaultsDeep from 'lodash.defaultsdeep'
 import { Subject, Observable } from "rxjs"
-import { Container, Sprite } from "../../utils"
+import { Container, Sprite, Button } from "../../utils"
 import { Screen, Footer } from '../../components'
 import { Darkness } from "../preload/helpers"
+import { BalanceText } from '../../utils/balance-text';
 
 // TODO: Add level and value to subs
 // TODO: Create balance bindings for different modes
+// TODO: Add Spine helper class
+// TODO: Add Lines to Machine
+// TODO: Add Numbers to Machine
+// TODO: Add Win to Machine
 
-class Root extends Container {
+const defaultConfig = {
+    level: {
+        x: -0.128,
+        y: 0,
+        delta: 0.075
+    },
+    value: {
+        x: 0.132,
+        y: 0,
+        delta: 0.075
+    },
+    auto: {
+        x: -0.065,
+        y: -0.005
+    },
+    spin: {
+        x: 0,
+        y: -0.002
+    },
+    stop: {
+        x: 0,
+        y: -0.005,
+        visible: false
+    },
+    max: {
+        x: 0.065,
+        y: -0.005
+    },
+}
+
+class Buttons extends Container {
 
     constructor({
-        game,
+        container,
+        x,
+        y,
         config
     }) {
-        super({ container: game.stage, x: 0.5, y: 0.5 })
+        super({ container, x, y })
         
-        this.game = game
-        this.data = game.data
-        this.state = game.state
+        this.config = defaultsDeep(config, defaultConfig)
 
-        this.bg = new Sprite({
+        this.items = []
+        this.createBalanceControl('level')
+        this.createBalanceControl('value')
+
+        this.createButton('auto')
+        this.createButton('max')
+        this.createButton('stop')
+        this.createButton('spin')
+
+    }
+
+    createButton(name) {
+        this[name] = new Button(Object.assign({
             container: this,
-            texture: 'preload_bg',
-            name: 'bg'
+            texture: name
+        }, this.config[name]))
+        this.items.push(this[name])
+    }
+
+    createBalanceControl(name) {
+        this[name] = {}
+        this[name].plus = new Button({
+            container: this,
+            texture: 'plus',
+            x: this.config[name].x + this.config[name].delta * 0.5,
+            y: this.config[name].y
+        })
+        this[name].minus = new Button({
+            container: this,
+            texture: 'minus',
+            x: this.config[name].x - this.config[name].delta * 0.5,
+            y: this.config[name].y
+        })
+        this.items.push(this[name].minus, this[name].plus)
+    }
+
+    enableAll() {
+        this.items.forEach(button => button.enable())
+    }
+
+    disableAll() {
+        this.items.forEach(button => button.disable())        
+    }
+
+    disableBalance() {
+        this.max.disable()
+        this.level.minus.disable()
+        this.level.plus.disable()
+        this.value.minus.disable()
+        this.value.plus.disable()
+    }
+    
+    enableBalance() {
+        this.max.enable()
+        this.level.minus.enable()
+        this.level.plus.enable()
+        this.value.minus.enable()
+        this.value.plus.enable()
+    }
+    
+}
+
+const defaultBalConfig = {
+    style: {},
+    bet: {
+        x: -0.255,
+        y: 0,
+        text: 0,
+        fixed: 0
+    },
+    line: {
+        x: -0.199,
+        y: 0,
+        text: 0,
+        fixed: 0
+    },
+    level: {
+        x: -0.127,
+        y: 0,
+        text: 0,
+        fixed: 0
+    },
+    value: {
+        x: 0.134,
+        y: 0,
+        text: 0,
+        fixed: 2
+    },
+    sum: {
+        x: 0.235,
+        y: 0,
+        text: 0,
+        fixed: 0
+    }
+}
+
+class Balance extends Container {
+
+    constructor({
+        container,
+        x,
+        y,
+        config
+    }) {
+        super({ container, x, y })
+
+        this.config = defaultsDeep(config, defaultBalConfig)
+
+        this.items = []
+        for (const prop in this.config) {
+            if (this.config.hasOwnProperty(prop) && prop !== 'style') {
+                const field = this.config[prop]
+                this[prop] = new BalanceText(Object.assign({
+                    container: this,
+                    style: this.config.style
+                }, field))
+                this.items.push(this[prop])
+            }
+        }
+
+    }
+
+}
+
+class Panel extends Container {
+
+    constructor({
+        container,
+        x,
+        y
+    }) {
+        super({ container, x, y })
+
+        this.panel = new PIXI.spine.Spine(PIXI.utils.resources.panel.spineData)
+        this.panel.state.setAnimation(0, 'idle', true)
+        this.addChild(this.panel)
+
+        this.labels = new Sprite({
+            container: this,
+            texture: 'panel_root'
         })
 
+        this.buttons = new Buttons({ container: this, y: 0.06 })
+        this.balance = new Balance({ container: this, y: 0.061 })
+    }
+
+}
+
+class Machine extends Container {
+
+    constructor({
+        container,
+        x,
+        y
+    }) {
+        super({ container, x, y })
+
+        // Machine BG
+        this.bg = new PIXI.extras.TilingSprite(
+            PIXI.utils.TextureCache['tile'],
+            256 * 5,
+            240 * 3
+        )
+        this.bg.anchor.set(0.5)
+        this.addChild(this.bg)
+
+        // Screen with elements
         this.screen = new Screen({
             container: this,
             config: {
@@ -50,6 +247,48 @@ class Root extends Container {
         })
         this.screen.addMask()
 
+        // Machine frame
+        this.frame = new Sprite({
+            container: this,
+            texture: 'frame',
+            name: 'frame'
+        })
+
+        // Machine Logo
+        this.logo = new PIXI.spine.Spine(PIXI.utils.resources.logo.spineData)
+        this.logo.state.setAnimation(0, 'idle', true)
+        this.logo.y = -0.343 * GAME_HEIGHT
+        this.addChild(this.logo)
+
+        this.panel = new Panel({ container: this, y: 0.35 })
+
+    }
+
+}
+
+class Root extends Container {
+
+    constructor({
+        game,
+        config
+    }) {
+        super({ container: game.stage, x: 0.5, y: 0.5 })
+        
+        this.game = game
+        this.data = game.data
+        this.state = game.state
+
+        this.bg = new Sprite({
+            container: this,
+            texture: 'preload_bg',
+            name: 'bg'
+        })
+
+        this.machine = new Machine({
+            container: this,
+            y: -0.05
+        })
+
         this.footer = new Footer({
             container: this
         })
@@ -70,7 +309,7 @@ class Root extends Container {
         this.subs = []
         this.$ = new Subject()
 
-        this.screen.$
+        this.machine.screen.$
             .filter(e => e.from === 'SCREEN')
             .filter(e => e.state === 'START')
             .subscribe(e => this.game.request.sendRoll({
@@ -78,12 +317,12 @@ class Root extends Container {
                 level: this.data.balance.level.current
             }))
 
-        this.screen.$
+        this.machine.screen.$
             .filter(e => e.from === 'SCREEN')
             .filter(e => e.state === 'START')
             .subscribe(e => this.balanceCtrl.start())
 
-        this.screen.$
+        this.machine.screen.$
             .filter(e => e.from === 'SCREEN')
             .filter(e => e.state === 'END')
             .subscribe(e => this.balanceCtrl.end())
@@ -91,12 +330,12 @@ class Root extends Container {
         this.data.screen$
             .filter(e => Array.isArray(e))
             .take(1)
-            .subscribe(s => this.screen.setStartScreen(s))
+            .subscribe(s => this.machine.screen.setStartScreen(s))
 
         this.data.screen$
             .filter(e => Array.isArray(e))
             .skip(1)
-            .subscribe(s => this.screen.setEndScreen(s))
+            .subscribe(s => this.machine.screen.setEndScreen(s))
 
         // Footer
         this.game.ticker.add(this.footer.time.update.bind(this.footer.time))
@@ -144,6 +383,67 @@ class Root extends Container {
             .subscribe(e => this.footer.balance.top.left.set(e))
         this.data.balance.coin.bet$
             .subscribe(e => this.footer.balance.top.right.set(e))
+
+        // Panel Balance bindings
+        this.data.balance.level.current$
+            .subscribe(e => this.machine.panel.balance.level.set(e))
+        this.data.balance.value.current$
+            .subscribe(e => this.machine.panel.balance.value.set(e / 100))
+        this.data.balance.coin.bet$
+            .subscribe(e => this.machine.panel.balance.bet.set(e))
+        this.data.balance.coin.sum$
+            .subscribe(e => this.machine.panel.balance.sum.set(e))
+        this.data.lines$
+            .subscribe(e => this.machine.panel.balance.line.set(e.length))
+
+        // Panel buttons bindings
+        this.machine.panel.buttons.level.minus.down$
+            .subscribe(e => this.balanceCtrl.level({ down: true }))
+        this.machine.panel.buttons.level.plus.down$
+            .subscribe(e => this.balanceCtrl.level({ up: true }))
+        this.machine.panel.buttons.max.down$
+            .subscribe(e => this.balanceCtrl.level({ max: true }))
+        this.machine.panel.buttons.value.minus.down$
+            .subscribe(e => this.balanceCtrl.value({ down: true }))
+        this.machine.panel.buttons.value.plus.down$
+            .subscribe(e => this.balanceCtrl.value({ up: true }))
+
+        // Balance buttons min/max bindings
+        this.data.balance.value.max$
+            .subscribe(e => {
+                if (e) this.machine.panel.buttons.value.plus.disable()
+                else this.machine.panel.buttons.value.plus.enable()
+            })
+        this.data.balance.value.min$
+            .subscribe(e => {
+                if (e) this.machine.panel.buttons.value.minus.disable()
+                else this.machine.panel.buttons.value.minus.enable()
+            })
+        this.data.balance.level.max$
+            .subscribe(e => {
+                if (e) {
+                    this.machine.panel.buttons.level.plus.disable()
+                    this.machine.panel.buttons.max.disable()
+                }
+                else {
+                    this.machine.panel.buttons.level.plus.enable()
+                    this.machine.panel.buttons.max.enable()
+                }
+            })
+        this.data.balance.level.min$
+            .subscribe(e => {
+                if (e) this.machine.panel.buttons.level.minus.disable()
+                else this.machine.panel.buttons.level.minus.enable()
+            })
+
+        // Spin button binding
+        this.machine.panel.buttons.spin.down$
+            .subscribe(e => this.machine.screen.roll())
+
+        // Fast spin settings binding
+        this.state.settings.isFast$
+            .subscribe(e => this.machine.screen.setRollSpeed(e ? this.machine.screen.config.roll.fast : this.machine.screen.config.roll.normal ))
+        
     }
 
     enableBalanceStreams() {
