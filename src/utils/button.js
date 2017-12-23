@@ -90,12 +90,14 @@ class Button extends Sprite {
 
     disable() {
         this.enabled = false
-        this.alpha = 0.3
+        if (this.textureDisabled) this.texture = this.textureDisabled
+        else this.alpha = 0.3
     }
     
     enable() {
         this.enabled = true
-        this.alpha = 1
+        if (this.textureDisabled) this.texture = this.textureNormal
+        else this.alpha = 1
     }
 }
 
