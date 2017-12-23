@@ -1,4 +1,6 @@
 import './index.css'
+import * as PIXI from 'pixi.js'
+import 'pixi-spine'
 
 import { Game } from './game'
 import { Preload, Root } from './levels'
@@ -34,26 +36,27 @@ game.level = new Preload({
         ],
         common: [
             { url: 'elements.json' },
-            { url: 'footer/buttons.json' }
+            { url: 'footer/buttons.json' },
+            { url: 'machine/buttons.json' },
+            { name: 'tile', url: 'machine/tile.png' },
+            { name: 'frame', url: 'machine/frame.png' },
+            { name: 'panel_root', url: 'machine/panel_root.png' },
+            { name: 'panel_fs', url: 'machine/panel_fs.png' },
+            { name: 'logo', url: 'machine/logo.json' },
+            { name: 'panel', url: 'machine/panel.json' },
+            { name: 'spin', url: 'machine/button.json' },
         ]
     }
 })
 
 game.request.$
     .filter(e => e.type === 'INIT')
-    .map(res => res.data)
-    .subscribe(res => game.parser.init(res))
+    .subscribe(res => game.parser.init(res.data))
 
 game.request.$
     .filter(e => e.type === 'ROLL')
-    .map(res => res.data)
-    .subscribe(res => game.parser.roll(res))
+    .subscribe(res => game.parser.roll(res.data))
 
 game.level.$
-    .filter(e => e === 'REMOVED')
-    .take(1)
-    .subscribe(e => {
-        game.level = new Root({
-            game
-        })
-    })
+    .filter(e => e === 'REMOVED').take(1)
+    .subscribe(e => game.level = new Root({ game }))
