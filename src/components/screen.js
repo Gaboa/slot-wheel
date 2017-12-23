@@ -19,8 +19,8 @@ const defaultConfig = {
         Element: SpriteElement,
         amount:  5,
         aside:   1,
-        width:   256 * 0.9,
-        height:  240 * 0.9
+        width:   256,
+        height:  240
     },
 
     start: {
@@ -339,13 +339,13 @@ class Screen extends Container {
     // Roll methods
     roll() {
         if (this.isRolling) return null
-        this.setRollSpeed(this.config.roll.normal)
+        // this.setRollSpeed(this.config.roll.normal)
         this.tw = TweenMax.staggerTo(this.wheels, 0.1, { alpha: 1, onStart() { this.target.roll() } }, this.config.dt)
     }
     fast() {
         if (this.isRolling) return null
         this.roll()
-        this.setRollSpeed(this.config.roll.fast)
+        // this.setRollSpeed(this.config.roll.fast)
     }
     setRollSpeed(speed) {
         this.wheels.forEach(wheel => wheel.speed = speed)
