@@ -275,6 +275,7 @@ class Preload extends Container {
     }
 
     removeLevel() {
+        PIXI.utils.resources = this.game.loader.resources
         this.$.next('REMOVED')
         this.disableStreams()
         this.removeChildren()
