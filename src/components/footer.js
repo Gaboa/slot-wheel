@@ -9,12 +9,12 @@ const defaultConfig = {
     desktop: {
         bg: {
             top: {
-                height: 0.037,
+                height: 0.034,
                 color: 0x000000,
                 alpha: 0.4
             },
             bottom: {
-                height: 0.037,
+                height: 0.034,
                 color: 0x000000,
                 alpha: 0.6
             }
