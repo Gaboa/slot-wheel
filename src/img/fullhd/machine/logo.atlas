@@ -1,0 +1,97 @@
+
+logo.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+AnimalSSteaM
+  rotate: false
+  xy: 2, 154
+  size: 335, 100
+  orig: 335, 100
+  offset: 0, 0
+  index: -1
+AnimalSSteaM1
+  rotate: false
+  xy: 658, 154
+  size: 276, 100
+  orig: 276, 100
+  offset: 0, 0
+  index: -1
+Ellipse 3
+  rotate: false
+  xy: 2, 28
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Layer 2395 copy 2
+  rotate: true
+  xy: 732, 8
+  size: 69, 135
+  orig: 69, 135
+  offset: 0, 0
+  index: -1
+Layer 2395 copy 3
+  rotate: false
+  xy: 936, 162
+  size: 46, 92
+  orig: 46, 92
+  offset: 0, 0
+  index: -1
+Layer 2396
+  rotate: false
+  xy: 2, 46
+  size: 317, 106
+  orig: 317, 106
+  offset: 0, 0
+  index: -1
+Layer 2396 copy
+  rotate: false
+  xy: 339, 148
+  size: 317, 106
+  orig: 317, 106
+  offset: 0, 0
+  index: -1
+Layer 2398
+  rotate: false
+  xy: 635, 2
+  size: 95, 75
+  orig: 95, 75
+  offset: 0, 0
+  index: -1
+Layer 2399 copy 10
+  rotate: false
+  xy: 658, 79
+  size: 209, 73
+  orig: 209, 73
+  offset: 0, 0
+  index: -1
+Layer 2399 copy 11
+  rotate: false
+  xy: 321, 56
+  size: 209, 90
+  orig: 209, 90
+  offset: 0, 0
+  index: -1
+Layer 2399 copy 12
+  rotate: true
+  xy: 869, 14
+  size: 138, 45
+  orig: 138, 45
+  offset: 0, 0
+  index: -1
+Layer 295 copy 2
+  rotate: false
+  xy: 916, 85
+  size: 66, 67
+  orig: 66, 67
+  offset: 0, 0
+  index: -1
+Smoke+1
+  rotate: true
+  xy: 532, 46
+  size: 100, 101
+  orig: 100, 101
+  offset: 0, 0
+  index: -1
