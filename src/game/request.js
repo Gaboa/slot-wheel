@@ -48,7 +48,7 @@ class RequestManager {
                 this.$.next({ type, data: response.data })
             })
             .catch(error => {
-                this.$.next({ type, data: error.data })
+                this.$.next({ type, data: error.data || error })
             })
     }
 
