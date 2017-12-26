@@ -1,9 +1,8 @@
 import defaultsDeep from 'lodash.defaultsdeep'
 import { Subject, Observable } from "rxjs"
-import { Container, Sprite, Button } from "../../utils"
+import { Container, Sprite, Button, BalanceText } from "../../utils"
 import { Screen, Footer } from '../../components'
 import { Darkness } from "../preload/helpers"
-import { BalanceText } from '../../utils/balance-text';
 
 // TODO: Add level and value to subs
 // TODO: Create balance bindings for different modes
@@ -298,17 +297,20 @@ class Root extends Container {
             autoHide: true
         })
 
-        this.balanceCtrl = new BalanceController(game)
-
+        setTimeout(() => this.enable(), 0)
+    }
+    
+    enable() {
+        this.balance = new BalanceController({ game: this.game })
+        this.root = new RootController({ game: this.game })
         this.enableStreams()
-        this.enableBalanceStreams()
-
     }
 
     enableStreams() {
         this.subs = []
         this.$ = new Subject()
 
+        // Roll Controller
         this.machine.screen.$
             .filter(e => e.from === 'SCREEN')
             .filter(e => e.state === 'START')
@@ -320,12 +322,12 @@ class Root extends Container {
         this.machine.screen.$
             .filter(e => e.from === 'SCREEN')
             .filter(e => e.state === 'START')
-            .subscribe(e => this.balanceCtrl.start())
+            .subscribe(e => this.balance.start())
 
         this.machine.screen.$
             .filter(e => e.from === 'SCREEN')
             .filter(e => e.state === 'END')
-            .subscribe(e => this.balanceCtrl.end())
+            .subscribe(e => this.balance.end())
 
         this.data.screen$
             .filter(e => Array.isArray(e))
@@ -337,52 +339,185 @@ class Root extends Container {
             .skip(1)
             .subscribe(s => this.machine.screen.setEndScreen(s))
 
-        // Footer
+    }
+
+    disableStreams() {
+        this.subs.forEach(sub => sub.unsubscribe())
+        this.$.complete()
+    }
+
+}
+
+class FRController {
+
+    enable() {
+
+    }
+
+    disable() {
+
+    }
+
+}
+
+class FSController {
+
+    enable() {
+
+    }
+
+    disable() {
+
+    }
+
+}
+
+const defaultRootConfig = {}
+
+class RootController {
+
+    constructor({
+        game,
+        config
+    }) {
+        this.game = game
+        this.level = game.level
+        this.data = game.data
+        this.state = game.state
+        this.balance = this.data.balance
+        this.footer = this.level.footer
+        this.machine = this.level.machine
+        this.config = defaultsDeep(config, defaultRootConfig)
+
+        this.enable()
+    }
+
+    enable() {
+        this.enableButtons()
+        this.enableBalance()
+    }
+
+    disable() {
+
+    }
+
+    enableButtons() {
+        if (GAME_DEVICE === 'desktop')
+            this.enableDesktopButtons()
+        if (GAME_DEVICE === 'mobile')
+            this.enableMobileButtons()
+    }
+
+    enableMobileButtons() {
+        // Settings
+        // Auto
+        // Spin
+        // Bet
+        // Sound
+        // Home
+        // Time
         this.game.ticker.add(this.footer.time.update.bind(this.footer.time))
+    }
 
-        // Fullscreen button
-        this.footer.buttons.fullscreen.$
+    enableDesktopButtons() {
+        // Spin
+        this.machine.panel.buttons.spin.down$
+            .subscribe(e => this.machine.screen.roll())
+        
+        // Auto
+        this.machine.panel.buttons.max.down$
+            .subscribe(e => e)
+
+        // Max
+        this.machine.panel.buttons.max.down$
+            .subscribe(e => this.balance.value.index = this.balance.value.arr.length - 1)
+
+        // Level - Plus / Minus
+        this.machine.panel.buttons.level.minus.down$
+            .subscribe(e => this.balance.level.index--)
+        this.machine.panel.buttons.level.plus.down$
+            .subscribe(e => this.balance.level.index++)
+
+        // Value - Plus / Minus
+        this.machine.panel.buttons.value.minus.down$
+            .subscribe(e => this.balance.value.index--)
+        this.machine.panel.buttons.value.plus.down$
+            .subscribe(e => this.balance.value.index++)
+        
+        // Min / Max stoppers for balance buttons
+        this.enableBalanceStoppers()
+        // Footer
+        this.enableFooterButtons()
+    }
+
+    enableFooterButtons() {
+        // Home
+        this.footer.buttons.home.$
             .filter(e => e.type === 'DOWN')
-            .subscribe(e => this.state.settings.isFullscreen = !this.state.settings.isFullscreen)
+            .subscribe(e => e)
 
-        this.state.settings.isFullscreen$
-            .subscribe(e => {
-                this.footer.buttons.fullscreen.to(e)
-                e ? this.game.device.enterFullscreen() : this.game.device.cancelFullscreen()
-            })
+        // Settings
+        this.footer.buttons.settings.$
+            .filter(e => e.type === 'DOWN')
+            .subscribe(e => e)
 
-        // Sound button
+        // Info
+        this.footer.buttons.info.$
+            .filter(e => e.type === 'DOWN')
+            .subscribe(e => e)
+
+        // Sound
         this.footer.buttons.sound.$
             .filter(e => e.type === 'DOWN')
             .subscribe(e => this.state.settings.isSound = !this.state.settings.isSound)
-
         this.state.settings.isSound$
             .subscribe(e => this.footer.buttons.sound.to(e))
 
-        // Sound button
+        // Fast
+        this.state.settings.isFast$
+            .subscribe(e => {
+                this.footer.buttons.fast.to(e)
+                this.machine.screen.setRollSpeed(this.machine.screen.config.roll[e ? 'fast' : 'normal'])
+            })
         this.footer.buttons.fast.$
             .filter(e => e.type === 'DOWN')
             .subscribe(e => this.state.settings.isFast = !this.state.settings.isFast)
 
-        this.state.settings.isFast$
-            .subscribe(e => this.footer.buttons.fast.to(e))
+        // Fullscreen
+        this.state.settings.isFullscreen$
+            .subscribe(e => {
+                this.footer.buttons.fullscreen.to(e)
+                this.game.device[`${e ? 'enter' : 'cancel'}Fullscreen`]()
+            })
+        this.footer.buttons.fullscreen.$
+            .filter(e => e.type === 'DOWN')
+            .subscribe(e => this.state.settings.isFullscreen = !this.state.settings.isFullscreen)
+        
+        // Time
+        this.game.ticker.add(this.footer.time.update.bind(this.footer.time))
+    }
 
+    enableBalance() {
+        if (GAME_DEVICE === 'desktop')
+            this.enableDesktopBalance()
+        if (GAME_DEVICE === 'mobile')
+            this.enableMobileBalance()
+    }
+
+    enableMobileBalance() {
+    
+    }
+
+    enableDesktopBalance() {
         // Footer Balance
         this.data.balance.currency$
             .subscribe(e => this.footer.balance.setCurrency(e))
-
-        // Root bindings
         this.data.balance.cash.sum$
             .subscribe(e => this.footer.balance.bottom.left.set(e))
         this.data.balance.cash.bet$
             .subscribe(e => this.footer.balance.bottom.center.set(e))
         this.data.balance.cash.win$
             .subscribe(e => this.footer.balance.bottom.right.set(e))
-
-        this.data.balance.coin.sum$
-            .subscribe(e => this.footer.balance.top.left.set(e))
-        this.data.balance.coin.bet$
-            .subscribe(e => this.footer.balance.top.right.set(e))
 
         // Panel Balance bindings
         this.data.balance.level.current$
@@ -395,169 +530,195 @@ class Root extends Container {
             .subscribe(e => this.machine.panel.balance.sum.set(e))
         this.data.lines$
             .subscribe(e => this.machine.panel.balance.line.set(e.length))
+    }
 
-        // Panel buttons bindings
-        this.machine.panel.buttons.level.minus.down$
-            .subscribe(e => this.balanceCtrl.level({ down: true }))
-        this.machine.panel.buttons.level.plus.down$
-            .subscribe(e => this.balanceCtrl.level({ up: true }))
-        this.machine.panel.buttons.max.down$
-            .subscribe(e => this.balanceCtrl.level({ max: true }))
-        this.machine.panel.buttons.value.minus.down$
-            .subscribe(e => this.balanceCtrl.value({ down: true }))
-        this.machine.panel.buttons.value.plus.down$
-            .subscribe(e => this.balanceCtrl.value({ up: true }))
-
+    enableBalanceStoppers() {
         // Balance buttons min/max bindings
-        this.data.balance.value.max$
+        this.balance.value.max$
+            .subscribe(e => this.machine.panel.buttons.value.plus[e ? 'disable' : 'enable']())
+        this.balance.value.min$
+            .subscribe(e => this.machine.panel.buttons.value.minus[e ? 'disable' : 'enable']())
+        this.balance.level.max$
             .subscribe(e => {
-                if (e) this.machine.panel.buttons.value.plus.disable()
-                else this.machine.panel.buttons.value.plus.enable()
+                this.machine.panel.buttons.level.plus[e ? 'disable' : 'enable']()
+                this.machine.panel.buttons.max[e ? 'disable' : 'enable']()
             })
-        this.data.balance.value.min$
-            .subscribe(e => {
-                if (e) this.machine.panel.buttons.value.minus.disable()
-                else this.machine.panel.buttons.value.minus.enable()
-            })
-        this.data.balance.level.max$
-            .subscribe(e => {
-                if (e) {
-                    this.machine.panel.buttons.level.plus.disable()
-                    this.machine.panel.buttons.max.disable()
-                }
-                else {
-                    this.machine.panel.buttons.level.plus.enable()
-                    this.machine.panel.buttons.max.enable()
-                }
-            })
-        this.data.balance.level.min$
-            .subscribe(e => {
-                if (e) this.machine.panel.buttons.level.minus.disable()
-                else this.machine.panel.buttons.level.minus.enable()
-            })
-
-        // Spin button binding
-        this.machine.panel.buttons.spin.down$
-            .subscribe(e => this.machine.screen.roll())
-
-        // Fast spin settings binding
-        this.state.settings.isFast$
-            .subscribe(e => this.machine.screen.setRollSpeed(e ? this.machine.screen.config.roll.fast : this.machine.screen.config.roll.normal ))
-        
+        this.balance.level.min$
+            .subscribe(e => this.machine.panel.buttons.level.minus[e ? 'disable' : 'enable']())
     }
 
-    enableBalanceStreams() {
-        // Value
-        this.data.balance.value.index$
-            .subscribe(i => this.data.balance.value.current = this.data.balance.value.arr[i])
 
-        // Up and Bottom stoppers
-        this.data.balance.value.index$
-            .filter(i => i > this.data.balance.value.arr.length - 1)
-            .subscribe(i => this.data.balance.value.index = this.data.balance.value.arr.length - 1)
+}
 
-        this.data.balance.value.index$
-            .filter(i => i < 0)
-            .subscribe(i => this.data.balance.value.index = 0)
+class BonusController {
 
-        // Min + Max logic
-        this.data.balance.value.index$
-            .subscribe(i => {
-                if (i === this.data.balance.value.arr.length - 1) {
-                    this.data.balance.value.max = true
-                    this.data.balance.value.min = false
-                } else if (i === 0) {
-                    this.data.balance.value.max = false
-                    this.data.balance.value.min = true
-                } else {
-                    this.data.balance.value.max = false
-                    this.data.balance.value.min = false
-                }
-            })
+}
 
-        // Level
-        this.data.balance.level.index$
-            .subscribe(i => this.data.balance.level.current = this.data.balance.level.arr[i])
-    
-        // Up and Bottom stoppers
-        this.data.balance.level.index$
-            .filter(i => i > this.data.balance.level.arr.length - 1)
-            .subscribe(i => this.data.balance.level.index = this.data.balance.level.arr.length - 1)
-        
-        this.data.balance.level.index$
-            .filter(i => i < 0)
-            .subscribe(i => this.data.balance.level.index = 0)
-
-        // Min + Max logic
-        this.data.balance.level.index$
-            .subscribe(i => {
-                if (i === this.data.balance.level.arr.length - 1) {
-                    this.data.balance.level.max = true
-                    this.data.balance.level.min = false                    
-                } else if (i === 0) {
-                    this.data.balance.level.max = false
-                    this.data.balance.level.min = true
-                } else {
-                    this.data.balance.level.max = false
-                    this.data.balance.level.min = false
-                }
-            })
-
-        // Change level => change Coin Bet
-        this.data.balance.level.current$
-            .subscribe(level => this.data.balance.coin.bet = level * this.data.lines.length)
-
-        // Change value => change Coin Sum
-        this.data.balance.value.current$
-            .subscribe(value => this.data.balance.coin.sum = Math.floor(this.data.balance.cash.sum * 100 / value))
-            
-        // Change level or value => change Cash Bet
-        this.data.balance.value.current$
-            .combineLatest(this.data.balance.level.current$)
-            .subscribe(([value, level]) => this.data.balance.cash.bet = level * this.data.lines.length * value / 100)
-
+// Balance Controller
+const defaultBalanceConfig = {
+    level: {
+        current: true,
+        up: true,
+        bottom: true,
+        minMax: true
+    },
+    value: {
+        current: true,
+        up: true,
+        bottom: true,
+        minMax: true
+    },
+    levelValue: {
+        coinBet: true,
+        coinSum: true,
+        cashBet: true
     }
-
-    disableStreams() {
-        this.subs.forEach(sub => sub.unsubscribe())
-        this.$.complete()
-    }
-
 }
 
 class BalanceController {
 
-    constructor(game) {
+    constructor({ game, config }) {
+        this.config = defaultsDeep(config, defaultBalanceConfig)
         this.game = game
         this.data = game.data
         this.state = game.state
         this.balance = this.data.balance
+
+        this.enableStreams()
     }
 
-    level({
-        up = false,
-        down = false,
-        max = false
-    }) {
-        if (up && !this.balance.level.max)
-            this.balance.level.index++
-        if (down && !this.balance.level.min)
-            this.balance.level.index--
-        if (max && !this.balance.level.max)
-            this.balance.level.index = this.balance.level.arr.length - 1
+    enableStreams() {
+        this.enableLevel()
+        this.enableValue()
+        this.enableLevelValueBindings()
     }
 
-    value({
-        up = false,
-        down = false,
-        max = false
-    }) {
-        if (up && !this.balance.value.max)
-            this.balance.value.index++
-        if (down && !this.balance.value.min)
-            this.balance.value.index--
-        if (max && !this.balance.value.max)
-            this.balance.value.index = this.balance.value.arr.length - 1
+    disableStreams() {
+        this.disableLevel()
+        this.disableValue()
+        this.disableLevelValueBindings()
+    }
+
+    get subs() {
+        return [...this.valueSubs, ...this.levelSubs, ...this.levelValueSubs]
+    }
+
+    enableValue() {
+        this.valueSubs = []
+
+        // Current Value
+        if (this.config.value.current)
+        this.valueSubs.push(
+        this.valueCurrentSub = this.balance.value.index$
+            .subscribe(i => this.balance.value.current = this.balance.value.arr[i]))
+        
+        // Up and Bottom stoppers
+        if (this.config.value.up)
+        this.valueSubs.push(
+        this.valueUpStopSub = this.balance.value.index$
+            .filter(i => i > this.balance.value.arr.length - 1)
+            .subscribe(i => this.balance.value.index = this.balance.value.arr.length - 1))
+
+        if (this.config.value.bottom)
+        this.valueSubs.push(
+        this.valueBottomStopSub = this.balance.value.index$
+            .filter(i => i < 0)
+            .subscribe(i => this.balance.value.index = 0))
+
+        // Min + Max logic
+        if (this.config.value.minMax)  
+        this.valueSubs.push(
+        this.valueMinMaxSub = this.balance.value.index$
+            .subscribe(i => {
+                if (i === this.balance.value.arr.length - 1) {
+                    this.balance.value.max = true
+                    this.balance.value.min = false
+                } else if (i === 0) {
+                    this.balance.value.max = false
+                    this.balance.value.min = true
+                } else {
+                    this.balance.value.max = false
+                    this.balance.value.min = false
+                }
+            }))
+    
+    }
+
+    enableLevel() {
+        this.levelSubs = []
+
+        // Current Level
+        if (this.config.level.current)
+        this.levelSubs.push(
+        this.levelCurrentSub = this.balance.level.index$
+            .subscribe(i => this.balance.level.current = this.balance.level.arr[i]))
+
+        // Up and Bottom stoppers
+        if (this.config.level.up)        
+        this.levelSubs.push(
+        this.levelUpStopSub = this.balance.level.index$
+            .filter(i => i > this.balance.level.arr.length - 1)
+            .subscribe(i => this.balance.level.index = this.balance.level.arr.length - 1))
+
+        if (this.config.level.bottom)        
+        this.levelSubs.push(
+        this.levelBottomStopSub = this.balance.level.index$
+            .filter(i => i < 0)
+            .subscribe(i => this.balance.level.index = 0))
+
+        // Min + Max logic
+        if (this.config.level.minMax)        
+        this.levelSubs.push(
+        this.levelMinMaxSub = this.balance.level.index$
+            .subscribe(i => {
+                if (i === this.balance.level.arr.length - 1) {
+                    this.balance.level.max = true
+                    this.balance.level.min = false
+                } else if (i === 0) {
+                    this.balance.level.max = false
+                    this.balance.level.min = true
+                } else {
+                    this.balance.level.max = false
+                    this.balance.level.min = false
+                }
+            }))
+        
+    }
+
+    enableLevelValueBindings() {
+        this.levelValueSubs = []
+
+        // Change level => change Coin Bet
+        if (this.config.levelValue.coinBet)        
+        this.levelValueSubs.push(
+        this.coinBetSub = this.balance.level.current$
+            .subscribe(level => this.balance.coin.bet = level * this.data.lines.length))
+        
+        // Change value => change Coin Sum
+        if (this.config.levelValue.coinSum)                
+        this.levelValueSubs.push(
+        this.coinSumSub = this.balance.value.current$
+            .subscribe(value => this.balance.coin.sum = Math.floor(this.balance.cash.sum * 100 / value)))
+        
+        // Change level or value => change Cash Bet
+        if (this.config.levelValue.cashBet)                
+        this.levelValueSubs.push(
+        this.cashBetSub = this.balance.value.current$
+            .combineLatest(this.balance.level.current$)
+            .subscribe(([value, level]) => this.balance.cash.bet = level * this.data.lines.length * value / 100))
+        
+    }
+
+    disableLevel() {
+        this.levelSubs.forEach(s => s.unsubscribe())
+    }
+
+    disableValue() {
+        this.valueSubs.forEach(s => s.unsubscribe())        
+    }
+
+    disableLevelValueBindings() {
+        this.levelValueSubs.forEach(s => s.unsubscribe())                
     }
 
     start() {
