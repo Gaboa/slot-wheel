@@ -10,6 +10,8 @@ import { ReactiveObject } from '../utils'
 
 const defaultData = {
     sid: null,
+    mode: '',
+    next: '',
     lines: null,
     screen: null,
     balance: {
