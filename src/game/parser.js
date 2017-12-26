@@ -38,7 +38,22 @@ class ParserManager {
     
     roll(res) {
         this.data.screen = res.Screen.map(r => r.map(el => ({ type: 'static', el })))
-        
+        // TODO: To state or to data???
+        // this.state.mode = res.Mode
+        // this.state.next = res.NextMode
+        this.data.mode = res.Mode
+        this.data.next = res.NextMode
+
+        // Win Lines
+        // this.data.win.lines = res.WinLines.map(l => ({line: l.Line, count: l.Count, win: l.Win}))
+
+        this.data.balance.level.index = this.data.balance.level.arr.indexOf(res.Balance.BetLevel)
+        this.data.balance.value.index = this.data.balance.value.arr.indexOf(res.Balance.CoinValue)
+        this.data.balance.coin.sum = res.Balance.ScoreCoins
+        this.data.balance.cash.sum = res.Balance.ScoreCents / 100
+        this.data.balance.coin.win = res.Balance.TotalWinCoins
+        this.data.balance.cash.win = res.Balance.TotalWinCents / 100
+
     }
 
     last() {
