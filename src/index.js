@@ -57,6 +57,10 @@ game.request.$
     .filter(e => e.type === 'ROLL')
     .subscribe(res => game.parser.roll(res.data))
 
+game.device.$
+    .filter(e => e.type === 'LEAVE')
+    .subscribe(res => game.request.sendLogout())
+
 game.level.$
     .filter(e => e === 'REMOVED').take(1)
     .subscribe(e => game.level = new Root({ game }))
