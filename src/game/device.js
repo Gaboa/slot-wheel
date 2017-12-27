@@ -118,7 +118,7 @@ class DeviceManager {
             this.config.view.mozRequestFullScreen()
         else if (this.config.view.webkitRequestFullScreen)
             this.config.view.webkitRequestFullScreen()
-        this.$.next({ from: 'DEVICE', mode: 'fullscreen', state: 'start' })
+        this.$.next({ from: 'DEVICE', mode: 'FULLSCREEN', state: 'start' })
     }
     
     cancelFullscreen() {
@@ -129,7 +129,7 @@ class DeviceManager {
             document.mozCancelFullScreen()
         else if (document.webkitCancelFullScreen)
             document.webkitCancelFullScreen()
-        this.$.next({ from: 'DEVICE', mode: 'fullscreen', state: 'end' })
+        this.$.next({ from: 'DEVICE', mode: 'FULLSCREEN', state: 'end' })
     }
 
 }
