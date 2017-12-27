@@ -13,6 +13,10 @@ const defaultState = {
     isAutoplay: false,
     isMenu: false,
     isTransition: false,
+
+    mode: 'root',
+    next: 'root',
+
     settings: {
         isFullscreen: false,
         isFast: false,
