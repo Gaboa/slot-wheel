@@ -21,8 +21,10 @@ class Button extends Sprite {
         this.textureTap = PIXI.utils.TextureCache[`${this.textureName}_tap`]
         this.textureDisabled = PIXI.utils.TextureCache[`${this.textureName}_disabled`]
 
-        this.enabled = true
         this.isHover = isHover
+        this.enabled = true
+        this.isMax = false
+        this.isMin = false
 
         this.addStreams()
     }
@@ -89,16 +91,39 @@ class Button extends Sprite {
     }
 
     disable() {
+        // if (this.isMin || this.isMax) return null
         this.enabled = false
         if (this.textureDisabled) this.texture = this.textureDisabled
         else this.alpha = 0.3
     }
     
     enable() {
+        if (this.isMin || this.isMax) return null
         this.enabled = true
         if (this.textureDisabled) this.texture = this.textureNormal
         else this.alpha = 1
     }
+
+    min(v) {
+        if (v) {
+            this.isMin = true
+            this.disable()
+        } else {
+            this.isMin = false
+            this.enable()            
+        }
+    }
+
+    max(v) {
+        if (v) {
+            this.isMax = true
+            this.disable()
+        } else {
+            this.isMax = false
+            this.enable()
+        }
+    }
+
 }
 
 export { Button }
