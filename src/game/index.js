@@ -1,12 +1,13 @@
-import defaultsDeep from 'lodash.defaultsdeep'
+import defaultsDeep    from 'lodash.defaultsdeep'
 import { Application } from 'pixi.js'
-import { TweenMax } from 'gsap'
+import { TweenMax }    from 'gsap'
 
-import { DeviceManager } from './device'
+import { DeviceManager }  from './device'
 import { RequestManager } from './request'
-import { StateManager } from './state'
-import { DataManager } from './data'
-import { ParserManager } from './parser'
+import { ParserManager }  from './parser'
+import { AudioManager }   from './audio'
+import { StateManager }   from './state'
+import { DataManager }    from './data'
 
 class Game extends Application {
 
@@ -40,44 +41,42 @@ class Game extends Application {
         this.RequestManager = request.Manager || RequestManager
         this.StateManager   = state.Manager   || StateManager
         this.DataManager    = data.Manager    || DataManager
+        this.ParserManager  = parser.Manager  || ParserManager
+        this.AudioManager   = audio.Manager   || AudioManager
 
         // Audio
-        this.device = new DeviceManager(defaultsDeep({ view: this.view, renderer: this.renderer }, device))
+        this.device  = new DeviceManager(defaultsDeep({ view: this.view, renderer: this.renderer }, device))
         this.request = new RequestManager(defaultsDeep({}, request))
-        this.state = new StateManager(defaultsDeep({}, state))
-        this.data = new DataManager(defaultsDeep({}, data))
-        this.parser = new ParserManager(defaultsDeep({ game: this }, parser))
+        this.state   = new StateManager(defaultsDeep({}, state))
+        this.data    = new DataManager(defaultsDeep({}, data))
+        this.parser  = new ParserManager(defaultsDeep({ game: this }, parser))
     }
 
     start(fps) {
-        this.fps = fps || this.fps
-        this.frameCount = this.frameCount || 0
+        this.fps = fps
 
         TweenMax.ticker.fps(fps)
-        TweenMax.ticker.wake()
-        this.animate(performance.now())
+        TweenMax.ticker.addEventListener('tick', this.animate, this)
     }
-
+    
     animate(time) {
-        if (++this.frameCount >= Math.ceil(60 / this.fps)) {
-            this.ticker.update(time)
-            this.frameCount = 0
-        }
-        this.rafID = requestAnimationFrame(this.animate.bind(this))
+        this.ticker.update(time)
     }
-
+    
     stop() {
-        this.ticker.stop()
         TweenMax.ticker.sleep()
-        cancelAnimationFrame(this.rafID)
+    }
+    
+    resume() {
+        TweenMax.ticker.wake()
     }
 
 }
 
 export { Game }
-export { DeviceManager } from './device'
-export { StateManager } from './state'
-export { DataManager } from './data'
+export { DeviceManager }  from './device'
+export { StateManager }   from './state'
+export { DataManager }    from './data'
 export { RequestManager } from './request'
-export { AudioManager } from './audio'
-export { ParserManager } from './parser'
+export { AudioManager }   from './audio'
+export { ParserManager }  from './parser'
