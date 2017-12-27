@@ -302,7 +302,7 @@ class Time extends Text {
         this.hours = currentTime.hours
         this.minutes = currentTime.minutes
 
-        TweenMax.ticker.addEventListener('tick', this.update.bind(this))
+        TweenMax.ticker.addEventListener('tick', this.update, this)
     }
 
     update() {
@@ -443,86 +443,6 @@ class Balance extends Container {
                 this.changeBottomMode()
                 break
             default:
-        }
-    }
-
-    changeTopToMobile() {
-        this.top.win.visible = false;
-        this.top.total.visible = false;
-        this.top.bet.visible = true;
-        if (game.state.isFR) {
-            this.top.frSum.visible = true;
-            this.top.sum.visible = false;
-        } else {
-            this.top.frSum.visible = false;
-            this.top.sum.visible = true;
-        }
-    }
-
-    changeTopToFS() {
-        this.top.win.visible = true;
-        this.top.bet.visible = false;
-        this.top.sum.visible = false;
-        if (game.state.isFR) {
-            this.top.total.visible = false;
-        } else {
-            this.top.total.visible = true;
-        }
-    }
-
-    changeModeToFS(tween) {
-        if (tween) {
-            this.timeline = new TimelineLite();
-            this.timeline
-                .to(this.top, 0.3, {
-                    alpha: 0,
-                    onComplete: () => {
-                        this.changeTopToFS()
-                        this.changeBottomMode()
-                    }
-                })
-                .to(this.top, 0.3, {
-                    alpha: 1
-                });
-        } else {
-            this.changeTopToFS()
-            this.changeBottomMode()
-        }
-    }
-
-    changeModeToMobile(tween) {
-        if (tween) {
-            this.timeline = new TimelineLite();
-            this.timeline
-                .to(this.top, 0.3, {
-                    alpha: 0,
-                    onComplete: () => {
-                        this.changeTopToMobile()
-                        this.changeBottomMode()
-                    }
-                })
-                .to(this.top, 0.3, {
-                    alpha: 1
-                });
-        } else {
-            this.changeTopToMobile()
-            this.changeBottomMode()
-        }
-    }
-
-    changeBottomMode() {
-        if (game.state.isFR) {
-            this.bottom.frCount.visible = true
-            this.bottom.frWin.visible = true
-
-            this.bottom.sum.visible = false
-            this.bottom.win.visible = false
-        } else {
-            this.bottom.frCount.visible = false
-            this.bottom.frWin.visible = false
-
-            this.bottom.sum.visible = true
-            this.bottom.win.visible = true
         }
     }
 
