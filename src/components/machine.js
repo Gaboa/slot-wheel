@@ -108,6 +108,45 @@ class WinNumber extends Text {
 
 }
 
+class WinTable extends Container {
+
+    constructor({
+        container,
+        x,
+        y
+    }) {
+        super({ container, x, y })
+        this.name = 'table'
+
+        this.bg = new Sprite({
+            container: this,
+            texture: 'win_table',
+            name: 'bg'
+        })
+
+        this.text = new BalanceText({
+            container: this,
+            text: 0,
+            name: 'text',
+            fixed: 0,
+            style: { fontSize: 80 }
+        })
+
+        this.scale.set(0)
+    }
+
+    show(value) {
+        this.text.set(value)
+        this.tween = TweenMax.to(this.scale, 0.3, { x: 1, y: 1 })
+    }
+
+    hide() {
+        this.text.set(0)
+        this.tween = TweenMax.to(this.scale, 0.3, { x: 0, y: 0 })
+    }
+
+}
+
 const defaultNumbersConfig = {
     left: {
         x: -0.337,
@@ -152,8 +191,8 @@ const defaultLinesConfig = {
         fg: 0xffffff
     },
     show: {
-        time: 0.1,
-        delta: 0.05
+        time: 0.07,
+        delta: 0.03
     }
 }
 
@@ -535,6 +574,9 @@ class Machine extends Container {
 
         // Win Numbers
         this.numbers = new Numbers({ container: this })
+
+        // Win Table
+        this.table = new WinTable({ container: this })
 
     }
 

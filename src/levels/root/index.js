@@ -106,7 +106,8 @@ const defaultRootConfig = {
         },
         idle: true,
         rolling: true,
-        lines: true
+        lines: true,
+        table: true
     }
 }
 
@@ -457,6 +458,19 @@ class RootController {
             .map(e => e.num)
             .subscribe(e => this.machine.lines.hide(e)))
         
+        // Win Table Show and Hide
+        if (this.config.logic.table)
+        this.logicSubs.push(
+        this.tableShowSub = this.balance.coin.win$
+            .filter(e => e)
+            .sample(this.state.isRolling$)
+            .subscribe(e => this.machine.table.show(e)))
+
+        if (this.config.logic.table)
+        this.logicSubs.push(
+        this.tableShowSub = this.state.isRolling$
+            .filter(e => e)
+            .subscribe(e => this.machine.table.hide()))
         
     }
 
