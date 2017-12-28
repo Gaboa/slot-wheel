@@ -105,7 +105,8 @@ const defaultRootConfig = {
             data: true
         },
         idle: true,
-        rolling: true
+        rolling: true,
+        lines: true
     }
 }
 
@@ -440,6 +441,22 @@ class RootController {
             .filter(e => !e) // End of roll
             .filter(e => this.state.next !== 'root') // Next is not Root
             .subscribe(e => this.state.isTransition = true))
+
+        // Lines on Numbers Hover
+        if (this.config.logic.lines)
+        this.logicSubs.push(
+        this.linesOverSub = this.machine.numbers.$
+            .filter(e => e.type === 'OVER')
+            .map(e => e.num)
+            .subscribe(e => this.machine.lines.show(e)))
+
+        if (this.config.logic.lines)
+        this.logicSubs.push(
+        this.linesOutSub = this.machine.numbers.$
+            .filter(e => e.type === 'OUT')
+            .map(e => e.num)
+            .subscribe(e => this.machine.lines.hide(e)))
+        
         
     }
 
