@@ -188,7 +188,7 @@ const defaultLinesConfig = {
     width: 350,
     tint: {
         bg: 0xff00ff,
-        fg: 0xffffff
+        fg: 0xffff00
     },
     show: {
         time: 0.07,

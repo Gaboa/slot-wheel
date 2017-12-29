@@ -3,6 +3,7 @@ import { Subject } from 'rxjs'
 import axios from 'axios'
 
 // TODO: Add methods for handling errors
+// TODO: Remove timeout in init request or bigger value
 
 class RequestManager {
 

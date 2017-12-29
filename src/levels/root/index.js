@@ -5,9 +5,9 @@ import { Machine, Footer } from '../../components'
 import { Darkness } from "../preload/helpers"
 import { BalanceController } from './balance'
 
-// TODO: Create balance bindings for different modes
+// TODO: Create balance bindings for different modes ( FS FR Bonus )
 // TODO: Add Spine helper class
-// TODO: Check index switching bug
+// TODO: Check index switching bug in Screen
 
 class Root extends Container {
 

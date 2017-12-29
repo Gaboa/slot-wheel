@@ -63,7 +63,8 @@ class Game extends Application {
         this.ticker.update(time)
     }
     
-    stop() {
+    pause() {
+        // TODO: Check working of sleep method
         TweenMax.ticker.sleep()
     }
     

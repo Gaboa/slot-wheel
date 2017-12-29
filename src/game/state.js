@@ -3,7 +3,6 @@ import { ReactiveObject } from '../utils'
 
 // TODO: Set init config for state
 // TODO: Add state checks for invalid state modes
-// TODO: Add methods to add and remove state fields
 // TODO: Add methods to validate new state value
 
 const defaultState = {
