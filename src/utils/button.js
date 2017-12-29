@@ -1,6 +1,8 @@
 import { Sprite } from "./sprite"
 import { Observable } from "rxjs"
 
+// TODO: if button disabled disable pointer mode ( idea )
+
 class Button extends Sprite {
     constructor({
         container,
@@ -91,8 +93,8 @@ class Button extends Sprite {
     }
 
     disable() {
-        // if (this.isMin || this.isMax) return null
         this.enabled = false
+        this.interactive = false
         if (this.textureDisabled) this.texture = this.textureDisabled
         else this.alpha = 0.3
     }
@@ -100,6 +102,7 @@ class Button extends Sprite {
     enable() {
         if (this.isMin || this.isMax) return null
         this.enabled = true
+        this.interactive = true
         if (this.textureDisabled) this.texture = this.textureNormal
         else this.alpha = 1
     }
