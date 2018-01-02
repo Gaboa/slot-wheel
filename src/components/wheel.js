@@ -210,12 +210,10 @@ class Wheel extends Container {
     createElements() {
         this.els = []
         for (let i = 0; i < this.el.amount; i++) {
-            const element = new this.el.Element({
+            const element = new this.el.Element(Object.assign({
                 container: this,
-                width:  this.el.width,
-                height: this.el.height,
                 index: i
-            })
+            }, this.el))
             this.els.push(element)
         }
     }

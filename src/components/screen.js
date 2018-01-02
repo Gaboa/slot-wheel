@@ -17,6 +17,7 @@ const defaultConfig = {
 
     el: {
         Element: SpriteElement,
+        symbols: [],
         amount:  5,
         aside:   1,
         width:   256,
@@ -49,7 +50,7 @@ const defaultConfig = {
             { type: 'blur', el: '9' }
         ],
         amount: 5,
-        time:   0.12 * 0.5,
+        time:   0.12,
         ease:   Linear.easeNone
     },
 
@@ -65,9 +66,16 @@ const defaultConfig = {
     },
 
     lines: [
-        [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }, { x: 4, y: 0 }],
         [{ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }, { x: 4, y: 1 }],
-        [{ x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 2 }]
+        [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }, { x: 4, y: 0 }],
+        [{ x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 2 }],
+        [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 1 }, { x: 4, y: 0 }],
+        [{ x: 0, y: 2 }, { x: 1, y: 1 }, { x: 2, y: 0 }, { x: 3, y: 1 }, { x: 4, y: 2 }],
+        [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 1 }, { x: 3, y: 0 }, { x: 4, y: 0 }],
+        [{ x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 1 }, { x: 3, y: 2 }, { x: 4, y: 2 }],
+        [{ x: 0, y: 1 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }, { x: 4, y: 1 }],
+        [{ x: 0, y: 1 }, { x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 1 }],
+        [{ x: 0, y: 2 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }, { x: 4, y: 2 }]
     ],
 
     log: {
@@ -278,7 +286,7 @@ class Screen extends Container {
     // Getters for Elements
     getElementsFromLine({ number, amount }) {
         const result = []
-        this.config.lines[number]
+        this.config.lines[number - 1]
             .filter((el, i) => i < amount)
             .forEach(el => result.push(this.element(el.x, el.y)))
         return result
