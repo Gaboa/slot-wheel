@@ -149,6 +149,11 @@ class RootController {
         if (this.config.panel.spin)
         this.buttonsSubs.push(
         this.spinSub = this.machine.panel.buttons.spin.down$
+            .merge(Observable.fromEvent(document, 'keyup')
+                .filter(e => this.machine.panel.buttons.spin.enabled)
+                .pluck('code')
+                .map(code => String(code).toUpperCase())
+                .filter(code => code === 'SPACE'))
             .subscribe(e => this.machine.screen.roll()))
         
         // Auto
@@ -167,22 +172,42 @@ class RootController {
         if (this.config.panel.level.minus)        
         this.buttonsSubs.push(
         this.levelMinusSub = this.machine.panel.buttons.level.minus.down$
+            .merge(Observable.fromEvent(document, 'keyup')
+                .filter(e => this.machine.panel.buttons.level.minus.enabled)
+                .pluck('code')
+                .map(code => String(code).toUpperCase())
+                .filter(code => code === 'ARROWDOWN'))
             .subscribe(e => this.balance.level.index--))
         
         if (this.config.panel.level.plus)                
         this.buttonsSubs.push(
         this.levelPlusSub = this.machine.panel.buttons.level.plus.down$
+            .merge(Observable.fromEvent(document, 'keyup')
+                .filter(e => this.machine.panel.buttons.level.plus.enabled)
+                .pluck('code')
+                .map(code => String(code).toUpperCase())
+                .filter(code => code === 'ARROWUP'))
             .subscribe(e => this.balance.level.index++))
 
         // Value - Plus / Minus
         if (this.config.panel.value.minus)                
         this.buttonsSubs.push(
         this.valueMinusSub = this.machine.panel.buttons.value.minus.down$
+            .merge(Observable.fromEvent(document, 'keyup')
+                .filter(e => this.machine.panel.buttons.value.minus.enabled)
+                .pluck('code')
+                .map(code => String(code).toUpperCase())
+                .filter(code => code === 'ARROWLEFT'))
             .subscribe(e => this.balance.value.index--))
         
         if (this.config.panel.value.plus)                
         this.buttonsSubs.push(
         this.valuePlusSub = this.machine.panel.buttons.value.plus.down$
+            .merge(Observable.fromEvent(document, 'keyup')
+                .filter(e => this.machine.panel.buttons.value.plus.enabled)
+                .pluck('code')
+                .map(code => String(code).toUpperCase())
+                .filter(code => code === 'ARROWRIGHT'))
             .subscribe(e => this.balance.value.index++))
         
         // Min / Max stoppers for balance buttons
