@@ -1,6 +1,7 @@
 import { Sprite as PIXI_Sprite } from "pixi.js"
 
 class Sprite extends PIXI_Sprite {
+
     constructor({
         container,
         texture,
@@ -30,15 +31,23 @@ class Sprite extends PIXI_Sprite {
         this.name = name
 
         // Relative coords
-        if (Math.abs(this.x) < 1 && window.GAME_WIDTH)
+        if (Math.abs(x) < 1 && window.GAME_WIDTH)
             this.x = Math.round(x * GAME_WIDTH)
         else
             this.x = x
-        if (Math.abs(this.y) < 1 && window.GAME_HEIGHT)
+        if (Math.abs(y) < 1 && window.GAME_HEIGHT)
             this.y = Math.round(y * GAME_HEIGHT)
         else
             this.y = y
     }
+
+    changeTexture(name) {
+        if (PIXI.utils.TextureCache[name])
+            this.texture = PIXI.utils.TextureCache[name]
+        else
+            this.texture = new PIXI.RenderTexture(new PIXI.BaseRenderTexture(1, 1, PIXI.SCALE_MODES.LINEAR, 1))
+    }
+
 }
 
 export { Sprite }

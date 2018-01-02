@@ -20,11 +20,11 @@ class Container extends PIXI_Container {
             this.container.addChild(this)
 
         // Relative coords
-        if (Math.abs(this.x) < 1 && window.GAME_WIDTH)
+        if (Math.abs(x) < 1 && window.GAME_WIDTH)
             this.x = Math.round(x * GAME_WIDTH)
         else
             this.x = x
-        if (Math.abs(this.y) < 1 && window.GAME_HEIGHT)
+        if (Math.abs(y) < 1 && window.GAME_HEIGHT)
             this.y = Math.round(y * GAME_HEIGHT)
         else
             this.y = y

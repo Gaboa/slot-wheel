@@ -1,3 +1,4 @@
+export { Spine } from './spine'
 export { Sprite } from './sprite'
 export { Graphics } from './graphics'
 export { Text } from './text'

@@ -5,7 +5,7 @@ class Text extends PIXI_Text {
         container,
         x = 0,
         y = 0,
-        text,
+        text = '',
         style,
         index,
         anchor = 0.5
@@ -22,11 +22,11 @@ class Text extends PIXI_Text {
         this.anchor.set(anchor)
 
         // Relative coords
-        if (Math.abs(this.x) < 1 && window.GAME_WIDTH)
+        if (Math.abs(x) < 1 && window.GAME_WIDTH)
             this.x = Math.round(x * GAME_WIDTH)
         else
             this.x = x
-        if (Math.abs(this.y) < 1 && window.GAME_HEIGHT)
+        if (Math.abs(y) < 1 && window.GAME_HEIGHT)
             this.y = Math.round(y * GAME_HEIGHT)
         else
             this.y = y
