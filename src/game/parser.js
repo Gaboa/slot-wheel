@@ -16,6 +16,7 @@ class ParserManager {
     init(res) {
         this.data.sid = res.SessionID
         this.data.lines = res.Lines.map(line => line.map(el => ({ x: el.X, y: el.Y })))
+        this.data.symbols = res.Symbols.map(s => ({ name: s.Name.toLowerCase(), symbol: Number(s.Symbol) }))
         this.data.screen = res.FirstScreen.map(r => r.map(el => ({ type: 'static', el })))
 
         this.data.balance.currency = this.currency(res.Balance.Currency)
@@ -44,7 +45,7 @@ class ParserManager {
         this.state.next = res.NextMode
 
         // Win Lines
-        // this.data.win.lines = res.WinLines.map(l => ({line: l.Line, count: l.Count, win: l.Win}))
+        this.data.win.lines = res.WinLines.map(l => ({ number: l.Line, amount: l.Count, win: l.Win }))
 
         if (this.data.balance.level.index !== this.data.balance.level.arr.indexOf(res.Balance.BetLevel))
             this.data.balance.level.index = this.data.balance.level.arr.indexOf(res.Balance.BetLevel)

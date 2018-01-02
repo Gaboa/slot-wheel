@@ -13,7 +13,12 @@ const defaultData = {
     mode: '',
     next: '',
     lines: null,
+    symbols: null,
     screen: null,
+    win: {
+        lines: null,
+        line: null
+    },
     balance: {
         currency: '$',
         level: {
