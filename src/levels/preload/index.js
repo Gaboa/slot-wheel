@@ -226,8 +226,8 @@ class Preload extends Container {
     createButtonAndKeyboardListener() {
         this.space$ = Observable.fromEvent(document, 'keyup')
             .pluck('code')
-            .map(code => String(code).toLowerCase())
-            .filter(code => code === 'space')
+            .map(code => String(code).toUpperCase())
+            .filter(code => code === 'SPACE')
         this.tap$ = Observable.merge(this.space$, this.button.$)
     }
 
