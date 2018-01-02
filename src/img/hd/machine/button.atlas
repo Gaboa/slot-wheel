@@ -1,0 +1,27 @@
+
+button.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Anim/Anim/Choise/B
+  rotate: false
+  xy: 2, 2
+  size: 110, 94
+  orig: 110, 94
+  offset: 0, 0
+  index: -1
+Anim/Anim/Spin/B
+  rotate: false
+  xy: 114, 2
+  size: 110, 94
+  orig: 110, 94
+  offset: 0, 0
+  index: -1
+Anim/Anim/Stop/B
+  rotate: false
+  xy: 226, 2
+  size: 110, 94
+  orig: 110, 94
+  offset: 0, 0
+  index: -1

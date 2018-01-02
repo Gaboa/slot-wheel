@@ -1,0 +1,97 @@
+
+bonus.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+eff/E_0007_Layer-1
+  rotate: false
+  xy: 946, 194
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+eff/Smoke Ring 2
+  rotate: false
+  xy: 875, 191
+  size: 69, 63
+  orig: 69, 63
+  offset: 0, 0
+  index: -1
+eff/misc_bg_element_png_by_dbszabo1-d54l4x4
+  rotate: false
+  xy: 691, 165
+  size: 90, 89
+  orig: 90, 89
+  offset: 0, 0
+  index: -1
+eff/misc_electrical_element_png_by_dbszabo1-d54ky20
+  rotate: false
+  xy: 219, 30
+  size: 90, 96
+  orig: 90, 96
+  offset: 0, 0
+  index: -1
+eff/misc_electrical_element_png_by_dbszabo1-d54ky6o
+  rotate: false
+  xy: 311, 37
+  size: 90, 89
+  orig: 90, 89
+  offset: 0, 0
+  index: -1
+eff/misc_electricity_bg_png_by_dbszabo1-d55tea3
+  rotate: false
+  xy: 783, 165
+  size: 90, 89
+  orig: 90, 89
+  offset: 0, 0
+  index: -1
+img/C_0000_Group-3
+  rotate: false
+  xy: 456, 155
+  size: 233, 99
+  orig: 233, 99
+  offset: 0, 0
+  index: -1
+img/C_0001_Eye_L
+  rotate: false
+  xy: 456, 103
+  size: 57, 50
+  orig: 57, 50
+  offset: 0, 0
+  index: -1
+img/C_0002_Layer-80
+  rotate: false
+  xy: 403, 56
+  size: 47, 70
+  orig: 47, 70
+  offset: 0, 0
+  index: -1
+img/C_0003_Group-4-copy-4
+  rotate: true
+  xy: 515, 125
+  size: 28, 56
+  orig: 28, 56
+  offset: 0, 0
+  index: -1
+img/C_0004_Group-4-copy-2
+  rotate: true
+  xy: 219, 6
+  size: 22, 48
+  orig: 22, 48
+  offset: 0, 0
+  index: -1
+img/C_0005_Group-4-copy-3
+  rotate: true
+  xy: 2, 2
+  size: 124, 215
+  orig: 124, 215
+  offset: 0, 0
+  index: -1
+img/C_0006_Group-4-copy
+  rotate: false
+  xy: 2, 128
+  size: 452, 126
+  orig: 452, 126
+  offset: 0, 0
+  index: -1

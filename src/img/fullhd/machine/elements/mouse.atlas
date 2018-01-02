@@ -1,0 +1,195 @@
+
+mouse.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Eff/E_0003_Layer-5
+  rotate: false
+  xy: 540, 74
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+Eff/E_0007_Layer-1
+  rotate: false
+  xy: 622, 86
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+Eff/Fire_splash_02 copy
+  rotate: false
+  xy: 2, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+Eff/Fire_splash_03 copy
+  rotate: true
+  xy: 124, 2
+  size: 120, 112
+  orig: 120, 112
+  offset: 0, 0
+  index: -1
+Eff/Magic_splash_02 copy
+  rotate: false
+  xy: 678, 169
+  size: 94, 85
+  orig: 94, 85
+  offset: 0, 0
+  index: -1
+lens
+  rotate: false
+  xy: 220, 135
+  size: 16, 15
+  orig: 16, 15
+  offset: 0, 0
+  index: -1
+mouse__0000_Hat
+  rotate: false
+  xy: 961, 160
+  size: 59, 94
+  orig: 59, 94
+  offset: 0, 0
+  index: -1
+mouse__0001_Head
+  rotate: false
+  xy: 562, 168
+  size: 114, 86
+  orig: 114, 86
+  offset: 0, 0
+  index: -1
+mouse__0002_RE
+  rotate: false
+  xy: 344, 2
+  size: 4, 4
+  orig: 4, 4
+  offset: 0, 0
+  index: -1
+mouse__0003_LE
+  rotate: false
+  xy: 774, 169
+  size: 5, 5
+  orig: 5, 5
+  offset: 0, 0
+  index: -1
+mouse__0004_Layer-93-copy-4
+  rotate: true
+  xy: 746, 137
+  size: 30, 16
+  orig: 30, 16
+  offset: 0, 0
+  index: -1
+mouse__0006_Layer-93
+  rotate: true
+  xy: 590, 22
+  size: 50, 28
+  orig: 50, 28
+  offset: 0, 0
+  index: -1
+mouse__0007_Layer-93-copy-12
+  rotate: false
+  xy: 344, 8
+  size: 42, 142
+  orig: 42, 142
+  offset: 0, 0
+  index: -1
+mouse__0009_Layer-93-copy-13
+  rotate: false
+  xy: 622, 64
+  size: 22, 20
+  orig: 22, 20
+  offset: 0, 0
+  index: -1
+mouse__0010_Neck_L
+  rotate: false
+  xy: 472, 8
+  size: 66, 64
+  orig: 66, 64
+  offset: 0, 0
+  index: -1
+mouse__0011_Neck
+  rotate: false
+  xy: 540, 18
+  size: 48, 54
+  orig: 48, 54
+  offset: 0, 0
+  index: -1
+mouse__0012_Belt
+  rotate: false
+  xy: 388, 10
+  size: 82, 44
+  orig: 82, 44
+  offset: 0, 0
+  index: -1
+mouse__0013_Tail_top
+  rotate: false
+  xy: 2, 124
+  size: 216, 130
+  orig: 216, 130
+  offset: 0, 0
+  index: -1
+mouse__0014_RL
+  rotate: true
+  xy: 220, 152
+  size: 102, 196
+  orig: 102, 196
+  offset: 0, 0
+  index: -1
+mouse__0015_LL
+  rotate: false
+  xy: 238, 2
+  size: 104, 148
+  orig: 104, 148
+  offset: 0, 0
+  index: -1
+mouse__0016_Tailback
+  rotate: false
+  xy: 388, 56
+  size: 67, 94
+  orig: 67, 94
+  offset: 0, 0
+  index: -1
+mouse__0017_Svitok
+  rotate: false
+  xy: 870, 181
+  size: 89, 73
+  orig: 89, 73
+  offset: 0, 0
+  index: -1
+mouse__0018_Body
+  rotate: true
+  xy: 418, 156
+  size: 98, 142
+  orig: 98, 142
+  offset: 0, 0
+  index: -1
+mouse__0019_Svitok_back
+  rotate: false
+  xy: 774, 176
+  size: 94, 78
+  orig: 94, 78
+  offset: 0, 0
+  index: -1
+mouse__0020_LA_fingermask
+  rotate: false
+  xy: 704, 122
+  size: 40, 45
+  orig: 40, 45
+  offset: 0, 0
+  index: -1
+mouse__0021_bottle
+  rotate: true
+  xy: 704, 86
+  size: 34, 36
+  orig: 34, 36
+  offset: 0, 0
+  index: -1
+mouse__0022_L_arm
+  rotate: false
+  xy: 457, 74
+  size: 81, 80
+  orig: 81, 80
+  offset: 0, 0
+  index: -1

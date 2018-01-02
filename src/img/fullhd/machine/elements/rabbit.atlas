@@ -1,0 +1,90 @@
+
+rabbit.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+img/Fire_splash_03 copy
+  rotate: false
+  xy: 701, 138
+  size: 120, 112
+  orig: 120, 112
+  offset: 0, 0
+  index: -1
+img/R_0000_Layer-57
+  rotate: false
+  xy: 823, 193
+  size: 41, 57
+  orig: 41, 57
+  offset: 0, 0
+  index: -1
+img/R_0001_Layer-56
+  rotate: true
+  xy: 2, 2
+  size: 33, 58
+  orig: 33, 58
+  offset: 0, 0
+  index: -1
+img/R_0002_Layer-53-copy
+  rotate: false
+  xy: 2, 37
+  size: 104, 59
+  orig: 104, 59
+  offset: 0, 0
+  index: -1
+img/R_0003_Layer-53-copy-2
+  rotate: false
+  xy: 701, 118
+  size: 27, 18
+  orig: 27, 18
+  offset: 0, 0
+  index: -1
+img/R_0004_Layer-53-copy-3
+  rotate: false
+  xy: 208, 103
+  size: 86, 56
+  orig: 86, 56
+  offset: 0, 0
+  index: -1
+img/R_0005_Layer-53-copy-4
+  rotate: false
+  xy: 563, 118
+  size: 136, 132
+  orig: 136, 132
+  offset: 0, 0
+  index: -1
+img/R_0006_Layer-53-copy-5
+  rotate: false
+  xy: 2, 98
+  size: 204, 152
+  orig: 204, 152
+  offset: 0, 0
+  index: -1
+img/R_0007_Layer-53-copy-6
+  rotate: true
+  xy: 419, 110
+  size: 140, 142
+  orig: 140, 142
+  offset: 0, 0
+  index: -1
+img/R_0008_Layer-55
+  rotate: false
+  xy: 108, 68
+  size: 39, 28
+  orig: 39, 28
+  offset: 0, 0
+  index: -1
+img/R_0009_Layer-55-copy
+  rotate: false
+  xy: 296, 131
+  size: 36, 28
+  orig: 36, 28
+  offset: 0, 0
+  index: -1
+img/R_0010_Layer-53-copy-9
+  rotate: false
+  xy: 208, 161
+  size: 209, 89
+  orig: 209, 89
+  offset: 0, 0
+  index: -1
