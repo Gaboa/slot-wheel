@@ -1,8 +1,9 @@
 import defaultsDeep from 'lodash.defaultsdeep'
+import { TweenMax } from 'gsap'
 import { Observable, Subject } from 'rxjs'
-import { Container, Sprite, Button, BalanceText, Text, Graphics } from "../utils"
+import { Container, Sprite, Button, BalanceText, Text, Graphics, Spine } from "../utils"
 import { Screen } from "./screen"
-import { TweenMax } from 'gsap';
+import { Element } from './element'
 
 // TODO: Add Lines to Machine
 // TODO: Add Numbers to Machine
@@ -106,6 +107,14 @@ class WinNumber extends Text {
         this.buttonMode = false
     }
 
+    show() {
+        this.scale.set(2)
+    }
+
+    hide() {
+        this.scale.set(1)
+    }
+
 }
 
 class WinTable extends Container {
@@ -170,16 +179,16 @@ const defaultNumbersConfig = {
 
 const defaultLinesConfig = {
     lines: [
-        [2, 0, 0, 0, 2],
+        [1, 1, 1, 1, 1],
         [0, 0, 0, 0, 0],
-        [2, 1, 1, 1, 2],
-        [0, 1, 1, 1, 0],
-        [2, 0, 0, 0, 2],
-        [0, 0, 0, 0, 0],
-        [2, 1, 1, 1, 2],
-        [0, 1, 1, 1, 0],
-        [2, 1, 1, 1, 2],
-        [0, 1, 1, 1, 0]
+        [2, 2, 2, 2, 2],
+        [0, 1, 2, 1, 0],
+        [2, 1, 0, 1, 2],
+        [0, 0, 1, 0, 0],
+        [2, 2, 1, 2, 2],
+        [1, 0, 0, 0, 1],
+        [1, 2, 2, 2, 1],
+        [2, 1, 1, 1, 2]
     ],
     el: {
         width: 256,
@@ -187,8 +196,8 @@ const defaultLinesConfig = {
     },
     width: 350,
     tint: {
-        bg: 0xff00ff,
-        fg: 0xffff00
+        bg: 0xff0000,
+        fg: 0xffffff
     },
     show: {
         time: 0.07,
@@ -239,6 +248,26 @@ class Numbers extends Container {
         })
     }
 
+    show(num) {
+        for (const side in this.config)
+            this[side].items
+                .filter(item => item.value == num)
+                .forEach(item => item.show())
+    }
+
+    hide(num) {
+        for (const side in this.config)
+            this[side].items
+                .filter(item => item.value == num)
+                .forEach(item => item.hide())
+    }
+
+    hideAll() {
+        for (const side in this.config)
+            this[side].items
+                .forEach(item => item.hide())
+    }
+
     enable() {
         this.$ = new Subject()
 
@@ -286,6 +315,10 @@ class Lines extends Container {
         this.items[number - 1].hide()
     }
 
+    hideAll() {
+        this.items.forEach(item => item.hide())
+    }
+
 }
 
 class Line extends Container {
@@ -324,13 +357,13 @@ class Line extends Container {
     }
 
     show() {
-        TweenMax.staggerTo(this.items, this.config.show.time, { alpha: 1 }, this.config.show.delta)
-        // this.items.forEach(part => part.alpha = 1)
+        // TweenMax.staggerTo(this.items, this.config.show.time, { alpha: 1 }, this.config.show.delta)
+        this.items.forEach(item => item.alpha = 1)
     }
     
     hide() {
-        TweenMax.staggerTo([...this.items].reverse(), this.config.show.time, { alpha: 0, overwrite: 'all' }, this.config.show.delta)
-        // this.items.forEach(part => part.alpha = 0)
+        // TweenMax.staggerTo([...this.items].reverse(), this.config.show.time, { alpha: 0, overwrite: 'all' }, this.config.show.delta)
+        this.items.forEach(item => item.alpha = 0)
     }
 
 }
@@ -381,10 +414,11 @@ class Panel extends Container {
         super({ container, x, y })
         this.name = 'panel'
 
-        this.panel = new PIXI.spine.Spine(PIXI.utils.resources.panel.spineData)
-        this.panel.name = 'spine'
-        this.panel.state.setAnimation(0, 'idle', true)
-        this.addChild(this.panel)
+        this.panel = new Spine({
+            container: this,
+            name: 'panel',
+            anim: { track: 0, name: 'idle', repeat: true }
+        })
         
         this.labels = new Sprite({
             container: this,
@@ -505,16 +539,21 @@ class Balance extends Container {
     }
 
 }
-
 class Machine extends Container {
 
     constructor({
         container,
         x,
-        y
+        y,
+        config = {}
     }) {
         super({ container, x, y })
         this.name = 'machine'
+
+        this.config = config
+        // HACK
+        this.config.symbols = game.data.symbols
+        
 
         // Machine BG
         this.bg = new PIXI.extras.TilingSprite(
@@ -535,14 +574,31 @@ class Machine extends Container {
                 amount: 5,
                 dir: 'down',
 
+                el: {
+                    Element,
+                    width: 256,
+                    height: 240,
+                    symbols: this.config.symbols
+                },
+
+                start: {
+                    amount: 10,
+                    time: 0.8
+                },
+
                 loop: {
-                    amount: 20,
-                    time: 0.5
+                    amount: 10,
+                    time: 0.45
+                },
+
+                end: {
+                    amount: 10,
+                    time: 1
                 },
 
                 roll: {
                     normal: 1,
-                    fast: 1.5
+                    fast: 2.5
                 },
 
                 log: {
@@ -563,11 +619,12 @@ class Machine extends Container {
         })
 
         // Machine Logo
-        this.logo = new PIXI.spine.Spine(PIXI.utils.resources.logo.spineData)
-        this.logo.name = 'logo'
-        this.logo.state.setAnimation(0, 'idle', true)
-        this.logo.y = -0.343 * GAME_HEIGHT
-        this.addChild(this.logo)
+        this.logo = new Spine({
+            container: this,
+            name: 'logo',
+            anim: { track: 0, name: 'idle', repeat: true },
+            y: -0.343
+        })
 
         // Panel with Buttons and Balance
         this.panel = new Panel({ container: this, y: 0.35 })
