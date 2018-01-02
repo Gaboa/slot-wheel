@@ -8,6 +8,8 @@ import { BalanceController } from './balance'
 // TODO: Create balance bindings for different modes ( FS FR Bonus )
 // TODO: Add Spine helper class
 // TODO: Check index switching bug in Screen
+// TODO: Propagate lines data
+// TODO: Propagate symbols data
 
 class Root extends Container {
 
@@ -483,6 +485,8 @@ class RootController {
             .map(e => e.num)
             .subscribe(e => this.machine.lines.hide(e)))
         
+
+        // WinController logic
         // Win Table Show and Hide
         if (this.config.logic.table)
         this.logicSubs.push(
@@ -496,6 +500,81 @@ class RootController {
         this.tableShowSub = this.state.isRolling$
             .filter(e => e)
             .subscribe(e => this.machine.table.hide()))
+
+        // Win Table Show and Hide
+        if (this.config.logic.table)
+        this.logicSubs.push(
+        this.tableShowSub = this.balance.coin.win$
+            .filter(e => e)
+            .sample(this.state.isRolling$)
+            .subscribe(e => this.machine.table.show(e)))
+
+        if (this.config.logic.table)
+        this.logicSubs.push(
+        this.tableShowSub = this.state.isRolling$
+            .filter(e => e)
+            .subscribe(e => this.machine.table.hide()))
+        
+        // Win controls
+        if (this.config.logic.table)
+        this.logicSubs.push(
+        this.linesAndNumbersShowSub = this.data.win.lines$
+            .filter(data => data)
+            .sample(this.state.isRolling$.filter(e => !e))
+            .subscribe(lines => lines.forEach(line => {
+                this.machine.lines.show(line.number)
+                this.machine.numbers.show(line.number)
+            })))
+
+        if (this.config.logic.table)
+        this.logicSubs.push(
+        this.linesAndNumbersHideSub = this.state.isRolling$
+            .filter(e => e)
+            .filter(e => this.data.win.lines)
+            .subscribe(e => this.data.win.lines.forEach(line => {
+                this.machine.lines.hide(line.number)
+                this.machine.numbers.hide(line.number)
+            })))
+
+        // Win Elements
+        if (this.config.logic.table)
+        this.logicSubs.push(
+        this.winElementsShowSub = this.data.win.lines$
+            .filter(data => data)
+            .sample(this.state.isRolling$.filter(e => !e))
+            .subscribe(data => this.machine.screen.getElementsFromLines(data).forEach(el => el.playWin())))
+
+        if (this.config.logic.table)
+        this.logicSubs.push(
+        this.winElementsHideSub = this.data.win.lines$
+            .filter(data => data)
+            .sample(this.state.isRolling$.filter(e => e))
+            .subscribe(data => this.machine.screen.getElementsFromLines(data).forEach(el => el.playNormal())))
+
+        // One after another logic
+        if (this.config.logic.table)
+        this.logicSubs.push(
+        this.winOneAfterAnotherSub = this.data.win.lines$
+            .filter(data => data && data.length)
+            .sample(this.state.isRolling$.filter(e => !e))
+            .switchMap(
+                () => Observable.timer(5000, 3000).takeUntil(this.state.isRolling$.filter(e => e)),
+                (data, index) => ({ data, index: (data.length > 1) ? index % data.length : 0 })
+            )
+            .subscribe(({ data, index }) => {
+                if (data.length <= 1) return null
+
+                this.machine.table.hide()
+                this.machine.lines.hideAll()
+                this.machine.numbers.hideAll()
+                this.machine.screen.elements.forEach(el => el.playNormal())
+                this.machine.screen.elements.forEach(el => el.win.hide())
+                
+                this.machine.lines.show(data[index].number)
+                this.machine.numbers.show(data[index].number)
+                this.machine.screen.getElementsFromLine(data[index]).forEach(el => el.playWin())
+                this.machine.screen.getLastElementFromLine(data[index]).win.show(data[index].win)
+            }))
         
     }
 
