@@ -122,7 +122,7 @@ class RootController {
         this.config = defaultsDeep(config, defaultRootConfig)
 
         this.game  = game
-        this.level = game.level
+        this.level = game.root
         this.data  = game.data
         this.state = game.state
         this.balance = this.data.balance
@@ -540,16 +540,24 @@ class RootController {
         if (this.config.logic.table)
         this.logicSubs.push(
         this.winElementsShowSub = this.data.win.lines$
-            .filter(data => data)
+            .filter(data => data && data.length)
             .sample(this.state.isRolling$.filter(e => !e))
-            .subscribe(data => this.machine.screen.getElementsFromLines(data).forEach(el => el.playWin())))
+            .subscribe(data => {
+                this.machine.screen.getElementsFromLines(data).forEach(el => el.playWin())
+                this.machine.screen.elements
+                    .filter(el => !this.machine.screen.getElementsFromLines(data).some(winEl => winEl === el))
+                    .forEach(el => el.alpha = 0.6)
+            }))
 
         if (this.config.logic.table)
         this.logicSubs.push(
         this.winElementsHideSub = this.data.win.lines$
             .filter(data => data)
             .sample(this.state.isRolling$.filter(e => e))
-            .subscribe(data => this.machine.screen.getElementsFromLines(data).forEach(el => el.playNormal())))
+            .subscribe(data => {
+                this.machine.screen.getElementsFromLines(data).forEach(el => el.playNormal())
+                this.machine.screen.elements.forEach(el => el.alpha = 1)
+            }))
 
         // One after another logic
         if (this.config.logic.table)
