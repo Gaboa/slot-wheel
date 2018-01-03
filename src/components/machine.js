@@ -5,7 +5,6 @@ import { Container, Sprite, Button, BalanceText, Text, Graphics, Spine } from ".
 import { Screen } from "./screen"
 import { Element } from './element'
 
-// TODO: Add normal LineNumbers
 // TODO: Fix line hover behavior
 // TODO: Line with three types of tiles for different advanced line types
 
