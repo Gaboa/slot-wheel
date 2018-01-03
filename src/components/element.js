@@ -4,6 +4,8 @@ import { Subject } from 'rxjs/Subject'
 import { TweenMax } from 'gsap'
 import { Container, Sprite, Spine, BalanceText } from '../utils'
 
+// TODO: Do not interrrupt animations ( if I already play this anim )
+
 class WinCircle extends Container {
 
     constructor({
