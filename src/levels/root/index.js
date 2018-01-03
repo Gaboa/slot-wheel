@@ -37,6 +37,8 @@ class Root extends Container {
         this.footer = new Footer({
             container: this
         })
+        this.footer.bg.top.visible = false
+        this.footer.balance.top.visible = false
 
         this.darkness = new Darkness({
             container: this,
@@ -48,12 +50,12 @@ class Root extends Container {
     
     enable() {
         this.balance = new BalanceController({ game: this.game })
-        this.root    = new RootController({ game: this.game })
+        this.ctrl    = new RootController({ game: this.game })
     }
 
     disable() {
         this.balance.disable()
-        this.root.disable()
+        this.ctrl.disable()
     }
 
 }
@@ -158,11 +160,83 @@ class RootController {
                 .filter(code => code === 'SPACE'))
             .subscribe(e => this.machine.screen.roll()))
         
+        // Spin - Stop - Auto
+        if (this.config.panel.spin)
+        this.buttonsSubs.push(
+        this.spinAnimStartSub = this.machine.panel.buttons.anim.$
+            .filter(e => e.type === 'START')
+            .subscribe(e => this.machine.panel.buttons.changeButtonTo('anim')))
+
+        if (this.config.panel.spin)
+        this.buttonsSubs.push(
+        this.spinAnimCompleteSub = this.machine.panel.buttons.anim.$
+            .filter(e => e.type === 'COMPLETE')
+            .map(e => e.anim.split('_')[1])
+            .subscribe(state => this.machine.panel.buttons.changeButtonTo(state)))
+
+        if (this.config.panel.spin)
+        this.buttonsSubs.push(
+        this.spinAnimStateSub = this.state.button$
+            .subscribe(e => this.machine.panel.buttons.changeTo(e)))
+
         // Auto
         if (this.config.panel.auto)
         this.buttonsSubs.push(
         this.autoSub = this.machine.panel.buttons.auto.down$
-            .subscribe(e => e))
+            .throttleTime(1500)
+            .subscribe(e => this.state.button = (this.state.button === 'spin')
+                ? this.state.button = 'auto'
+                : this.state.button = 'spin' ))
+
+        if (this.config.panel.auto)
+        this.buttonsSubs.push(
+        this.autoItemSub = this.machine.panel.buttons.panel.$
+            .throttleTime(1500)
+            .map(e => e.value)
+            .subscribe(value => {
+                this.state.button = 'stop'
+                this.state.autoplay = value
+            }))
+
+        if (this.config.panel.auto)
+        this.buttonsSubs.push(
+        this.stopSub = this.machine.panel.buttons.stop.down$
+            .subscribe(e => {
+                this.state.button = 'spin'
+                this.state.autoplay = null
+            }))
+
+        // Autoplay Controller logic
+        if (this.config.panel.auto)
+        this.buttonsSubs.push(
+        this.autoStartSub = this.state.autoplay$
+            .switchMap(e => e ? Observable.timer(3000, 2000) : Observable.empty())
+            .subscribe(e => {
+                this.state.autoplay--
+                this.machine.screen.roll()
+            }))
+
+        if (this.config.panel.auto)
+        this.buttonsSubs.push(
+        this.autoStartSub = this.state.autoplay$
+            .filter(e => !e)
+            .subscribe(e => {
+                this.state.button = 'spin'
+                this.machine.panel.buttons.count.visible = false
+                this.machine.panel.buttons.count.set(0)
+                this.machine.panel.buttons.enableAll()
+            }))
+        
+        if (this.config.panel.auto)
+        this.buttonsSubs.push(
+        this.autoCountSub = this.state.autoplay$
+            .filter(e => e)
+            .subscribe(e => {
+                this.state.button = 'stop'                
+                this.machine.panel.buttons.count.visible = true                
+                this.machine.panel.buttons.count.set(e)
+                // this.machine.panel.buttons.disableAll()
+            }))
 
         // Max
         if (this.config.panel.max)        
@@ -459,7 +533,7 @@ class RootController {
         this.logicSubs.push(
         this.rollingFalseSub = this.state.isRolling$
             .filter(e => !e) // End of roll
-            .filter(e => !this.state.isAutoplay) // Not Autoplay
+            .filter(e => !this.state.autoplay) // Not Autoplay
             .filter(e => this.state.next === 'root') // Next is Root
             .subscribe(e => this.state.isIdle = true))
 
@@ -570,17 +644,20 @@ class RootController {
                 (data, index) => ({ data, index: (data.length > 1) ? index % data.length : 0 })
             )
             .subscribe(({ data, index }) => {
-                if (data.length <= 1) return null
+                if (data.number < 0) return null
 
                 this.machine.table.hide()
-                this.machine.lines.hideAll()
                 this.machine.numbers.hideAll()
-                this.machine.screen.elements.forEach(el => el.playNormal())
-                this.machine.screen.elements.forEach(el => el.win.hide())
+                this.machine.screen.elements
+                    .forEach(el => el.playNormal())
+                this.machine.lines.items
+                    .filter(line => line.name != data[index].number)
+                    .forEach((line, i, arr) => line.hide())
                 
                 this.machine.lines.show(data[index].number)
                 this.machine.numbers.show(data[index].number)
-                this.machine.screen.getElementsFromLine(data[index]).forEach(el => el.playWin())
+                this.machine.screen.getElementsFromLine(data[index])
+                    .forEach(el => el.playWin())
                 this.machine.screen.getLastElementFromLine(data[index]).win.show(data[index].win)
             }))
         
