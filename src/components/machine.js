@@ -5,9 +5,8 @@ import { Container, Sprite, Button, BalanceText, Text, Graphics, Spine } from ".
 import { Screen } from "./screen"
 import { Element } from './element'
 
-// TODO: Add Lines to Machine
-// TODO: Add Numbers to Machine
-// TODO: Add Win to Machine
+// TODO: Add normal LineNumbers
+// TODO: Fix line hover behavior
 // TODO: Line with three types of tiles for different advanced line types
 
 const defaultButtonsConfig = {
@@ -31,13 +30,22 @@ const defaultButtonsConfig = {
     },
     stop: {
         x: 0,
-        y: -0.005,
-        visible: false
+        y: -0.002
     },
     max: {
         x: 0.065,
         y: -0.005
     },
+    count: {
+        text: {
+            x: -0.061,
+            y: -0.004
+        },
+        bg: {
+            x: -0.065,
+            y: -0.005
+        }
+    }
 }
 
 const defaultBalanceConfig = {
@@ -74,7 +82,7 @@ const defaultBalanceConfig = {
     }
 }
 
-class WinNumber extends Text {
+class WinNumber extends Container {
 
     constructor({
         container,
@@ -83,10 +91,21 @@ class WinNumber extends Text {
         value,
         size
     }) {
-        super({ container, x, y, text: value, style: { fill: '#ffffff' } })
+        super({ container, x, y })
 
         this.name = value
         this.value = value
+
+        this.sprite = new Sprite({
+            container: this,
+            texture: `${value}_off` 
+        })
+
+        this.spine = new Spine({
+            container: this,
+            name: 'splash'
+        })
+        
         if (size)
             this.hitArea = new PIXI.Circle(0, 0, size * 0.5)
     }
@@ -108,11 +127,12 @@ class WinNumber extends Text {
     }
 
     show() {
-        this.scale.set(2)
+        this.sprite.changeTexture(`${this.value}_on`)
+        this.spine.state.setAnimation(0, 'animation', false)
     }
-
+    
     hide() {
-        this.scale.set(1)
+        this.sprite.changeTexture(`${this.value}_off`)
     }
 
 }
@@ -163,7 +183,7 @@ const defaultNumbersConfig = {
         pattern: [4, 2, 6, 9, 10, 1, 8, 7, 3, 5],
         delta: 0.065,
         positions: [],
-        size: 0,
+        size: 30,
         WinNumber
     },
     right: {
@@ -172,7 +192,7 @@ const defaultNumbersConfig = {
         pattern: [4, 2, 6, 9, 10, 1, 8, 7, 3, 5],
         delta: 0.065,
         positions: [],
-        size: 0,
+        size: 30,
         WinNumber
     }
 }
@@ -308,10 +328,12 @@ class Lines extends Container {
     }
 
     show(number) {
+        if (number < 0) return null
         this.items[number - 1].show()
     }
     
     hide(number) {
+        if (number < 0) return null
         this.items[number - 1].hide()
     }
 
@@ -333,6 +355,7 @@ class Line extends Container {
         super({ container, x, y })
 
         this.name = index + 1
+
         this.config = config
         this.items = []
 
@@ -357,13 +380,13 @@ class Line extends Container {
     }
 
     show() {
-        // TweenMax.staggerTo(this.items, this.config.show.time, { alpha: 1 }, this.config.show.delta)
-        this.items.forEach(item => item.alpha = 1)
+        TweenMax.staggerTo(this.items, this.config.show.time, { alpha: 1 }, this.config.show.delta)
+        // this.items.forEach(item => item.alpha = 1)
     }
     
     hide() {
-        // TweenMax.staggerTo([...this.items].reverse(), this.config.show.time, { alpha: 0, overwrite: 'all' }, this.config.show.delta)
-        this.items.forEach(item => item.alpha = 0)
+        TweenMax.staggerTo([...this.items].reverse(), this.config.show.time, { alpha: 0, overwrite: 'all' }, this.config.show.delta)
+        // this.items.forEach(item => item.alpha = 0)
     }
 
 }
@@ -432,6 +455,106 @@ class Panel extends Container {
 
 }
 
+const defaultAutoPanelConfig = {
+    left: {
+        pattern: [{ value: 10, y: -33 }, { value: 25, y: -1 }, { value: 50, y: 32 }],
+        deltaX: -41
+    },
+    right: {
+        pattern: [{ value: 100, y: -33 }, { value: 250, y: -1 }, { value: 500, y: 32 }],
+        deltaX: 38
+    }
+}
+
+class AutoPanel extends Container {
+
+    constructor({
+        container,
+        x,
+        y,
+        config
+    }) {
+        super({ container, x, y })
+
+        this.config = defaultsDeep(config, defaultAutoPanelConfig)
+
+        this.bg = new Sprite({
+            container: this,
+            texture: 'auto_panel'
+        })
+
+        this.items = []
+        for (let side in this.config)
+            this.createButtonsRow(this.config[side])
+
+        this.enable()
+    }
+
+    enable() {
+        this.subs = []
+        this.$ = new Subject()
+
+        this.items.forEach(item => this.subs.push(item.up$.subscribe(e => this.$.next(Object.assign({ value: item.name }, e)))))
+        this.items.forEach(item => this.subs.push(item.over$.subscribe(e => item.alpha = 1)))
+        this.items.forEach(item => this.subs.push(item.out$.subscribe(e => item.alpha = 0.01)))
+    }
+
+    disable() {
+        this.$.complete()
+        this.subs.forEach(s => s.unsubscribe())
+    }
+
+    createButtonsRow(config) {
+        config.pattern.forEach(obj => {
+            this.items.push(
+                this[`auto_${obj.value}`] = new Button({
+                    container: this,
+                    x: config.deltaX,
+                    y: obj.y,
+                    texture: `auto_${obj.value}`,
+                    name: obj.value,
+                    alpha: 0.01,
+                    isHover: false,
+                    isTap: false
+                }))
+        })
+    }
+
+}
+
+class AutoCounter extends Container {
+
+    constructor({
+        container,
+        x,
+        y,
+        config
+    }) {
+        super({ container, x, y })
+        this.name = 'counter'
+        this.visible = false
+
+        this.config = config
+
+        this.bg = new Sprite(Object.assign({
+            container: this,
+            texture: 'auto_count'
+        }, this.config.bg))
+
+        this.text = new BalanceText(Object.assign({
+            container: this,
+            text: 0,
+            fixed: 0,
+            suffix: ''
+        }, this.config.text))
+    }
+
+    set(value) {
+        this.text.set(value)
+    }
+
+}
+
 class Buttons extends Container {
 
     constructor({
@@ -451,8 +574,8 @@ class Buttons extends Container {
 
         this.createButton('auto')
         this.createButton('max')
-        this.createButton('stop')
-        this.createButton('spin')
+        this.createMainButton()
+        this.count = new AutoCounter({ container: this, config: this.config.count })
 
     }
 
@@ -463,6 +586,77 @@ class Buttons extends Container {
         }, this.config[name]))
         this[name].name = name
         this.items.push(this[name])
+    }
+
+    createMainButton() {
+
+        this.anim = new Spine(Object.assign({
+            container: this,
+            name: 'spin'
+        }, this.config.spin))
+
+        this.createButton('spin')
+        this.createButton('stop')
+
+        this.panel = new AutoPanel(Object.assign({
+            container: this
+        }, this.config.spin))
+        
+    }
+
+    createCounter() {
+    }
+
+    changeButtonTo(state) {
+        switch (state) {
+            case 'auto':
+                this.anim.state.current = state
+                this.stop.visible = false
+                this.spin.visible = false
+                this.panel.visible = true
+                break
+            case 'spin':
+                this.anim.state.current = state
+                this.stop.visible = false
+                this.panel.visible = false
+                this.spin.visible = true
+                break
+            case 'stop':
+                this.anim.state.current = state
+                this.panel.visible = false
+                this.spin.visible = false
+                this.stop.visible = true
+                break
+            case 'anim':
+                this.panel.visible = false
+                this.spin.visible = false
+                this.stop.visible = false
+                break
+            default:
+        }
+    }
+
+    changeTo(state) {
+        switch (state) {
+            case 'auto':
+                if (this.anim.state.current === 'spin')            
+                    this.anim.state.setAnimation(0, 'spin_auto', false)
+                else this.changeButtonTo(state)
+                break
+            case 'spin':
+                if (this.anim.state.current === 'stop') 
+                    this.anim.state.setAnimation(0, 'stop_spin', false)
+                else if (this.anim.state.current === 'auto') 
+                    this.anim.state.setAnimation(0, 'auto_spin', false)
+                else this.changeButtonTo(state)
+                break
+            case 'stop':
+                if (this.anim.state.current === 'auto')
+                    this.anim.state.setAnimation(0, 'auto_stop', false)
+                else this.changeButtonTo(state)
+                break
+            default:
+        }
     }
 
     createBalanceControl(name) {
@@ -488,8 +682,11 @@ class Buttons extends Container {
         this.items.forEach(button => button.enable())
     }
 
-    disableAll() {
-        this.items.forEach(button => button.disable())
+    disableAll(withStop = false) {
+        if (withStop)
+            this.items.forEach(button => button.disable())
+        else
+            this.items.filter(item => item !== this.stop).forEach(button => button.disable())
     }
 
     disableBalance() {
