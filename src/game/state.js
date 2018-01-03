@@ -6,15 +6,19 @@ import { ReactiveObject } from '../utils'
 // TODO: Add methods to validate new state value
 
 const defaultState = {
+    
     isIdle: true,
     isRolling: false,
     isFR: false,
-    isAutoplay: false,
     isMenu: false,
     isTransition: false,
 
     mode: 'root',
     next: 'root',
+
+    // Main buttons mode in desktop 
+    button: 'spin',
+    autoplay: null,
 
     settings: {
         isFullscreen: false,
