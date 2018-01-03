@@ -1,0 +1,34 @@
+
+splash.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+E_0007_Layer-1
+  rotate: false
+  xy: 2, 2
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+Electro_Splash_03
+  rotate: false
+  xy: 606, 304
+  size: 195, 200
+  orig: 195, 200
+  offset: 0, 0
+  index: -1
+Magic_splash_01
+  rotate: false
+  xy: 2, 204
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+Magic_splash_04
+  rotate: false
+  xy: 304, 217
+  size: 300, 287
+  orig: 300, 287
+  offset: 0, 0
+  index: -1
