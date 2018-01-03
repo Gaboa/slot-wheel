@@ -9,8 +9,6 @@ const game = new Game({
     id: '#app',
     fps: 60,
 
-    device: {},
-
     request: {
         url: 'https://frontqa.bossgs.net/service',
         mode: 'animalssteam',
@@ -20,11 +18,12 @@ const game = new Game({
             game: 'animalssteam'
         }
     }
+
 })
 
 window.game = game
 
-game.level = new Preload({
+game.preload = new Preload({
     game,
     base: `src/img/${GAME_RES}`,
     config: {
@@ -37,29 +36,29 @@ game.level = new Preload({
         common: [
             { url: 'machine/elements/elements.json' },
             
-            { name: 'jack', url: 'machine/elements/jack.json' },
-            { name: 'queen', url: 'machine/elements/queen.json' },
-            { name: 'king', url: 'machine/elements/king.json' },
-            { name: 'ace', url: 'machine/elements/ace.json' },
+            { name: 'jack',   url: 'machine/elements/jack.json' },
+            { name: 'queen',  url: 'machine/elements/queen.json' },
+            { name: 'king',   url: 'machine/elements/king.json' },
+            { name: 'ace',    url: 'machine/elements/ace.json' },
             { name: 'rabbit', url: 'machine/elements/rabbit.json' },
-            { name: 'mouse', url: 'machine/elements/mouse.json' },
-            { name: 'owl', url: 'machine/elements/owl.json' },
-            { name: 'cat', url: 'machine/elements/cat.json' },
-            { name: 'wild', url: 'machine/elements/wild.json' },
-            { name: 'bonus', url: 'machine/elements/bonus.json' },
-            { name: 'pig', url: 'machine/elements/pig.json' },
+            { name: 'mouse',  url: 'machine/elements/mouse.json' },
+            { name: 'owl',    url: 'machine/elements/owl.json' },
+            { name: 'cat',    url: 'machine/elements/cat.json' },
+            { name: 'wild',   url: 'machine/elements/wild.json' },
+            { name: 'bonus',  url: 'machine/elements/bonus.json' },
+            { name: 'pig',    url: 'machine/elements/pig.json' },
             
             { url: 'footer/buttons.json' },
             { url: 'machine/buttons.json' },
-            { name: 'tile', url: 'machine/tile.png' },
-            { name: 'frame', url: 'machine/frame.png' },
+            { name: 'logo',       url: 'machine/logo.json' },
+            { name: 'panel',      url: 'machine/panel.json' },
+            { name: 'spin',       url: 'machine/button.json' },
+            { name: 'tile',       url: 'machine/tile.png' },
+            { name: 'frame',      url: 'machine/frame.png' },
             { name: 'panel_root', url: 'machine/panel_root.png' },
-            { name: 'panel_fs', url: 'machine/panel_fs.png' },
-            { name: 'win_table', url: 'machine/win_table.png' },
+            { name: 'panel_fs',   url: 'machine/panel_fs.png' },
+            { name: 'win_table',  url: 'machine/win_table.png' },
             { name: 'win_circle', url: 'machine/win_circle.png' },
-            { name: 'logo', url: 'machine/logo.json' },
-            { name: 'panel', url: 'machine/panel.json' },
-            { name: 'spin', url: 'machine/button.json' }
         ]
     }
 })
@@ -76,60 +75,6 @@ game.device.$
     .filter(e => e.type === 'LEAVE')
     .subscribe(res => game.request.sendLogout())
 
-game.level.$
+game.preload.$
     .filter(e => e === 'REMOVED').take(1)
-    .subscribe(e => game.level = new Root({ game }))
-
-// Experiment with resolution changing
-// setTimeout(() => {
-//     GAME_RES = 'hd'
-//     GAME_WIDTH = 1280
-//     GAME_HEIGHT = 720
-//     game.renderer.resize(1280, 720)
-//     game.level.removeLevel()
-//     game.loader.reset()
-//     PIXI.utils.clearTextureCache()
-//     game.level = new Preload({
-//         game,
-//         base: `src/img/${GAME_RES}`,
-//         config: {
-//             preload: [
-//                 { name: 'preload_bg', url: 'preload/bg.jpg' },
-//                 { name: 'preload_bar', url: 'preload/bar.png' },
-//                 { name: 'preload_light', url: 'preload/light.png' },
-//                 { url: 'preload/preload.json' }
-//             ],
-//             common: [
-//                 { url: 'machine/elements/elements.json' },
-
-//                 { name: 'jack', url: 'machine/elements/jack.json' },
-//                 { name: 'queen', url: 'machine/elements/queen.json' },
-//                 { name: 'king', url: 'machine/elements/king.json' },
-//                 { name: 'ace', url: 'machine/elements/ace.json' },
-//                 { name: 'rabbit', url: 'machine/elements/rabbit.json' },
-//                 { name: 'mouse', url: 'machine/elements/mouse.json' },
-//                 { name: 'owl', url: 'machine/elements/owl.json' },
-//                 { name: 'cat', url: 'machine/elements/cat.json' },
-//                 { name: 'wild', url: 'machine/elements/wild.json' },
-//                 { name: 'bonus', url: 'machine/elements/bonus.json' },
-//                 { name: 'pig', url: 'machine/elements/pig.json' },
-
-//                 { url: 'footer/buttons.json' },
-//                 { url: 'machine/buttons.json' },
-//                 { name: 'tile', url: 'machine/tile.png' },
-//                 { name: 'frame', url: 'machine/frame.png' },
-//                 { name: 'panel_root', url: 'machine/panel_root.png' },
-//                 { name: 'panel_fs', url: 'machine/panel_fs.png' },
-//                 { name: 'win_table', url: 'machine/win_table.png' },
-//                 { name: 'win_circle', url: 'machine/win_circle.png' },
-//                 { name: 'logo', url: 'machine/logo.json' },
-//                 { name: 'panel', url: 'machine/panel.json' },
-//                 { name: 'spin', url: 'machine/button.json' }
-//             ]
-//         }
-//     })
-
-//     game.level.$
-//         .filter(e => e === 'REMOVED').take(1)
-//         .subscribe(e => game.level = new Root({ game }))
-// }, 10000)
+    .subscribe(e => game.root = new Root({ game }))
