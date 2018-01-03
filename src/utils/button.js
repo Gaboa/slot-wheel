@@ -11,9 +11,12 @@ class Button extends Sprite {
         y,
         anchor,
         visible,
-        isHover = true
+        name,
+        alpha,
+        isHover = true,
+        isTap = true
     }) {
-        super({ container, x, y, texture, anchor, visible })
+        super({ container, x, y, texture, anchor, name, alpha, visible })
 
         this.textureName = texture.split('_')[0]
         this.textureNormal = PIXI.utils.TextureCache[texture]
@@ -24,6 +27,7 @@ class Button extends Sprite {
         this.textureDisabled = PIXI.utils.TextureCache[`${this.textureName}_disabled`]
 
         this.isHover = isHover
+        this.isTap = isTap
         this.enabled = true
         this.isMax = false
         this.isMin = false
@@ -46,8 +50,10 @@ class Button extends Sprite {
             this.out$.subscribe(next => this.normal())
         }
 
-        this.down$.subscribe(next => this.tap())
-        this.up$.subscribe(next => this.hover())
+        if (this.isTap) {
+            this.down$.subscribe(next => this.tap())
+            this.up$.subscribe(next => this.hover())
+        }
     }
 
     normal() {

@@ -24,6 +24,7 @@ class BalanceText extends Text {
         prefix = '',
         suffix = '',
         fixed = 2,
+        visible = true,
         name
     }) {
         super({
@@ -35,6 +36,7 @@ class BalanceText extends Text {
         })
 
         this.name = name
+        this.visible = visible
         this.tweenTime = tweenTime
         this.currentText = Number(text)
         this.prefix = prefix
