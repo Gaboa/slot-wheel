@@ -6,6 +6,7 @@ import { Game } from './game'
 import { Preload, Root } from './levels'
 
 const game = new Game({
+
     id: '#app',
     fps: 60,
 
@@ -21,6 +22,8 @@ const game = new Game({
 
 })
 
+// This is for debugging
+// Remove it in Prod mode
 window.game = game
 
 game.preload = new Preload({
@@ -47,12 +50,17 @@ game.preload = new Preload({
             { name: 'wild',   url: 'machine/elements/wild.json' },
             { name: 'bonus',  url: 'machine/elements/bonus.json' },
             { name: 'pig',    url: 'machine/elements/pig.json' },
-            
+
+            // Spritesheets
             { url: 'footer/buttons.json' },
             { url: 'machine/buttons.json' },
+            { url: 'machine/numbers.json' },
+            // Spines
             { name: 'logo',       url: 'machine/logo.json' },
             { name: 'panel',      url: 'machine/panel.json' },
             { name: 'spin',       url: 'machine/button.json' },
+            { name: 'splash',     url: 'machine/splash.json' },
+            // Images
             { name: 'tile',       url: 'machine/tile.png' },
             { name: 'frame',      url: 'machine/frame.png' },
             { name: 'panel_root', url: 'machine/panel_root.png' },
@@ -63,6 +71,7 @@ game.preload = new Preload({
     }
 })
 
+// TODO: Move it to GameController
 game.request.$
     .filter(e => e.type === 'INIT')
     .subscribe(res => game.parser.init(res.data))
