@@ -2,6 +2,7 @@
     <div :class = '{ opened : isVisible, closed : !isVisible}' >
         <ul class = info__pages></ul>
         <div class = info__close v-on:click = closeInfo></div>
+        <info-page :pageInfo ='getDataForActivePage()'></info-page>
         <ul class="info__markers">
             <div class="info__left"></div>
             <li class="info__marker"></li>
@@ -16,20 +17,29 @@
 </template>
 
 <script>
+import InfoPage from './InfoPage.vue'
 export default {
     props: ['info'],
+    components: {
+        'info-page': InfoPage
+    },
     data(){
         return {
-            isVisible: false,
+            isVisible: true,
+            active: 0
         }
     },
 
-    beforeMount(){
-        //console.log(this.$props)
+    mounted(){
         //game.level.footer.buttons.info.down$.subscribe(n => this.showInfo())
     },
 
     methods:{
+
+        getDataForActivePage(){
+            return this.info.pages.filter( page => page.index === this.active)[0]
+            
+        },
 
         closeInfo(){
             this.isVisible = false
@@ -37,6 +47,14 @@ export default {
 
         showInfo(){
             this.isVisible = true
+        },
+
+        prev(){
+
+        },
+
+        next(){
+
         }
 
     }
@@ -48,8 +66,6 @@ export default {
 
 <style scoped>
     .opened {
-        display: flex;
-        align-items: stretch;
         z-index: 10;
         position: absolute;
         top: 50%;
