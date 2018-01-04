@@ -24,43 +24,209 @@ const game = new Game({
     }
 })
 
+window.game = game
+
 const info = document.createElement('div')
 info.setAttribute('id', 'info')
 document.getElementById('app').appendChild(info)
-
-window.game = game
 
 // game -> init -> game.data.info -> new Info(game.data.info)
 
 const defaultInfoData = {
     pages: [
         {
+            index: 0,
             header: 'The payout table for major game symbols',
             body: {
                 grid: {
-                    rows: 2,
-                    column: 4
+                    columns: '1fr 1fr 1fr 1fr',
+                    rows: '1fr 1fr'
                 },
                 cards: [
                     {
+                        index: 0,
                         type: 'image-table',
-                        position: {
-                            rows: [1],
-                            columns: [1]
-                        },
-                        image: {
-                            src: 'image.png/base64'
-                        },
-                        table: {
-                            name: 'Jack',
-                            rows: [
-                                [3,3],
-                                [4,5],
-                                [5, 10]
-                            ]
+                        description: {
+                             position: {
+                                     rows: [1],
+                                     columns: [1]
+                                 },
+                                 image: {
+                                     src: 'src/img/info/j.png'
+                                 },
+                                 table: {
+                                     name: 'Jack',
+                                     rows: [
+                                         [3, 3],
+                                         [4, 5],
+                                         [5, 10]
+                                     ]
+                                 }
+
+                        }
+                       
+                    },
+                    {
+                        index: 1,
+                        type: 'image-table',
+                        description: {
+                            position: {
+                                rows: [1],
+                                columns: [1]
+                            },
+                            image: {
+                                src: 'src/img/info/j.png'
+                            },
+                            table: {
+                                name: 'Jack',
+                                rows: [
+                                    [3, 3],
+                                    [4, 5],
+                                    [5, 10]
+                                ]
+                            }
+
                         }
 
-                    }
+                    },
+                     {
+                         index: 2,
+                         type: 'image-table',
+                         description: {
+                             position: {
+                                 rows: [1],
+                                 columns: [1]
+                             },
+                             image: {
+                                 src: 'src/img/info/j.png'
+                             },
+                             table: {
+                                 name: 'Jack',
+                                 rows: [
+                                     [3, 3],
+                                     [4, 5],
+                                     [5, 10]
+                                 ]
+                             }
+
+                         }
+
+                    },
+                      {
+                          index: 3,
+                          type: 'image-table',
+                          description: {
+                              position: {
+                                  rows: [1],
+                                  columns: [1]
+                              },
+                              image: {
+                                  src: 'src/img/info/j.png'
+                              },
+                              table: {
+                                  name: 'Jack',
+                                  rows: [
+                                      [3, 3],
+                                      [4, 5],
+                                      [5, 10]
+                                  ]
+                              }
+
+                          }
+
+                    },
+                       {
+                           index: 4,
+                           type: 'image-table',
+                           description: {
+                               position: {
+                                   rows: [1],
+                                   columns: [1]
+                               },
+                               image: {
+                                   src: 'src/img/info/j.png'
+                               },
+                               table: {
+                                   name: 'Jack',
+                                   rows: [
+                                       [3, 3],
+                                       [4, 5],
+                                       [5, 10]
+                                   ]
+                               }
+
+                           }
+
+                    },
+                        {
+                            index: 5,
+                            type: 'image-table',
+                            description: {
+                                position: {
+                                    rows: [1],
+                                    columns: [1]
+                                },
+                                image: {
+                                    src: 'src/img/info/j.png'
+                                },
+                                table: {
+                                    name: 'Jack',
+                                    rows: [
+                                        [3, 3],
+                                        [4, 5],
+                                        [5, 10]
+                                    ]
+                                }
+
+                            }
+
+                    },
+                         {
+                             index: 6,
+                             type: 'image-table',
+                             description: {
+                                 position: {
+                                     rows: [1],
+                                     columns: [1]
+                                 },
+                                 image: {
+                                     src: 'src/img/info/j.png'
+                                 },
+                                 table: {
+                                     name: 'Jack',
+                                     rows: [
+                                         [3, 3],
+                                         [4, 5],
+                                         [5, 10]
+                                     ]
+                                 }
+
+                             }
+
+                    },
+                          {
+                              index: 7,
+                              type: 'image-table',
+                              description: {
+                                  position: {
+                                      rows: [1],
+                                      columns: [1]
+                                  },
+                                  image: {
+                                      src: 'src/img/info/j.png'
+                                  },
+                                  table: {
+                                      name: 'Jack',
+                                      rows: [
+                                          [3, 3],
+                                          [4, 5],
+                                          [5, 10]
+                                      ]
+                                  }
+
+                              }
+
+                          },
                 ]
             },
             footer: [
@@ -70,6 +236,7 @@ const defaultInfoData = {
             ]
         },
         {
+            index: 1,
             header: 'Freespins bonus game',
             body: {
                 grid: {
@@ -84,7 +251,7 @@ const defaultInfoData = {
                             column: 1
                         },
                         image: {
-                            src: 'image.png/base64'
+                            src: 'src/img/info/j.png'
                         }
                     },
                     {
@@ -138,6 +305,7 @@ const defaultInfoData = {
             ]
         },
         {
+            index:2,
             header: 'Bonus symbols',
             body: {
                 grid: {
@@ -197,6 +365,7 @@ const defaultInfoData = {
             ]
         },
         {
+            index: 3,
             header: 'Bonus symbols',
             body: {
                 grid: {
@@ -256,6 +425,7 @@ const defaultInfoData = {
             ]
         },
         {
+            index:4,
             header: 'Winning bet lines',
             body: {
                 grid: {
@@ -285,6 +455,7 @@ const defaultInfoData = {
             ]
         },
         {
+            index: 5,
             header: 'You can use hotkeys',
             body: {
                 grid: {
@@ -311,17 +482,15 @@ const defaultInfoData = {
                 'Malfunction Voids all pays and plays.'
             ]
         },
-
-
-
-        // { type: 'some', grid: 4, header: 'some', cards: [
-        //     { type: 'img+table', pos: { x: 0, y: 0 }, imgSrc: '', rows: [
-        //         'one',
-        //         'two'
-        //     ] }
-        // ], footer: [] }
     ]
 }
+
+// { type: 'some', grid: 4, header: 'some', cards: [
+//     { type: 'img+table', pos: { x: 0, y: 0 }, imgSrc: '', rows: [
+//         'one',
+//         'two'
+//     ] }
+// ], footer: [] }
 
 new Vue({
     el: '#info',
@@ -378,6 +547,8 @@ game.level = new Preload({
         ]
     }
 })
+
+
 
 game.request.$
     .filter(e => e.type === 'INIT')
