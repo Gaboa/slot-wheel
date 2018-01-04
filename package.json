@@ -19,7 +19,8 @@
     "pixi-spine": "^1.5.10",
     "pixi.js": "^4.6.2",
     "rxjs": "^5.5.5",
-    "url-search-params-polyfill": "^2.0.1"
+    "url-search-params-polyfill": "^2.0.1",
+    "vue-template-compiler": "^2.5.13"
   },
   "devDependencies": {
     "poi": "^9.6.1"
