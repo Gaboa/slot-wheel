@@ -23,15 +23,19 @@ const defaultBalanceConfig = {
 
 class BalanceController {
 
-    constructor({ game, config }) {
+    constructor({
+        game,
+        config,
+        autoEnable = true
+    }) {
         this.config = defaultsDeep(config, defaultBalanceConfig)
         
-        this.game = game
-        this.data = game.data
+        this.game  = game
+        this.data  = game.data
         this.state = game.state
         this.balance = this.data.balance
 
-        this.enable()
+        if (autoEnable) this.enable()
     }
 
     enable() {
