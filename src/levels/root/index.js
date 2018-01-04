@@ -6,10 +6,7 @@ import { Darkness } from "../preload/helpers"
 import { BalanceController } from './balance'
 
 // TODO: Create balance bindings for different modes ( FS FR Bonus )
-// TODO: Add Spine helper class
 // TODO: Check index switching bug in Screen
-// TODO: Propagate lines data
-// TODO: Propagate symbols data
 
 class Root extends Container {
 
@@ -31,7 +28,11 @@ class Root extends Container {
 
         this.machine = new Machine({
             container: this,
-            y: -0.05
+            y: -0.05,
+            config: {
+                lines:   game.data.lines,
+                symbols: game.data.symbols
+            }
         })
 
         this.footer = new Footer({
@@ -50,6 +51,8 @@ class Root extends Container {
     
     enable() {
         this.balance = new BalanceController({ game: this.game })
+        this.balance.root = new RootBalanceController({ game: this.game })
+        this.buttons = new ButtonsController({ game: this.game })
         this.ctrl    = new RootController({ game: this.game })
     }
 
@@ -61,47 +64,6 @@ class Root extends Container {
 }
 
 const defaultRootConfig = {
-    footer: {
-        home: true,
-        settings: true,
-        info: true,
-        sound: true,
-        fast: true,
-        fullscreen: true
-    },
-    panel: {
-        level: {
-            minus: true,
-            plus: true,
-            min: true,
-            max: true
-        },
-        value: {
-            minus: true,
-            plus: true,
-            min: true,
-            max: true
-        },
-        auto: true,
-        spin: true,
-        max: true
-    },
-    balance: {
-        currency: true,
-        cash: {
-            sum: true,
-            bet: true,
-            win: true
-        },
-        coin: {
-            sum: true,
-            bet: true,
-            win: true
-        },
-        level: true,
-        value: true,
-        lines: true
-    },
     logic: {
         screen: {
             start: true,
@@ -119,7 +81,8 @@ class RootController {
 
     constructor({
         game,
-        config
+        config,
+        autoEnable = true
     }) {
         this.config = defaultsDeep(config, defaultRootConfig)
 
@@ -131,84 +94,29 @@ class RootController {
         this.footer  = this.level.footer
         this.machine = this.level.machine
 
-        this.enable()
+        if (autoEnable) this.enable()        
     }
 
     enable() {
-        this.enableButtons()
-        this.enableBalance()
         this.enableLogic()
     }
 
     disable() {
-        this.disableButtons()
-        this.disableBalance()
         this.disableLogic()        
     }
 
-    enableButtons() {
-        this.buttonsSubs = []
+    enableLogic() {
+        this.logicSubs = []
 
-        // Spin
-        if (this.config.panel.spin)
-        this.buttonsSubs.push(
-        this.spinSub = this.machine.panel.buttons.spin.down$
-            .merge(Observable.fromEvent(document, 'keyup')
-                .filter(e => this.machine.panel.buttons.spin.enabled)
-                .pluck('code')
-                .map(code => String(code).toUpperCase())
-                .filter(code => code === 'SPACE'))
-            .subscribe(e => this.machine.screen.roll()))
-        
-        // Spin - Stop - Auto
-        if (this.config.panel.spin)
-        this.buttonsSubs.push(
-        this.spinAnimStartSub = this.machine.panel.buttons.anim.$
-            .filter(e => e.type === 'START')
-            .subscribe(e => this.machine.panel.buttons.changeButtonTo('anim')))
-
-        if (this.config.panel.spin)
-        this.buttonsSubs.push(
-        this.spinAnimCompleteSub = this.machine.panel.buttons.anim.$
-            .filter(e => e.type === 'COMPLETE')
-            .map(e => e.anim.split('_')[1])
-            .subscribe(state => this.machine.panel.buttons.changeButtonTo(state)))
-
-        if (this.config.panel.spin)
-        this.buttonsSubs.push(
-        this.spinAnimStateSub = this.state.button$
-            .subscribe(e => this.machine.panel.buttons.changeTo(e)))
-
-        // Auto
-        if (this.config.panel.auto)
-        this.buttonsSubs.push(
-        this.autoSub = this.machine.panel.buttons.auto.down$
-            .throttleTime(1500)
-            .subscribe(e => this.state.button = (this.state.button === 'spin')
-                ? this.state.button = 'auto'
-                : this.state.button = 'spin' ))
-
-        if (this.config.panel.auto)
-        this.buttonsSubs.push(
-        this.autoItemSub = this.machine.panel.buttons.panel.$
-            .throttleTime(1500)
-            .map(e => e.value)
-            .subscribe(value => {
-                this.state.button = 'stop'
-                this.state.autoplay = value
-            }))
-
-        if (this.config.panel.auto)
-        this.buttonsSubs.push(
-        this.stopSub = this.machine.panel.buttons.stop.down$
-            .subscribe(e => {
-                this.state.button = 'spin'
-                this.state.autoplay = null
-            }))
+        // Fast Screen
+        if (this.config.fast)
+        this.subs.push(
+        this.fastScreenSub = this.state.settings.isFast$
+            .subscribe(e => this.machine.screen.setRollSpeed(this.machine.screen.config.roll[e ? 'fast' : 'normal'])))                        
 
         // Autoplay Controller logic
-        if (this.config.panel.auto)
-        this.buttonsSubs.push(
+        if (this.config.auto)
+        this.subs.push(
         this.autoStartSub = this.state.autoplay$
             .switchMap(e => e ? Observable.timer(3000, 2000) : Observable.empty())
             .subscribe(e => {
@@ -216,253 +124,27 @@ class RootController {
                 this.machine.screen.roll()
             }))
 
-        if (this.config.panel.auto)
-        this.buttonsSubs.push(
+        if (this.config.auto)
+        this.subs.push(
         this.autoStartSub = this.state.autoplay$
             .filter(e => !e)
             .subscribe(e => {
                 this.state.button = 'spin'
-                this.machine.panel.buttons.count.visible = false
-                this.machine.panel.buttons.count.set(0)
-                this.machine.panel.buttons.enableAll()
+                this.buttons.count.visible = false
+                this.buttons.count.set(0)
+                this.buttons.enableAll()
             }))
         
-        if (this.config.panel.auto)
-        this.buttonsSubs.push(
+        if (this.config.auto)
+        this.subs.push(
         this.autoCountSub = this.state.autoplay$
             .filter(e => e)
             .subscribe(e => {
                 this.state.button = 'stop'                
-                this.machine.panel.buttons.count.visible = true                
-                this.machine.panel.buttons.count.set(e)
-                // this.machine.panel.buttons.disableAll()
+                this.buttons.count.visible = true                
+                this.buttons.count.set(e)
+                // this.buttons.disableAll()
             }))
-
-        // Max
-        if (this.config.panel.max)        
-        this.buttonsSubs.push(
-        this.maxSub = this.machine.panel.buttons.max.down$
-            .subscribe(e => this.balance.level.index = this.balance.level.arr.length - 1))
-        
-        // Level - Plus / Minus
-        if (this.config.panel.level.minus)        
-        this.buttonsSubs.push(
-        this.levelMinusSub = this.machine.panel.buttons.level.minus.down$
-            .merge(Observable.fromEvent(document, 'keyup')
-                .filter(e => this.machine.panel.buttons.level.minus.enabled)
-                .pluck('code')
-                .map(code => String(code).toUpperCase())
-                .filter(code => code === 'ARROWDOWN'))
-            .subscribe(e => this.balance.level.index--))
-        
-        if (this.config.panel.level.plus)                
-        this.buttonsSubs.push(
-        this.levelPlusSub = this.machine.panel.buttons.level.plus.down$
-            .merge(Observable.fromEvent(document, 'keyup')
-                .filter(e => this.machine.panel.buttons.level.plus.enabled)
-                .pluck('code')
-                .map(code => String(code).toUpperCase())
-                .filter(code => code === 'ARROWUP'))
-            .subscribe(e => this.balance.level.index++))
-
-        // Value - Plus / Minus
-        if (this.config.panel.value.minus)                
-        this.buttonsSubs.push(
-        this.valueMinusSub = this.machine.panel.buttons.value.minus.down$
-            .merge(Observable.fromEvent(document, 'keyup')
-                .filter(e => this.machine.panel.buttons.value.minus.enabled)
-                .pluck('code')
-                .map(code => String(code).toUpperCase())
-                .filter(code => code === 'ARROWLEFT'))
-            .subscribe(e => this.balance.value.index--))
-        
-        if (this.config.panel.value.plus)                
-        this.buttonsSubs.push(
-        this.valuePlusSub = this.machine.panel.buttons.value.plus.down$
-            .merge(Observable.fromEvent(document, 'keyup')
-                .filter(e => this.machine.panel.buttons.value.plus.enabled)
-                .pluck('code')
-                .map(code => String(code).toUpperCase())
-                .filter(code => code === 'ARROWRIGHT'))
-            .subscribe(e => this.balance.value.index++))
-        
-        // Min / Max stoppers for balance buttons
-        if (this.config.panel.value.max)                        
-        this.buttonsSubs.push(
-        this.valueMaxSub = this.balance.value.max$
-            .subscribe(e => this.machine.panel.buttons.value.plus.max(e)))
-        
-        if (this.config.panel.value.min)                                
-        this.buttonsSubs.push(
-        this.valueMinSub = this.balance.value.min$
-            .subscribe(e => this.machine.panel.buttons.value.minus.min(e)))
-        
-        if (this.config.panel.level.max)                                
-        this.buttonsSubs.push(
-        this.levelMaxSub = this.balance.level.max$
-            .subscribe(e => {
-                this.machine.panel.buttons.level.plus.max(e)
-                this.machine.panel.buttons.max.max(e)
-            }))
-        
-        if (this.config.panel.level.min)                                        
-        this.buttonsSubs.push(
-        this.levelMinSub = this.balance.level.min$
-            .subscribe(e => this.machine.panel.buttons.level.minus.min(e)))
-        
-        // Footer
-        this.enableFooterButtons()
-    }
-
-    enableFooterButtons() {
-        // Home
-        // TODO: Add logic with redirect to homeUrl
-        if (this.config.footer.home)
-        this.buttonsSubs.push(
-        this.homeSub = this.footer.buttons.home.$
-            .filter(e => e.type === 'DOWN')
-            .subscribe(e => this.game.request.sendLogout()))
-
-        // Settings
-        if (this.config.footer.settings)
-        this.buttonsSubs.push(
-        this.settingsSub = this.footer.buttons.settings.$
-            .filter(e => e.type === 'DOWN')
-            .subscribe(e => e))
-
-        // Info
-        if (this.config.footer.info)
-        this.buttonsSubs.push(
-        this.infoSub = this.footer.buttons.info.$
-            .filter(e => e.type === 'DOWN')
-            .subscribe(e => e))
-
-        // Sound
-        if (this.config.footer.sound)
-        this.buttonsSubs.push(
-        this.soundSub = this.footer.buttons.sound.$
-            .filter(e => e.type === 'DOWN')
-            .subscribe(e => this.state.settings.isSound = !this.state.settings.isSound))
-        
-        if (this.config.footer.sound)        
-        this.buttonsSubs.push(
-        this.soundStateSub = this.state.settings.isSound$
-            .subscribe(e => this.footer.buttons.sound.to(e)))
-
-        // Fast
-        if (this.config.footer.fast)
-        this.buttonsSubs.push(
-        this.fastSub = this.footer.buttons.fast.$
-            .filter(e => e.type === 'DOWN')
-            .subscribe(e => this.state.settings.isFast = !this.state.settings.isFast))
-        
-        if (this.config.footer.fast)
-        this.buttonsSubs.push(
-        this.fastStateSub = this.state.settings.isFast$
-            .subscribe(e => {
-                this.footer.buttons.fast.to(e)
-                this.machine.screen.setRollSpeed(this.machine.screen.config.roll[e ? 'fast' : 'normal'])
-            }))                        
-
-        // Fullscreen
-        if (this.config.footer.fullscreen)
-        this.buttonsSubs.push(
-        this.fullscreenSub = this.footer.buttons.fullscreen.$
-            .filter(e => e.type === 'DOWN')
-            .subscribe(e => this.state.settings.isFullscreen = !this.state.settings.isFullscreen))
-
-        if (this.config.footer.fullscreen)
-        this.buttonsSubs.push(
-        this.fullscreenStateSub = this.state.settings.isFullscreen$
-            .subscribe(e => {
-                this.footer.buttons.fullscreen.to(e)
-                this.game.device[`${e ? 'enter' : 'cancel'}Fullscreen`]()
-            }))
-        
-    }
-
-    enableBalance() {
-        this.balanceSubs = []
-
-        // Footer Balance
-        if (this.config.balance.currency)
-        this.balanceSubs.push(
-        this.currencySub = this.data.balance.currency$
-            .subscribe(e => this.footer.balance.setCurrency(e)))
-        
-        // Cash Sum
-        if (this.config.balance.cash.sum)
-        this.balanceSubs.push(
-        this.cashSumStartSub = this.data.balance.cash.sum$
-            .filter(e => !this.state.isRolling)
-            .subscribe(e => this.footer.balance.bottom.left.set(e)))
-        
-        if (this.config.balance.cash.sum)
-        this.balanceSubs.push(
-        this.cashSumEndSub = this.data.balance.cash.sum$
-            .filter(e => this.state.isRolling)
-            .sample(this.state.isRolling$)
-            .subscribe(e => this.footer.balance.bottom.left.set(e)))
-        
-        // Cash Bet
-        if (this.config.balance.cash.bet)
-        this.balanceSubs.push(
-        this.cashBetSub = this.data.balance.cash.bet$
-            .subscribe(e => this.footer.balance.bottom.center.set(e)))
-        
-        // Cash Win
-        if (this.config.balance.cash.win)
-        this.balanceSubs.push(
-        this.cashWinStartSub = this.data.balance.cash.win$
-            .filter(e => !this.state.isRolling)
-            .subscribe(e => this.footer.balance.bottom.right.set(e)))
-        
-        if (this.config.balance.cash.win)
-        this.balanceSubs.push(
-        this.cashWinEndSub = this.data.balance.cash.win$
-            .filter(e => this.state.isRolling)
-            .sample(this.state.isRolling$)
-            .subscribe(e => this.footer.balance.bottom.right.set(e)))
-
-        // Panel Balance bindings
-        if (this.config.balance.lines)
-        this.balanceSubs.push(
-        this.linesSub = this.data.lines$
-            .subscribe(e => this.machine.panel.balance.lines.set(e.length)))
-        
-        if (this.config.balance.level)
-        this.balanceSubs.push(
-        this.levelSub = this.data.balance.level.current$
-            .subscribe(e => this.machine.panel.balance.level.set(e)))                
-
-        if (this.config.balance.value)
-        this.balanceSubs.push(
-        this.valueSub = this.data.balance.value.current$
-            .subscribe(e => this.machine.panel.balance.value.set(e / 100)))
-        
-        if (this.config.balance.coin.bet)
-        this.balanceSubs.push(
-        this.coinBetSub = this.data.balance.coin.bet$
-            .subscribe(e => this.machine.panel.balance.bet.set(e)))
-        
-        // Coin Sum
-        if (this.config.balance.coin.sum)
-        this.balanceSubs.push(
-        this.coinSumStartSub = this.data.balance.coin.sum$
-            .filter(e => !this.state.isRolling)
-            .subscribe(e => this.machine.panel.balance.sum.set(e)))
-        
-        if (this.config.balance.coin.sum)
-        this.balanceSubs.push(
-        this.coinSumEndSub = this.data.balance.coin.sum$
-            .filter(e => this.state.isRolling)
-            .sample(this.state.isRolling$)
-            .subscribe(e => this.machine.panel.balance.sum.set(e)))
-        
-    }
-
-    enableLogic() {
-        this.logicSubs = []
 
         if (this.config.logic.screen.start)
         this.logicSubs.push(
@@ -549,93 +231,584 @@ class RootController {
         this.logicSubs.push(
         this.linesOverSub = this.machine.numbers.$
             .filter(e => e.type === 'OVER')
-            .map(e => e.num)
-            .subscribe(e => this.machine.lines.show(e)))
+            .subscribe(e => this.machine.lines.show(e.num)))
 
         if (this.config.logic.lines)
         this.logicSubs.push(
         this.linesOutSub = this.machine.numbers.$
             .filter(e => e.type === 'OUT')
-            .map(e => e.num)
-            .subscribe(e => this.machine.lines.hide(e)))
+            .subscribe(e => this.machine.lines.hide(e.num)))
         
 
-        // WinController logic
-        // Win Table Show and Hide
-        if (this.config.logic.table)
-        this.logicSubs.push(
-        this.tableShowSub = this.balance.coin.win$
-            .filter(e => e)
-            .sample(this.state.isRolling$)
-            .subscribe(e => this.machine.table.show(e)))
-
-        if (this.config.logic.table)
-        this.logicSubs.push(
-        this.tableShowSub = this.state.isRolling$
-            .filter(e => e)
-            .subscribe(e => this.machine.table.hide()))
-
-        // Win Table Show and Hide
-        if (this.config.logic.table)
-        this.logicSubs.push(
-        this.tableShowSub = this.balance.coin.win$
-            .filter(e => e)
-            .sample(this.state.isRolling$)
-            .subscribe(e => this.machine.table.show(e)))
-
-        if (this.config.logic.table)
-        this.logicSubs.push(
-        this.tableShowSub = this.state.isRolling$
-            .filter(e => e)
-            .subscribe(e => this.machine.table.hide()))
         
-        // Win controls
-        if (this.config.logic.table)
-        this.logicSubs.push(
-        this.linesAndNumbersShowSub = this.data.win.lines$
-            .filter(data => data)
+        
+    }
+
+    disableLogic() {
+        this.logicSubs.forEach(s => s.unsubscribe())
+    }
+
+}
+
+const defaultButtonsConfig = {
+    footer: {
+        home: true,
+        settings: true,
+        info: true,
+        sound: true,
+        fast: true,
+        fullscreen: true
+    },
+    panel: {
+        level: {
+            minus: true,
+            plus: true,
+            min: true,
+            max: true
+        },
+        value: {
+            minus: true,
+            plus: true,
+            min: true,
+            max: true
+        },
+        auto: true,
+        item: true,
+        spin: true,
+        anim: true,
+        stop: true,
+        max:  true
+    },
+}
+
+class ButtonsController {
+
+    constructor({
+        game,
+        config,
+        autoEnable = true
+    }) {
+        this.config = defaultsDeep(config, defaultButtonsConfig)
+        this.game  = game
+
+        if (autoEnable) this.enable()        
+    }
+
+    enable() {
+        this.panel  = new PanelButtonsController({
+            game: this.game,
+            config: this.config.panel
+        }) 
+        this.footer = new FooterButtonsController({
+            game: this.game,
+            config: this.config.footer
+        })
+    }
+
+    disable() {
+        this.panel.disable()
+        this.footer.disable()
+    }
+
+}
+
+class FooterButtonsController {
+    
+    constructor({
+        game,
+        config,
+        autoEnable = true
+    }) {
+        this.config = defaultsDeep(config, defaultButtonsConfig.footer)
+
+        this.game = game
+        this.buttons = game.root.footer.buttons
+        this.settings = game.state.settings
+
+        if (autoEnable) this.enable()        
+    }
+
+    enable() {
+        this.subs = []
+
+        // Home
+        // TODO: Add handling homeUrl
+        if (this.config.home)
+        this.subs.push(
+        this.homeSub = this.buttons.home.down$
+            .subscribe(e => this.game.request.sendLogout()))
+
+        // TODO: Some Settings bindings
+        if (this.config.settings)
+        this.subs.push(
+        this.settingsSub = this.buttons.settings.down$
+            .subscribe(e => e))
+
+        // TODO: Some Info bindings
+        if (this.config.info)
+        this.subs.push(
+        this.infoSub = this.buttons.info.down$
+            .subscribe(e => e))
+
+        // Sound
+        if (this.config.sound)
+        this.subs.push(
+        this.soundSub = this.buttons.sound.down$
+            .subscribe(e => this.settings.isSound = !this.settings.isSound))
+        
+        if (this.config.sound)        
+        this.subs.push(
+        this.soundStateSub = this.settings.isSound$
+            .subscribe(e => this.buttons.sound.to(e)))
+
+        // Fast
+        if (this.config.fast)
+        this.subs.push(
+        this.fastSub = this.buttons.fast.down$
+            .subscribe(e => this.settings.isFast = !this.settings.isFast))
+        
+        if (this.config.fast)
+        this.subs.push(
+        this.fastStateSub = this.settings.isFast$
+            .subscribe(e => this.buttons.fast.to(e)))                        
+
+        // Fullscreen
+        if (this.config.fullscreen)
+        this.subs.push(
+        this.fullscreenSub = this.buttons.fullscreen.down$
+            .subscribe(e => this.settings.isFullscreen = !this.settings.isFullscreen))
+
+        if (this.config.fullscreen)
+        this.subs.push(
+        this.fullscreenStateSub = this.settings.isFullscreen$
+            .subscribe(e => {
+                this.buttons.fullscreen.to(e)
+                // ??? Where must be this part of logic
+                this.game.device[`${e ? 'enter' : 'cancel'}Fullscreen`]()
+            }))
+
+    }
+
+    disable() {
+        this.subs.forEach(s => s.unsubscribe())
+    }
+
+}
+
+class PanelButtonsController {
+
+    constructor({
+        game,
+        config,
+        autoEnable = true
+    }) {
+        this.config = defaultsDeep(config, defaultButtonsConfig.panel)
+
+        this.game = game
+        this.level = game.root
+        this.data  = game.data
+        this.state = game.state
+        this.balance = this.data.balance
+        this.machine = this.level.machine
+        this.buttons = this.machine.panel.buttons
+
+        if (autoEnable) this.enable()
+    }
+
+    enable() {
+        this.subs = []
+
+        // Spin
+        if (this.config.spin)
+        this.subs.push(
+        this.spinSub = this.buttons.spin.down$
+            .merge(Observable.fromEvent(document, 'keyup')
+                .filter(e => this.buttons.spin.enabled)
+                .map(e => String(e.code).toUpperCase())
+                .filter(code => code === 'SPACE'))
+            .subscribe(e => this.machine.screen.roll()))
+        
+        // Anim of center button
+        if (this.config.anim)
+        this.subs.push(
+        this.animStartSub = this.buttons.anim.$
+            .filter(e => e.type === 'START')
+            .subscribe(e => this.buttons.changeButtonTo('anim')))
+
+        if (this.config.anim)
+        this.subs.push(
+        this.animCompleteSub = this.buttons.anim.$
+            .filter(e => e.type === 'COMPLETE')
+            .map(e => e.anim.split('_')[1])
+            .subscribe(state => this.buttons.changeButtonTo(state)))
+
+        if (this.config.anim)
+        this.subs.push(
+        this.animStateSub = this.state.button$
+            .subscribe(e => this.buttons.changeTo(e)))
+
+        // Auto Button
+        if (this.config.auto)
+        this.subs.push(
+        this.autoSub = this.buttons.auto.down$
+            .throttleTime(1500)
+            .subscribe(e => this.state.button = (this.state.button === 'spin')
+                ? this.state.button = 'auto'
+                : this.state.button = 'spin' ))
+
+        // AutoItem in AutoPanel
+        if (this.config.item)
+        this.subs.push(
+        this.autoItemSub = this.buttons.panel.$
+            .throttleTime(1500)
+            .map(e => e.value)
+            .subscribe(value => {
+                this.state.button = 'stop'
+                this.state.autoplay = value
+            }))
+
+        // Stop Button
+        if (this.config.stop)
+        this.subs.push(
+        this.stopSub = this.buttons.stop.down$
+            .subscribe(e => {
+                this.state.button = 'spin'
+                this.state.autoplay = null
+            }))
+
+        // Max
+        if (this.config.max)        
+        this.subs.push(
+        this.maxSub = this.buttons.max.down$
+            .subscribe(e => this.balance.level.index = this.balance.level.arr.length - 1))
+        
+        // Level - Plus / Minus
+        if (this.config.level.minus)        
+        this.subs.push(
+        this.levelMinusSub = this.buttons.level.minus.down$
+            .merge(Observable.fromEvent(document, 'keyup')
+                .filter(e => this.buttons.level.minus.enabled)
+                .map(e => String(e.code).toUpperCase())
+                .filter(code => code === 'ARROWDOWN'))
+            .subscribe(e => this.balance.level.index--))
+        
+        if (this.config.level.plus)                
+        this.subs.push(
+        this.levelPlusSub = this.buttons.level.plus.down$
+            .merge(Observable.fromEvent(document, 'keyup')
+                .filter(e => this.buttons.level.plus.enabled)
+                .map(e => String(e.code).toUpperCase())
+                .filter(code => code === 'ARROWUP'))
+            .subscribe(e => this.balance.level.index++))
+
+        // Value - Plus / Minus
+        if (this.config.value.minus)                
+        this.subs.push(
+        this.valueMinusSub = this.buttons.value.minus.down$
+            .merge(Observable.fromEvent(document, 'keyup')
+                .filter(e => this.buttons.value.minus.enabled)
+                .map(e => String(e.code).toUpperCase())
+                .filter(code => code === 'ARROWLEFT'))
+            .subscribe(e => this.balance.value.index--))
+        
+        if (this.config.value.plus)                
+        this.subs.push(
+        this.valuePlusSub = this.buttons.value.plus.down$
+            .merge(Observable.fromEvent(document, 'keyup')
+                .filter(e => this.buttons.value.plus.enabled)
+                .map(e => String(e.code).toUpperCase())
+                .filter(code => code === 'ARROWRIGHT'))
+            .subscribe(e => this.balance.value.index++))
+        
+        // Min / Max stoppers for value buttons
+        if (this.config.value.max)                        
+        this.subs.push(
+        this.valueMaxSub = this.balance.value.max$
+            .subscribe(e => this.buttons.value.plus.max(e)))
+        
+        if (this.config.value.min)                                
+        this.subs.push(
+        this.valueMinSub = this.balance.value.min$
+            .subscribe(e => this.buttons.value.minus.min(e)))
+        
+        // Min / Max stoppers for level buttons
+        if (this.config.level.max)                                
+        this.subs.push(
+        this.levelMaxSub = this.balance.level.max$
+            .subscribe(e => {
+                this.buttons.level.plus.max(e)
+                this.buttons.max.max(e)
+            }))
+        
+        if (this.config.level.min)                                        
+        this.subs.push(
+        this.levelMinSub = this.balance.level.min$
+            .subscribe(e => this.buttons.level.minus.min(e)))
+    }
+
+    disable() {
+        this.subs.forEach(s => s.unsubscribe())        
+    }
+
+}
+
+const defaultRootBalanceConfig = {
+    currency: true,
+    cash: {
+        sum: true,
+        bet: true,
+        win: true
+    },
+    coin: {
+        sum: true,
+        bet: true,
+        win: true
+    },
+    level: true,
+    value: true,
+    lines: true
+}
+
+class RootBalanceController {
+
+    constructor({
+        game,
+        config,
+        autoEnable = true
+    }) {
+        this.config = defaultsDeep(config, defaultRootBalanceConfig)
+        this.game = game
+        this.level = game.root
+        this.data  = game.data
+        this.state = game.state
+        this.balance = this.data.balance
+        this.footer  = this.level.footer
+        this.machine = this.level.machine
+        this.footerBal  = this.footer.balance.bottom
+        this.machineBal = this.machine.panel.balance
+
+        if (autoEnable) this.enable()
+    }
+
+    enable() {
+        this.subs = []
+
+        // Footer Balance
+        // Currency
+        if (this.config.currency)
+        this.subs.push(
+        this.currencySub = this.balance.currency$
+            .subscribe(e => this.footer.balance.setCurrency(e)))
+        
+        // Cash Sum
+        if (this.config.cash.sum)
+        this.subs.push(
+        this.cashSumStartSub = this.balance.cash.sum$
+            .filter(e => !this.state.isRolling)
+            .subscribe(e => this.footerBal.left.set(e)))
+
+        // Cash Sum at the Roll End
+        if (this.config.cash.sum)
+        this.subs.push(
+        this.cashSumEndSub = this.balance.cash.sum$
+            .filter(e => this.state.isRolling)
+            .sample(this.state.isRolling$)
+            .subscribe(e => this.footerBal.left.set(e)))
+        
+        // Cash Bet
+        if (this.config.cash.bet)
+        this.subs.push(
+        this.cashBetSub = this.balance.cash.bet$
+            .subscribe(e => this.footerBal.center.set(e)))
+        
+        // Cash Win
+        if (this.config.cash.win)
+        this.subs.push(
+        this.cashWinStartSub = this.balance.cash.win$
+            .filter(e => !this.state.isRolling)
+            .subscribe(e => this.footerBal.right.set(e)))
+        
+        // Cash Win at the Roll End
+        if (this.config.cash.win)
+        this.subs.push(
+        this.cashWinEndSub = this.balance.cash.win$
+            .filter(e => this.state.isRolling)
+            .sample(this.state.isRolling$)
+            .subscribe(e => this.footerBal.right.set(e)))
+
+        // Panel Balance
+        // Lines
+        if (this.config.lines)
+        this.subs.push(
+        this.linesSub = this.data.lines$
+            .subscribe(e => this.machineBal.lines.set(e.length)))
+        
+        // Level
+        if (this.config.level)
+        this.subs.push(
+        this.levelSub = this.balance.level.current$
+            .subscribe(e => this.machineBal.level.set(e)))                
+
+        // Value
+        if (this.config.value)
+        this.subs.push(
+        this.valueSub = this.balance.value.current$
+            .subscribe(e => this.machineBal.value.set(e / 100)))
+        
+        // Coin Bet
+        if (this.config.coin.bet)
+        this.subs.push(
+        this.coinBetSub = this.balance.coin.bet$
+            .subscribe(e => this.machineBal.bet.set(e)))
+        
+        // Coin Sum
+        if (this.config.coin.sum)
+        this.subs.push(
+        this.coinSumStartSub = this.balance.coin.sum$
+            .filter(e => !this.state.isRolling)
+            .subscribe(e => this.machineBal.sum.set(e)))
+        
+        // Coin Sum at the Roll End
+        if (this.config.coin.sum)
+        this.subs.push(
+        this.coinSumEndSub = this.balance.coin.sum$
+            .filter(e => this.state.isRolling)
+            .sample(this.state.isRolling$)
+            .subscribe(e => this.machineBal.sum.set(e)))
+    }
+
+    disable() {
+        this.subs.forEach(s => s.unsubscribe()) 
+    }
+
+}
+
+const defaultRootWinConfig = {
+    table: {
+        show: true,
+        hide: true
+    },
+    lines: {
+        show: true,
+        hide: true
+    },
+    numbers: {
+        show: true,
+        hide: true
+    },
+    els: {
+        show: true,
+        hide: true,
+        alpha: true
+    }
+}
+
+class RootWinController {
+
+    constructor({
+        game,
+        config,
+        autoEnable = true
+    }) {
+        this.config = defaultsDeep(config, defaultRootWinConfig)
+        this.game  = game
+        this.level = game.root
+        this.data  = game.data
+        this.state = game.state
+        this.balance = this.data.balance
+        this.footer  = this.level.footer
+        this.machine = this.level.machine
+    }
+
+    enable() {
+        this.subs = []
+
+        // Show Win Table when we have win coins in the End of Roll
+        if (this.config.table.show)
+        this.subs.push(
+        this.tableShowSub = this.balance.coin.win$
+            .filter(e => e)
             .sample(this.state.isRolling$.filter(e => !e))
-            .subscribe(lines => lines.forEach(line => {
-                this.machine.lines.show(line.number)
-                this.machine.numbers.show(line.number)
-            })))
+            .subscribe(e => this.machine.table.show(e)))
 
-        if (this.config.logic.table)
-        this.logicSubs.push(
-        this.linesAndNumbersHideSub = this.state.isRolling$
+        // Hide Win Table when rolling starts 
+        if (this.config.table.hide)
+        this.subs.push(
+        this.tableHideSub = this.state.isRolling$
+            .filter(e => e)
+            .subscribe(e => this.machine.table.hide()))
+
+        // Show Win Lines when we have win combinations in the End of Roll
+        if (this.config.lines.show)
+        this.subs.push(
+            this.linesShowSub = this.data.win.lines$
+            .filter(e => e)
+            .sample(this.state.isRolling$.filter(e => !e))
+            .subscribe(lines => lines.forEach(line => this.machine.lines.show(line.number))))
+            
+        // Hide Win Lines when rolling starts
+        if (this.config.lines.hide)
+        this.subs.push(
+        this.linesHideSub = this.state.isRolling$
             .filter(e => e)
             .filter(e => this.data.win.lines)
-            .subscribe(e => this.data.win.lines.forEach(line => {
-                this.machine.lines.hide(line.number)
-                this.machine.numbers.hide(line.number)
-            })))
+            .subscribe(e => this.data.win.lines.forEach(line => this.machine.lines.hide(line.number))))
 
-        // Win Elements
-        if (this.config.logic.table)
-        this.logicSubs.push(
-        this.winElementsShowSub = this.data.win.lines$
+        // Show Win Numbers when we have win combinations in the End of Roll
+        if (this.config.numbers.show)
+        this.subs.push(
+        this.numbersShowSub = this.data.win.lines$
+            .filter(e => e)
+            .sample(this.state.isRolling$.filter(e => !e))
+            .subscribe(lines => lines.forEach(line => this.machine.numbers.show(line.number))))
+            
+        // Hide Win Numbers when rolling starts
+        if (this.config.numbers.hide)
+        this.subs.push(
+        this.numbersHideSub = this.state.isRolling$
+            .filter(e => e)
+            .filter(e => this.data.win.lines)
+            .subscribe(e => this.data.win.lines.forEach(line => this.machine.numbers.hide(line.number))))
+
+        // Show Win Elements when we have win combinations in the End of Roll
+        if (this.config.els.show)
+        this.subs.push(
+        this.elementsShowSub = this.data.win.lines$
             .filter(data => data && data.length)
             .sample(this.state.isRolling$.filter(e => !e))
-            .subscribe(data => {
-                this.machine.screen.getElementsFromLines(data).forEach(el => el.playWin())
-                this.machine.screen.elements
-                    .filter(el => !this.machine.screen.getElementsFromLines(data).some(winEl => winEl === el))
-                    .forEach(el => el.alpha = 0.6)
-            }))
+            .subscribe(data => this.machine.screen.getElementsFromLines(data).forEach(el => el.playWin())))
 
-        if (this.config.logic.table)
-        this.logicSubs.push(
-        this.winElementsHideSub = this.data.win.lines$
+        // Hide Win Elements when rolling starts
+        if (this.config.els.hide)
+        this.subs.push(
+        this.elementsHideSub = this.data.win.lines$
             .filter(data => data)
             .sample(this.state.isRolling$.filter(e => e))
-            .subscribe(data => {
-                this.machine.screen.getElementsFromLines(data).forEach(el => el.playNormal())
-                this.machine.screen.elements.forEach(el => el.alpha = 1)
-            }))
+            .subscribe(data => this.machine.screen.getElementsFromLines(data).forEach(el => el.playNormal())))
 
+        // Hide Not Win Elements in alpha when we have win combinations
+        if (this.config.els.alpha)
+        this.subs.push(
+        this.elementsAlphaShowSub = this.data.win.lines$
+            .filter(data => data && data.length)
+            .sample(this.state.isRolling$.filter(e => !e))
+            .subscribe(data => this.machine.screen.elements
+                .filter(el => !this.machine.screen.getElementsFromLines(data).some(winEl => winEl === el))
+                .forEach(el => el.alpha = 0.6)))
+
+        // Return Elements alpha when rolling starts        
+        if (this.config.els.alpha)
+        this.subs.push(
+        this.elementsAlphaHideSub = this.data.win.lines$
+            .filter(data => data)
+            .sample(this.state.isRolling$.filter(e => e))
+            .subscribe(data => this.machine.screen.elements.forEach(el => el.alpha = 1)))
+
+
+        // TODO: Refactor from here
         // One after another logic
         if (this.config.logic.table)
-        this.logicSubs.push(
+        this.subs.push(
         this.winOneAfterAnotherSub = this.data.win.lines$
             .filter(data => data && data.length)
             .sample(this.state.isRolling$.filter(e => !e))
@@ -660,19 +833,10 @@ class RootController {
                     .forEach(el => el.playWin())
                 this.machine.screen.getLastElementFromLine(data[index]).win.show(data[index].win)
             }))
-        
     }
 
-    disableButtons() {
-        this.buttonsSubs.forEach(s => s.unsubscribe())
-    }
-
-    disableBalance() {
-        this.balanceSubs.forEach(s => s.unsubscribe())
-    }
-
-    disableLogic() {
-        this.logicSubs.forEach(s => s.unsubscribe())
+    disable() {
+        this.subs.forEach(s => s.unsubscribe()) 
     }
 
 }
