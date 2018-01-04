@@ -110,7 +110,7 @@
 	"image": "buttons.png",
 	"format": "RGBA8888",
 	"size": {"w":296,"h":27},
-	"scale": "1",
+	"scale": "1.5",
 	"smartupdate": "$TexturePacker:SmartUpdate:b0c98958bbf4b3e0a6093a5cc0db01e7:9d3013ec5bfc91b3b318988bea032804:f59bcc267fb47013248841b9aa324429$"
 }
 }
