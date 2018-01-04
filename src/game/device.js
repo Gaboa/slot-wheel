@@ -6,12 +6,22 @@ import { BehaviorSubject } from 'rxjs'
 
 const defaultConfig = {
     fullhd: {
-        width: 1920,
-        height: 1080
+        width:  1920,
+        height: 1080,
+        fix: 1,
+        el: {
+            width:  256,
+            height: 240
+        }
     },
     hd: {
-        width: 1280,
-        height: 720
+        width:  1280,
+        height: 720,
+        fix: 2/3,
+        el: {
+            width:  168,
+            height: 160
+        }
     },
     mobile: 'hd',
     desktop: 'fullhd',
@@ -35,14 +45,20 @@ class DeviceManager {
 
     setGlobalParams() {
         if (this.isMobile) {
+            window.SCALE_FIX   = this.config[this.config.mobile].fix
             window.GAME_WIDTH  = this.config[this.config.mobile].width
             window.GAME_HEIGHT = this.config[this.config.mobile].height
+            window.EL_WIDTH  = this.config[this.config.mobile].el.width
+            window.EL_HEIGHT = this.config[this.config.mobile].el.height
             window.GAME_DEVICE = 'mobile'
             window.GAME_RES = this.config.mobile
         }
         else {
+            window.SCALE_FIX   = this.config[this.config.desktop].fix
             window.GAME_WIDTH  = this.config[this.config.desktop].width
             window.GAME_HEIGHT = this.config[this.config.desktop].height
+            window.EL_WIDTH  = this.config[this.config.desktop].el.width
+            window.EL_HEIGHT = this.config[this.config.desktop].el.height
             window.GAME_DEVICE = 'desktop'
             window.GAME_RES = this.config.desktop
         }
@@ -53,6 +69,10 @@ class DeviceManager {
             this.setFullscreenMode()
             window.addEventListener('resize', this.setFullscreenMode.bind(this))
         }
+        if (this.config.mode === 'aspect') {
+            this.setAspectMode()
+            window.addEventListener('resize', this.setAspectMode.bind(this))
+        }
     }
     
     setFullscreenMode() {
@@ -61,6 +81,21 @@ class DeviceManager {
         window.GAME_WIDTH  = window.innerWidth
         window.GAME_HEIGHT = window.innerHeight
         this.$.next({ from: 'DEVICE', type: 'RESIZE', width: window.GAME_WIDTH, height: window.GAME_HEIGHT })
+    }
+
+    setAspectMode() {
+        if (!this.config.view) return null
+        
+        let windowW = window.innerWidth
+        let windowH = window.innerHeight
+
+        let scaleX = windowW / GAME_WIDTH
+        let scaleY = windowH / GAME_HEIGHT
+
+        this.scale = Math.min(scaleX, scaleY)
+        if (this.scale < 1) this.scale = 1
+
+        this.config.view.style.transform = `scale(${this.scale}, ${this.scale})`
     }
 
     setOrientation() {
