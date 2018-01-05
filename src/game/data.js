@@ -16,7 +16,7 @@ const defaultData = {
     symbols: null,
     screen: null,
     win: {
-        lines: null,
+        lines: [],
         line: null
     },
     balance: {
