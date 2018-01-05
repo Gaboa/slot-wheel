@@ -39,28 +39,20 @@ const defaultInfoData = {
             header: 'The payout table for major game symbols',
             body: {
                 grid: {
-                    columns: '1fr 1fr 1fr 1fr',
-                    rows: '1fr 1fr'
+                    columns: '25% 25% 25% 25%',
+                    rows: '50% 50%'
                 },
                 cards: [
                     {
                         index: 0,
                         type: 'image-table',
                         description: {
-                             position: {
-                                     rows: [1],
-                                     columns: [1]
-                                 },
+                             position: null,
                                  image: {
-                                     src: 'src/img/info/j.png'
+                                     src: 'src/img/info/clubs.png'
                                  },
                                  table: {
-                                     name: 'Jack',
-                                     rows: [
-                                         [3, 3],
-                                         [4, 5],
-                                         [5, 10]
-                                     ]
+                                    rows: ['Clubs',3,3,4,5,5,10]
                                  }
 
                         }
@@ -70,20 +62,12 @@ const defaultInfoData = {
                         index: 1,
                         type: 'image-table',
                         description: {
-                            position: {
-                                rows: [1],
-                                columns: [1]
-                            },
+                            position:null,
                             image: {
-                                src: 'src/img/info/j.png'
+                                src: 'src/img/info/heart.png'
                             },
                             table: {
-                                name: 'Jack',
-                                rows: [
-                                    [3, 3],
-                                    [4, 5],
-                                    [5, 10]
-                                ]
+                                rows:  ['Heart', 3,3,4,5,5,10]
                             }
 
                         }
@@ -93,20 +77,12 @@ const defaultInfoData = {
                          index: 2,
                          type: 'image-table',
                          description: {
-                             position: {
-                                 rows: [1],
-                                 columns: [1]
-                             },
+                             position: null,
                              image: {
-                                 src: 'src/img/info/j.png'
+                                 src: 'src/img/info/spade.png'
                              },
                              table: {
-                                 name: 'Jack',
-                                 rows: [
-                                     [3, 3],
-                                     [4, 5],
-                                     [5, 10]
-                                 ]
+                                rows:  ['Spade',3,3,4,5,5,10]
                              }
 
                          }
@@ -116,20 +92,12 @@ const defaultInfoData = {
                           index: 3,
                           type: 'image-table',
                           description: {
-                              position: {
-                                  rows: [1],
-                                  columns: [1]
-                              },
+                              position: null,
                               image: {
-                                  src: 'src/img/info/j.png'
+                                  src: 'src/img/info/tambourine.png'
                               },
                               table: {
-                                  name: 'Jack',
-                                  rows: [
-                                      [3, 3],
-                                      [4, 5],
-                                      [5, 10]
-                                  ]
+                                rows:  ['Tambourine', 3,3,4,5,5,10]
                               }
 
                           }
@@ -139,20 +107,12 @@ const defaultInfoData = {
                            index: 4,
                            type: 'image-table',
                            description: {
-                               position: {
-                                   rows: [1],
-                                   columns: [1]
-                               },
+                               position: null,
                                image: {
-                                   src: 'src/img/info/j.png'
+                                   src: 'src/img/info/parrot.png'
                                },
                                table: {
-                                   name: 'Jack',
-                                   rows: [
-                                       [3, 3],
-                                       [4, 5],
-                                       [5, 10]
-                                   ]
+                                rows:  ['Parrot',3,3,4,5,5,10]
                                }
 
                            }
@@ -162,20 +122,12 @@ const defaultInfoData = {
                             index: 5,
                             type: 'image-table',
                             description: {
-                                position: {
-                                    rows: [1],
-                                    columns: [1]
-                                },
+                                position: null,
                                 image: {
-                                    src: 'src/img/info/j.png'
+                                    src: 'src/img/info/hat.png'
                                 },
                                 table: {
-                                    name: 'Jack',
-                                    rows: [
-                                        [3, 3],
-                                        [4, 5],
-                                        [5, 10]
-                                    ]
+                                    rows:  ['Hat', 3,3,4,5,5,10]
                                 }
 
                             }
@@ -185,20 +137,12 @@ const defaultInfoData = {
                              index: 6,
                              type: 'image-table',
                              description: {
-                                 position: {
-                                     rows: [1],
-                                     columns: [1]
-                                 },
+                                 position: null,
                                  image: {
-                                     src: 'src/img/info/j.png'
+                                     src: 'src/img/info/anchor.png'
                                  },
                                  table: {
-                                     name: 'Jack',
-                                     rows: [
-                                         [3, 3],
-                                         [4, 5],
-                                         [5, 10]
-                                     ]
+                                    rows:  ['Anchor', 3,3,4,5,5,10]
                                  }
 
                              }
@@ -208,20 +152,12 @@ const defaultInfoData = {
                               index: 7,
                               type: 'image-table',
                               description: {
-                                  position: {
-                                      rows: [1],
-                                      columns: [1]
-                                  },
+                                  position: null,
                                   image: {
-                                      src: 'src/img/info/j.png'
+                                      src: 'src/img/info/fish.png'
                                   },
                                   table: {
-                                      name: 'Jack',
-                                      rows: [
-                                          [3, 3],
-                                          [4, 5],
-                                          [5, 10]
-                                      ]
+                                    rows:  ['Fish', 3,3,4,5,5,10]
                                   }
 
                               }
@@ -240,61 +176,76 @@ const defaultInfoData = {
             header: 'Freespins bonus game',
             body: {
                 grid: {
-                    rows: 3,
-                    column: 2
+                    rows: '1fr 1fr 1fr',
+                    columns: '1fr 1fr'
                 },
                 cards: [
                     {
-                        type: 'image',
-                        position: {
-                            rows: [1,2],
-                            column: 1
-                        },
-                        image: {
-                            src: 'src/img/info/j.png'
+                        type: 'image-instance',
+                        index: 0,
+                        description: {
+                            position: {
+                                rows: [1, 3],
+                                columns: [1, 2]
+                            },
+                            image: {
+                                src: 'src/img/info/j.png'
+                            }
                         }
+                        
                     },
                     {
-                        type: 'text',
-                        position: {
-                            rows: [1],
-                            columns: [2]
-                        },
-                        content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
-                        in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
-                        Different amount of gifts increases multiplier(x6 maximum).`
+                        type: 'text-description',
+                        index: 1,
+                        description: {
+                            position: {
+                                rows: [1, 1],
+                                columns: [2, 2]
+                            },
+                            content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
+                            in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
+                            Different amount of gifts increases multiplier(x6 maximum).`
+                        }
+                        
                     },
                     {
                         type: 'list-image',
-                        position: {
-                            rows: [2],
-                            columns: [2]
-                        },
-                        content: [
-                            '2 Gifts = x3 multiplier',
-                            '2 Gifts = x3 multiplier',
-                            '2 Gifts = x3 multiplier',
-                            '2 Gifts = x3 multiplier',
-                            '2 Gifts = x3 multiplier',
-                        ],
-                        image: {
-                            src:''
+                        index: 2,
+                        description: {
+                            position: {
+                                rows: [2, 2],
+                                columns: [2, 2]
+                            },
+                            content: [
+                                '2 Gifts = x3 multiplier',
+                                '2 Gifts = x3 multiplier',
+                                '2 Gifts = x3 multiplier',
+                                '2 Gifts = x3 multiplier',
+                                '2 Gifts = x3 multiplier',
+                            ],
+                            image: {
+                                src: 'src/img/info/small_cannon.png'
+                            }
                         }
+                        
                     },
                     {
                         type: 'image-list',
-                        position: {
-                            rows: [3],
-                            columns: [2]
-                        },
-                        image:{
-                            src: ''
-                        },
-                        content: [
-                            'x3 = +20 Free spins',
-                            'x3 = +20 Free spins',
-                            'x3 = +20 Free spins',
-                        ]
+                        index: 3,
+                        description: {
+                            position: {
+                                rows: [3, 3],
+                                columns: [2, 2]
+                            },
+                            image:{
+                                src: 'src/img/info/small_cannon.png'
+                            },
+                            content: [
+                                'x3 = +20 Free spins',
+                                'x3 = +20 Free spins',
+                                'x3 = +20 Free spins',
+                            ]
+                        }
                     }
                 ]
             },
@@ -309,52 +260,64 @@ const defaultInfoData = {
             header: 'Bonus symbols',
             body: {
                 grid: {
-                    rows: 2,
-                    column: 2
+                    rows: '1fr 1fr',
+                    column: '1fr 1fr'
                 },
                 cards: [
                     {
+                        index: 0,
                         type: 'image-text',
-                        position: {
-                            rows: [1,2],
-                            column: 1
-                        },
-                        image: {
-                            src: 'image.png/base64'
-                        },
-                        content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
-                        in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
-                        Different amount of gifts increases multiplier(x6 maximum).Starts by 3, 4,
-                         5 Krampus bonus symbols. Every Krampus symbol 
-                        in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree`
+                        description: {
+                            position: {
+                                rows: [1,2],
+                                columns: [1, 1]
+                            },
+                            image: {
+                                src: 'src/img/info/skull.png'
+                            },
+                            content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
+                            in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
+                            Different amount of gifts increases multiplier(x6 maximum).Starts by 3, 4,
+                             5 Krampus bonus symbols. Every Krampus symbol 
+                            in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree`
+                        }
+                        
                     },
                     {
                         type: 'image-text',
-                        position: {
-                            rows: [1],
-                            columns: [2]
-                        },
-                        image: {
-                            src: 'image.png/base64'
-                        },
-                        content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
-                        in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
-                        Different amount of gifts increases multiplier(x6 maximum).Starts by 3, 4,
-                         5 Krampus bonus symbols.`
+                        index: 1,
+                        description: {
+                            position: {
+                                rows: [1, 1],
+                                columns: [2, 2]
+                            },
+                            image: {
+                                src: 'src/img/info/ship.png'
+                            },
+                            content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
+                            in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
+                            Different amount of gifts increases multiplier(x6 maximum).Starts by 3, 4,
+                             5 Krampus bonus symbols.`
+                        }
+                       
                     },
                     {
                         type: 'image-text',
-                        position: {
-                            rows: [2],
-                            columns: [2]
-                        },
-                        image: {
-                            src: 'image.png/base64'
-                        },
-                        content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
-                        in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
-                        Different amount of gifts increases multiplier(x6 maximum).Starts by 3, 4,
-                         5 Krampus bonus symbols.`
+                        index: 2,
+                        description: {
+                            position: {
+                                rows: [2, 2],
+                                columns: [2, 2]
+                            },
+                            image: {
+                                src: 'src/img/info/chest.png'
+                            },
+                            content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
+                            in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
+                            Different amount of gifts increases multiplier(x6 maximum).Starts by 3, 4,
+                             5 Krampus bonus symbols.`
+                        }
+                        
                     },
                 ]
             },
@@ -365,86 +328,163 @@ const defaultInfoData = {
             ]
         },
         {
-            index: 3,
-            header: 'Bonus symbols',
-            body: {
-                grid: {
-                    rows: 2,
-                    column: 2
-                },
-                cards: [
-                    {
-                        type: 'image-text',
-                        position: {
-                            rows: [1,2],
-                            column: 1
-                        },
-                        image: {
-                            src: 'image.png/base64'
-                        },
-                        content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
-                        in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
-                        Different amount of gifts increases multiplier(x6 maximum).Starts by 3, 4,
-                         5 Krampus bonus symbols. Every Krampus symbol 
-                        in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree`
-                    },
-                    {
-                        type: 'image-text',
-                        position: {
-                            rows: [1],
-                            columns: [2]
-                        },
-                        image: {
-                            src: 'image.png/base64'
-                        },
-                        content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
-                        in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
-                        Different amount of gifts increases multiplier(x6 maximum).Starts by 3, 4,
-                         5 Krampus bonus symbols.`
-                    },
-                    {
-                        type: 'image-text',
-                        position: {
-                            rows: [2],
-                            columns: [2]
-                        },
-                        image: {
-                            src: 'image.png/base64'
-                        },
-                        content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
-                        in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
-                        Different amount of gifts increases multiplier(x6 maximum).Starts by 3, 4,
-                         5 Krampus bonus symbols.`
-                    },
-                ]
-            },
-            footer: [
-                'Wins on bet line are payed only when you get a succession from the leftmost reel to the rightmost reel.',
-                'Bet on the winning line is multiplied by the multiplier of the winning symbols.',
-                'Malfunction Voids all pays and plays.'
-            ]
-        },
-        {
-            index:4,
+            index:3,
             header: 'Winning bet lines',
             body: {
                 grid: {
-                    rows: 2,
-                    column: 4
+                    rows: '1fr 1fr',
+                    columns: '1fr 1fr 1fr 1fr 1fr'
                 },
                 cards: [
                     {
                         type: 'win-line',
-                        position: {
-                            rows: [1],
-                            columns: [1]
-                        },
-                        image: {
-                            src: 'image.png/base64'
-                        },
-                        rows: 3,
-                        columns: 5,
-                        scheme: [[2,1], [2,2], [2,3], [2,4], [2,5]]
+                        index: 1,
+                        description: {
+                            index: 1,
+                            position: null,
+                            image: {
+                                src: 'src/img/info/mini.png'
+                            },
+                            rows: 3,
+                            columns: 5,
+                            scheme: [10, 11, 12, 13, 14]
+                        }
+                        
+                    },
+                    {
+                        type: 'win-line',
+                        index: 2,
+                        description: {
+                            position: null,
+                            index: 2,
+                            image: {
+                                src: 'src/img/info/mini.png'
+                            },
+                            rows: 3,
+                            columns: 5,
+                            scheme: [10, 11, 12, 13, 14]
+                        }
+                        
+                    },
+                    {
+                        type: 'win-line',
+                        index: 3,
+                        description: {
+                            position: null,
+                            index: 3,
+                            image: {
+                                src: 'src/img/info/mini.png'
+                            },
+                            rows: 3,
+                            columns: 5,
+                            scheme: [0, 1, 2, 3, 4]
+                        }
+                        
+                    },
+                    {
+                        type: 'win-line',
+                        index: 4,
+                        description: {
+                            position: null,
+                            index: 4,
+                            image: {
+                                src: 'src/img/info/mini.png'
+                            },
+                            rows: 3,
+                            columns: 5,
+                            scheme: [5, 6, 7, 8, 9]
+                        }
+                        
+                    },
+                    {
+                        type: 'win-line',
+                        index: 5,
+                        description: {
+                            position: null,
+                            index: 5,
+                            image: {
+                                src: 'src/img/info/mini.png'
+                            },
+                            rows: 3,
+                            columns: 5,
+                            scheme: [0, 11, 6, 5, 8]
+                        }
+                        
+                    },
+                    {
+                        type: 'win-line',
+                        index: 6,
+                        description: {
+                            index: 6,
+                            position: null,
+                            image: {
+                                src: 'src/img/info/mini.png'
+                            },
+                            rows: 3,
+                            columns: 5,
+                            scheme: [0, 11, 6, 5, 8]
+                        }
+                        
+                    },
+                    {
+                        type: 'win-line',
+                        index: 7,
+                        description: {
+                            index: 7,
+                            position: null,
+                            image: {
+                                src: 'src/img/info/mini.png'
+                            },
+                            rows: 3,
+                            columns: 5,
+                            scheme: [0, 11, 6, 5, 8]
+                        }
+                        
+                    },
+                    {
+                        type: 'win-line',
+                        index: 8,
+                        description: {
+                            position: null,
+                            index: 8,
+                            image: {
+                                src: 'src/img/info/mini.png'
+                            },
+                            rows: 3,
+                            columns: 5,
+                            scheme: [0, 11, 6, 5, 8]
+                        }
+                        
+                    },
+                    {
+                        type: 'win-line',
+                        index: 9,
+                        description: {
+                            position: null,
+                            index: 9,
+                            image: {
+                                src: 'src/img/info/mini.png'
+                            },
+                            rows: 3,
+                            columns: 5,
+                            scheme: [0, 11, 6, 5, 8]
+                        }
+                        
+                    },
+                    {
+                        type: 'win-line',
+                        index: 10,
+                        description: {
+                            index: 10,
+                            position: null,
+                            image: {
+                                src: 'src/img/info/mini.png'
+                            },
+                            rows: 3,
+                            columns: 5,
+                            scheme: [0, 11, 6, 5, 8]
+                        }
+                        
                     },
                 ]
             },
@@ -455,23 +495,34 @@ const defaultInfoData = {
             ]
         },
         {
-            index: 5,
+            index: 4,
             header: 'You can use hotkeys',
             body: {
                 grid: {
-                    rows: 2,
-                    column: 3
+                    rows: '1fr 1fr',
+                    columns: '1fr'
                 },
                 cards: [
                     {
-                        type: 'image',
-                        position: {
-                            rows: [2],
-                            column: [1,2,3]
-                        },
-                        image: {
-                            src: 'image.png/base64'
-                        },
+                        type: 'image-instance',
+                        index: 0,
+                        description: {
+                            position: null,
+                            image: {
+                                src: 'src/img/info/control.png'
+                            },
+                        }
+                        
+                    },
+                    {
+                        type: 'image-instance',
+                        index:1,
+                        description: {
+                            position: null,
+                            image: {
+                                src: 'src/img/info/panel.png'
+                            },
+                        }
                     },
                     
                 ]
