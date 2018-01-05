@@ -1,17 +1,12 @@
 <template>
     <div class="info__card">
             <img class="info__image" :src="description.image.src">
-            <table class="info__card__table" cellpadding="0" cellspacing="0">
-                <th>
-                    <td colspan="2">{{description.table.name}}</td>
-                    <td></td>
-                </th>
+            <div class="info__card__table">
+                <div v-for="row in description.table.rows" :key="row">
+                    {{row}}
+                </div>
+            </div>
 
-                <tr v-for="row in description.table.rows" :key="row.index">
-                    <td width=20%>{{row[0]}}</td>
-                    <td width=80%>{{row[1]}}</td>
-                </tr>
-            </table>
         </div>
 </template>
 <script>
@@ -27,26 +22,44 @@ export default {
 <style scoped>
     .info__card{
         display: grid;
-        grid-template-columns: 1fr 1fr ;
+        grid-template-columns: 50% 50% ;
         grid-template-rows: 1fr;
         justify-items: center;
         align-items: center;
+        color: white;
+        font-size: 1.25vw;
+        font-family: 'Oswald', 'Arial', 'Helvetica', sans-serif;
+    }
+    .info__card img{
+        max-width: 80%;
     }
     .info__card__table{
-        color: #ffffff;
-        border-collapse: collapse;
+        display: grid;
+        grid-template-columns: 30% 70%;
+        grid-template-rows: 25% 25% 25% 25%;
+        width: 70%;
     }
-    .info__card__table tr td {
-        border: 1px solid grey;
+    .info__card__table div{
+        border-bottom: 1px solid grey;
         text-align: center;
-        vertical-align: middle;
     }
-    .info__card__table tr td:nth-child(odd){
+    .info__card__table div:nth-child(even){
         border-left: none;
+        border-right: 1px solid grey;
+        
     }
-    .info__card__table tr td:nth-child(even){
+    .info__card__table div:nth-child(odd){
         border-right: none;
-        color: beige;
+        color: yellow;
+    }
+    .info__card__table div:first-child{
+        grid-column-start: 1;
+        grid-column-end: 3;
+        grid-row-end: 2;
+        grid-row-start: 1;
+        padding: 3px 0;
+        text-align: left;
+        color: white;
     }
     
 </style>
