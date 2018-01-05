@@ -1,62 +1,126 @@
 <template>
-  <div class="info__page active">
-      <h3 class="info__header">{{pageInfo.header}}</h3>
-      <div class="info__content" v-bind:style="contentGridSystem">
-        <div v-for="card in pageInfo.body.cards" :key="card.index">
-            <div :is = "card.type" :description="card.description"></div>
+    <div class="info__page">
+        <h3 class="info__header">{{ pageInfo.header }}</h3>
+        <div class="info__content" :style="contentGridSystem">
+            <div v-for="card in pageInfo.body.cards" :key="card.index" :style="cardGridSystem(card)">
+                <div :is="card.type" :description="card.description"></div>
+            </div>
         </div>
-      </div>
         <ul class="info__footer">
-            <li v-for = "item in pageInfo.footer" :key="item">{{item}}</li>
+            <li v-for="item in pageInfo.footer" :key="item">{{ item }}</li>
         </ul>
     </div>
 </template>
 
 <script>
 import ImageTable from './cards/ImageTable'
+import ImageInstance from './cards/ImageInstance'
+import TextDescription from './cards/TextDescription'
+import ListImage from './cards/ListImage'
+import ImageList from './cards/ImageList'
+import ImageText from './cards/ImageText'
+import WinLine from './cards/WinLine'
+
 export default {
     props: ['pageInfo'],
-    components:{
-        'image-table':ImageTable
+    components: {
+        'image-table': ImageTable,
+        'image-instance': ImageInstance,
+        'text-description': TextDescription,
+        'list-image': ListImage,
+        'image-list': ImageList,
+        'image-text': ImageText,
+        'win-line': WinLine
     },
-    data(){
-        return {
-            test:'image-table',
-            contentGridSystem:{
-                gridTemplateColumns: this._props.pageInfo.body.grid.columns,
-                gridTemplateRows:  this._props.pageInfo.body.grid.rows
+    data() {
+        return {}
+    },
+    computed: {
+        contentGridSystem() {
+            return {
+                gridTemplateColumns: this.$props.pageInfo.body.grid.columns,
+                gridTemplateRows: this.$props.pageInfo.body.grid.rows
+            }
+        },
+        cardGridSystem(card) {
+            let vm = this;
+            return function (card) {
+                if (card.description.position) {
+                    return {
+                        gridColumnStart: card.description.position.columns[0],
+                        gridColumnEnd: card.description.position.columns[1],
+                        gridRowEnd: card.description.position.rows[1],
+                        gridRowStart: card.description.position.rows[0],
+
+                    }
+                } else {
+                    return ''
+                }
+
             }
         }
-    },
-    methods: {
-       
     }
 }
 </script>
 
 <style scoped>
     .info__page {
-        padding: 2vw 3vw;
-        padding-bottom: 4vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 85%;
+    }
+    
+    .info__content {
+        display: grid;
+        padding: 0 2vw;
+        max-width: 100%;
+        /* grid-template-columns: 25% 25% 25% 25%;
+        grid-template-rows: 50% 50%; */
+        grid-row-gap: 1.5vw
     }
     .info__header {
+        margin: 0;
+        padding: 3vw 3vw 1vw 3vw;
+        font-family: 'Oswald', 'Arial', 'Helvetica', sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 2vw;
+        color: #fff;
+    }
+    .info__footer {
+        margin: 0;
+        padding: 1vw 3vw;
+        font-family: 'Oswald', 'Arial', 'Helvetica', sans-serif;
+        list-style: none;
+        font-size: 0.75vw;
+        line-height: 1.5;
+        color: #888;
+    }
+    /* .info__page {
+        position: absolute;
+        width: 80vw;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 100%;
+    } */
+    /* .info__header {
         margin: 1.5vw 0;
         font-style: normal;
         font-weight: normal;
-        font-family: 'Oswald', sans-serif;
+        font-family: 'Oswald', 'Arial', 'Helvetica', sans-serif;
         font-size: 2vw;
         color: #fff;
     }
     .info__content{
         display: grid;
         margin: 3vw auto;
-        /* grid-template-columns: 1fr 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr ; */
-        grid-row-gap: 3vw;
-        grid-column-gap: 3vw;
         width: 95%;
-        justify-items: start;
+        justify-items: center;
         font-family: Arial, Helvetica, sans-serif;
+        height: 40vh;
+        align-items: center;
     }
     .info__footer {
         margin: 0;
@@ -66,6 +130,7 @@ export default {
         color: #888;
         font-family: Arial, Helvetica, sans-serif;
     }
+    .info__footer li{
+        margin-bottom: 1vh;
+    } */
 </style>
-
-
