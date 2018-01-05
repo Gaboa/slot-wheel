@@ -118,35 +118,29 @@ class Numbers extends Container {
             )
 
         })
-        this.items = [...this.items, this[side].items]
+        this.items = [...this.items, ...this[side].items]
     }
 
     show(num) {
-        for (const side in this.config)
-            this[side].items
-                .filter(item => item.name == num)
-                .forEach(item => item.show())
+        this.items.filter(item => item.name == num).forEach(item => item.show())
     }
 
     hide(num) {
-        for (const side in this.config)
-            this[side].items
-                .filter(item => item.name == num)
-                .forEach(item => item.hide())
+        this.items.filter(item => item.name == num).forEach(item => item.hide())
     }
 
     hideAll() {
-        for (const side in this.config)
-            this[side].items
-                .forEach(item => item.hide())
+        this.items.forEach(item => item.hide())
+    }
+
+    hideAllWithout(num) {
+        this.items.filter(item => item.name != num).forEach(item => item.hide())
     }
 
     enable() {
         this.$ = new Subject()
 
-        for (const side in this.config)
-            this[side].items.forEach(num => num.enable())
-
+        this.items.forEach(num => num.enable())
         for (const side in this.config)
             this[side].items
                 .forEach(num => num.$
@@ -156,8 +150,7 @@ class Numbers extends Container {
 
     disable() {
         this.$.complete()
-        for (const side in this.config)
-            this[side].items.forEach(num => num.disable())
+        this.items.forEach(num => num.disable())
     }
 
 }
