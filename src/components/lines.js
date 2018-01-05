@@ -5,19 +5,6 @@ import { Container } from "../utils"
 // TODO: Line with three types of tiles for different advanced line types
 
 const defaultLinesConfig = {
-    // TODO: Get this data from game.data
-    // lines: [
-    //     [1, 1, 1, 1, 1],
-    //     [0, 0, 0, 0, 0],
-    //     [2, 2, 2, 2, 2],
-    //     [0, 1, 2, 1, 0],
-    //     [2, 1, 0, 1, 2],
-    //     [0, 0, 1, 0, 0],
-    //     [2, 2, 1, 2, 2],
-    //     [1, 0, 0, 0, 1],
-    //     [1, 2, 2, 2, 1],
-    //     [2, 1, 1, 1, 2]
-    // ],
     width: 350,
     tint: {
         bg: 0xff0000,
@@ -60,6 +47,12 @@ class Lines extends Container {
 
     hideAll() {
         this.items.forEach(item => item.hide())
+    }
+
+    hideAllWithout(num) {
+        this.items
+            .filter(line => line.name != num)
+            .forEach(line => line.hide())
     }
 
 }
