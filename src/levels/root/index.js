@@ -60,7 +60,11 @@ class Root extends Container {
 
     disable() {
         this.balance.disable()
+        this.balance.root.disable()
+        this.buttons.disable()
         this.ctrl.disable()
+        this.win.disable()
+        this.auto.disable()
     }
 
 }
@@ -135,7 +139,6 @@ class RootController {
                 this.state.isRolling = false
             }))
 
-
         // Set Start and End Screens
         if (this.config.logic.screen.data)
         this.logicSubs.push(
@@ -173,7 +176,6 @@ class RootController {
                 this.footer.buttons.info.disable()
             }))
 
-
         // Changing isIdle and isTransition State
         if (this.config.logic.rolling)
         this.logicSubs.push(
@@ -196,8 +198,6 @@ class RootController {
             .filter(e => this.state.next !== 'root') // Next is not Root
             .subscribe(e => this.state.isTransition = true))
 
-
-
         // Lines on Numbers Hover
         if (this.config.logic.lines)
         this.logicSubs.push(
@@ -210,9 +210,6 @@ class RootController {
         this.linesOutSub = this.machine.numbers.$
             .filter(e => e.type === 'OUT')
             .subscribe(e => this.machine.lines.hide(e.num)))
-        
-
-        
         
     }
 
