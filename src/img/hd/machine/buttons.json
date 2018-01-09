@@ -232,6 +232,14 @@
 	"spriteSourceSize": {"x":0,"y":3,"w":108,"h":89},
 	"sourceSize": {"w":108,"h":92}
 },
+"spin_disabled":
+{
+	"frame": {"x":111,"y":189,"w":108,"h":89},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":3,"w":108,"h":89},
+	"sourceSize": {"w":108,"h":92}
+},
 "spin_hover":
 {
 	"frame": {"x":131,"y":1,"w":108,"h":92},
