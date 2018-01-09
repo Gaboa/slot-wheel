@@ -43,6 +43,17 @@ class WinTable extends Container {
 
 }
 
+const defaultMachineConfig = {
+    bg: true,
+    lines: true,
+    screen: true,
+    frame: true,
+    logo: true,
+    panel: true,
+    numbers: true,
+    table: true
+}
+
 class Machine extends Container {
 
     constructor({
@@ -51,11 +62,12 @@ class Machine extends Container {
         y,
         config = {}
     }) {
-        super({ container, x, y })
+        super(arguments[0])
         this.name = 'machine'
-        this.config = config
+        this.config = defaultsDeep(config, defaultMachineConfig)
         
         // Machine BG
+        if (this.config.bg)
         this.bg = new PIXI.extras.TilingSprite(
             PIXI.utils.TextureCache['tile'],
             EL_WIDTH  * 5,
@@ -65,12 +77,14 @@ class Machine extends Container {
         this.bg.name = 'bg'
         this.addChild(this.bg)
 
+        if (this.config.lines)        
         this.lines = new Lines({
             container: this,
             config: { lines: this.config.lines }
         })
 
         // Screen with elements
+        if (this.config.screen)        
         this.screen = new Screen({
             container: this,
             config: {
@@ -117,6 +131,7 @@ class Machine extends Container {
         this.screen.addMask()
 
         // Machine frame
+        if (this.config.frame)        
         this.frame = new Sprite({
             container: this,
             texture: 'frame',
@@ -124,6 +139,7 @@ class Machine extends Container {
         })
 
         // Machine Logo
+        if (this.config.logo)        
         this.logo = new Spine({
             container: this,
             name: 'logo',
@@ -132,12 +148,15 @@ class Machine extends Container {
         })
 
         // Panel with Buttons and Balance
+        if (this.config.panel)        
         this.panel = new Panel({ container: this, y: 0.35 })
 
         // Win Numbers
+        if (this.config.numbers)        
         this.numbers = new Numbers({ container: this })
 
         // Win Table
+        if (this.config.table)        
         this.table = new WinTable({ container: this })
 
     }
