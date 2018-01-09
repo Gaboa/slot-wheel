@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js'
 import 'pixi-spine'
 
 import { Game } from './game'
-import { Preload, Root } from './levels'
+import { Preload, Root, MobileRoot } from './levels'
 
 const game = new Game({
 
@@ -67,6 +67,10 @@ game.preload = new Preload({
             { name: 'panel_fs',   url: 'machine/panel_fs.png' },
             { name: 'win_table',  url: 'machine/win_table.png' },
             { name: 'win_circle', url: 'machine/win_circle.png' },
+
+            // Mobile
+            // { url: 'mobile/buttons.json' },
+            // { url: 'mobile/settings.json' },
         ]
     }
 })
