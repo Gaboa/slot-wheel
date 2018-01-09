@@ -70,153 +70,14 @@ class Root extends Container {
 }
 
 const defaultRootConfig = {
-    logic: {
-        screen: {
-            start: true,
-            end: true,
-            data: true
-        },
-        idle: true,
-        rolling: true,
-        lines: true,
-        table: true
-    }
-}
-
-class RootController {
-
-    constructor({
-        game,
-        config,
-        autoEnable = true
-    }) {
-        this.config = defaultsDeep(config, defaultRootConfig)
-
-        this.game  = game
-        this.level = game.root
-        this.data  = game.data
-        this.state = game.state
-        this.balance = this.data.balance
-        this.footer  = this.level.footer
-        this.machine = this.level.machine
-
-        if (autoEnable) this.enable()        
-    }
-
-    enable() {
-        this.enableLogic()
-    }
-
-    disable() {
-        this.disableLogic()        
-    }
-
-    enableLogic() {
-        this.logicSubs = []
-
-        // Roll Start and End
-        if (this.config.logic.screen.start)
-        this.logicSubs.push(
-        this.screenStartSub = this.machine.screen.$
-            .filter(e => e.from  === 'SCREEN')
-            .filter(e => e.state === 'START')
-            .subscribe(e => {
-                this.game.request.sendRoll({
-                    value: this.data.balance.value.current,
-                    level: this.data.balance.level.current
-                })
-                this.level.balance.start()
-                this.state.isRolling = true
-            }))
-
-        if (this.config.logic.screen.end)
-        this.logicSubs.push(
-        this.screenEndSub = this.machine.screen.$
-            .filter(e => e.from  === 'SCREEN')
-            .filter(e => e.state === 'END')
-            .subscribe(e => {
-                this.level.balance.end()
-                this.state.isRolling = false
-            }))
-
-        // Set Start and End Screens
-        if (this.config.logic.screen.data)
-        this.logicSubs.push(
-        this.screenDataStartSub = this.data.screen$
-            .filter(e => Array.isArray(e))
-            .take(1)
-            .subscribe(s => this.machine.screen.setStartScreen(s)))
-
-        if (this.config.logic.screen.data)
-        this.logicSubs.push(
-        this.screenDataEndSub = this.data.screen$
-            .filter(e => Array.isArray(e))
-            .skip(1)
-            .subscribe(s => this.machine.screen.setEndScreen(s)))
-        
-
-        // Changing buttons states with isIdle state
-        if (this.config.logic.idle)
-        this.logicSubs.push(
-        this.idleTrueSub = this.state.isIdle$
-            .filter(e => e)
-            .subscribe(e => {
-                this.machine.panel.buttons.enableAll()
-                this.footer.buttons.settings.enable()
-                this.footer.buttons.info.enable()
-            }))
-
-        if (this.config.logic.idle)
-        this.logicSubs.push(
-        this.idleFalseSub = this.state.isIdle$
-            .filter(e => !e)
-            .subscribe(e => {
-                this.machine.panel.buttons.disableAll()
-                this.footer.buttons.settings.disable()
-                this.footer.buttons.info.disable()
-            }))
-
-        // Changing isIdle and isTransition State
-        if (this.config.logic.rolling)
-        this.logicSubs.push(
-        this.rollingTrueSub = this.state.isRolling$
-            .filter(e => e) // Start of roll
-            .subscribe(e => this.state.isIdle = false))
-        
-        if (this.config.logic.rolling)
-        this.logicSubs.push(
-        this.rollingFalseSub = this.state.isRolling$
-            .filter(e => !e) // End of roll
-            .filter(e => !this.state.autoplay) // Not Autoplay
-            .filter(e => this.state.next === 'root') // Next is Root
-            .subscribe(e => this.state.isIdle = true))
-
-        if (this.config.logic.rolling)
-        this.logicSubs.push(
-        this.rollingTransitionSub = this.state.isRolling$
-            .filter(e => !e) // End of roll
-            .filter(e => this.state.next !== 'root') // Next is not Root
-            .subscribe(e => this.state.isTransition = true))
-
-        // Lines on Numbers Hover
-        if (this.config.logic.lines)
-        this.logicSubs.push(
-        this.linesOverSub = this.machine.numbers.$
-            .filter(e => e.type === 'OVER')
-            .subscribe(e => this.machine.lines.show(e.num)))
-
-        if (this.config.logic.lines)
-        this.logicSubs.push(
-        this.linesOutSub = this.machine.numbers.$
-            .filter(e => e.type === 'OUT')
-            .subscribe(e => this.machine.lines.hide(e.num)))
-        
-    }
-
-    disableLogic() {
-        this.logicSubs.forEach(s => s.unsubscribe())
-    }
-
+    screen: {
+        start: true,
+        end: true,
+        data: true
+    },
+    idle: true,
+    rolling: true,
+    lines: true
 }
 
 const defaultButtonsConfig = {
@@ -246,8 +107,185 @@ const defaultButtonsConfig = {
         spin: true,
         anim: true,
         stop: true,
-        max:  true
+        max: true
     },
+}
+
+const defaultRootBalanceConfig = {
+    currency: true,
+    cash: {
+        sum: true,
+        bet: true,
+        win: true
+    },
+    coin: {
+        sum: true,
+        bet: true,
+        win: true
+    },
+    level: true,
+    value: true,
+    lines: true
+}
+
+const defaultRootWinConfig = {
+    table: {
+        show: true,
+        hide: true
+    },
+    lines: {
+        show: true,
+        hide: true
+    },
+    numbers: {
+        show: true,
+        hide: true
+    },
+    els: {
+        show: true,
+        hide: true,
+        alpha: true
+    },
+    oneAfterAnother: {
+        delay: 4000,
+        interval: 3000
+    }
+}
+
+const defaultAutoplayConfig = {
+    start: true,
+    timer: true,
+    count: true,
+    end: true,
+    noRoot: true
+}
+
+class RootController {
+
+    constructor({
+        game,
+        config,
+        autoEnable = true
+    }) {
+        this.config = defaultsDeep(config, defaultRootConfig)
+
+        this.game  = game
+        this.level = game.root
+        this.data  = game.data
+        this.state = game.state
+        this.balance = this.data.balance
+        this.footer  = this.level.footer
+        this.machine = this.level.machine
+
+        if (autoEnable) this.enable()        
+    }
+
+    enable() {
+        this.subs = []
+
+        // Roll Start and End
+        if (this.config.screen.start)
+        this.subs.push(
+        this.screenStartSub = this.machine.screen.$
+            .filter(e => e.from  === 'SCREEN')
+            .filter(e => e.state === 'START')
+            .subscribe(e => {
+                this.game.request.sendRoll({
+                    value: this.data.balance.value.current,
+                    level: this.data.balance.level.current
+                })
+                this.level.balance.start()
+                this.state.isRolling = true
+            }))
+
+        if (this.config.screen.end)
+        this.subs.push(
+        this.screenEndSub = this.machine.screen.$
+            .filter(e => e.from  === 'SCREEN')
+            .filter(e => e.state === 'END')
+            .subscribe(e => this.state.isRolling = false ))
+
+        // Set Start and End Screens
+        if (this.config.screen.data)
+        this.subs.push(
+        this.screenDataStartSub = this.data.screen$
+            .filter(e => Array.isArray(e))
+            .take(1)
+            .subscribe(s => this.machine.screen.setStartScreen(s)))
+
+        if (this.config.screen.data)
+        this.subs.push(
+        this.screenDataEndSub = this.data.screen$
+            .filter(e => Array.isArray(e))
+            .skip(1)
+            .subscribe(s => this.machine.screen.setEndScreen(s)))
+        
+
+        // Changing buttons states with isIdle state
+        if (this.config.idle)
+        this.subs.push(
+        this.idleTrueSub = this.state.isIdle$
+            .filter(e => e)
+            .subscribe(e => {
+                this.machine.panel.buttons.enableAll()
+                this.footer.buttons.settings.enable()
+                this.footer.buttons.info.enable()
+            }))
+
+        // When we not in Idle => disable buttons and Info and Settings button
+        if (this.config.idle)
+        this.subs.push(
+        this.idleFalseSub = this.state.isIdle$
+            .filter(e => !e)
+            .subscribe(e => {
+                this.machine.panel.buttons.disableAll()
+                this.footer.buttons.settings.disable()
+                this.footer.buttons.info.disable()
+            }))
+
+        // When Rolling Starts => change Idle to false
+        if (this.config.rolling)
+        this.subs.push(
+        this.rollingTrueSub = this.state.isRolling$
+            .filter(e => e) // Start of roll
+            .subscribe(e => this.state.isIdle = false))
+        
+        // When End of Roll and we not in Autoplay and Next is Root => return Idle state
+        if (this.config.rolling)
+        this.subs.push(
+        this.rollingFalseSub = this.state.isRolling$
+            .filter(e => !e) // End of roll
+            .filter(e => !this.state.autoplay) // Not Autoplay
+            .filter(e => this.state.next === 'root') // Next is Root
+            .subscribe(e => this.state.isIdle = true))
+
+        // When End of Roll and Next is not Root => We go in Transition
+        if (this.config.rolling)
+        this.subs.push(
+        this.rollingTransitionSub = this.state.isRolling$
+            .filter(e => !e) // End of roll
+            .filter(e => this.state.next !== 'root') // Next is not Root
+            .subscribe(e => this.state.isTransition = true))
+
+        // Lines on Numbers Hover
+        if (this.config.lines)
+        this.subs.push(
+        this.linesOverSub = this.machine.numbers.$
+            .filter(e => e.type === 'OVER')
+            .subscribe(e => this.machine.lines.show(e.num)))
+
+        if (this.config.lines)
+        this.subs.push(
+        this.linesOutSub = this.machine.numbers.$
+            .filter(e => e.type === 'OUT')
+            .subscribe(e => this.machine.lines.hide(e.num)))
+        
+    }
+
+    disable() {
+        this.subs.forEach(s => s.unsubscribe())
+    }
+
 }
 
 class ButtonsController {
@@ -526,23 +564,6 @@ class PanelButtonsController {
 
 }
 
-const defaultRootBalanceConfig = {
-    currency: true,
-    cash: {
-        sum: true,
-        bet: true,
-        win: true
-    },
-    coin: {
-        sum: true,
-        bet: true,
-        win: true
-    },
-    level: true,
-    value: true,
-    lines: true
-}
-
 class RootBalanceController {
 
     constructor({
@@ -655,30 +676,6 @@ class RootBalanceController {
         this.subs.forEach(s => s.unsubscribe()) 
     }
 
-}
-
-const defaultRootWinConfig = {
-    table: {
-        show: true,
-        hide: true
-    },
-    lines: {
-        show: true,
-        hide: true
-    },
-    numbers: {
-        show: true,
-        hide: true
-    },
-    els: {
-        show: true,
-        hide: true,
-        alpha: true
-    },
-    oneAfterAnother: {
-        delay: 4000,
-        interval: 3000
-    }
 }
 
 class RootWinController {
@@ -823,14 +820,6 @@ class RootWinController {
 
 }
 
-const defaultAutoplayConfig = {
-    start: true,
-    timer: true,
-    count: true,
-    end: true,
-    noRoot: true
-}
-
 class AutoplayController {
 
     constructor({
@@ -872,6 +861,7 @@ class AutoplayController {
                 this.state.button = 'stop' // Change main button to stop
                 this.buttons.count.visible = true // Counter is visible now 
                 this.buttons.disableAll() // All buttons ( without Stop ) are disabled
+                this.balance.cash.auto.start = this.balance.cash.sum // Save start sum to check stop triggers on edges
 
                 this.machine.screen.roll() // First Autoplay roll
                 this.state.autoplay-- // Decrease autoplay value
@@ -887,8 +877,11 @@ class AutoplayController {
                         : Observable.of(e).delay(200)) // If no win lines - delay 200ms
             .filter(e => this.state.autoplay) // If autoplay is enabled now
             .subscribe(e => {
-                this.machine.screen.roll() // Roll the screen
-                this.state.autoplay-- // And decrease autoplay
+                if (this.checkStoppers()) this.state.autoplay = null // If we hanve stoppers and they triggered => stop autoplay
+                else {
+                    this.machine.screen.roll() // Roll the screen
+                    this.state.autoplay-- // And decrease autoplay
+                }
             }))
 
         // Autoplay End
@@ -920,6 +913,14 @@ class AutoplayController {
             .sample(this.state.isRolling$.filter(e => !e)) // At the End of Roll
             .subscribe(e => this.state.autoplay = null)) // Stop autoplay
 
+    }
+
+    checkStoppers() {
+        if (this.balance.cash.auto.increase
+        && (this.balance.cash.sum - this.balance.cash.auto.start >= this.balance.cash.auto.increase)) return true
+        if (this.balance.cash.auto.decrease
+        && (this.balance.cash.auto.start - this.balance.cash.sum >= this.balance.cash.auto.decrease)) return true
+        return false
     }
 
     disable() {
