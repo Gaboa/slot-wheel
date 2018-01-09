@@ -1,2 +1,2 @@
-export { Root } from './root'
+export { Root, MobileRoot } from './root'
 export { Preload } from './preload'
