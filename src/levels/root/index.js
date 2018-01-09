@@ -1,12 +1,94 @@
 import defaultsDeep from 'lodash.defaultsdeep'
 import { Subject, Observable } from "rxjs"
 import { Container, Sprite } from "../../utils"
-import { Machine, Footer } from '../../components'
+import { Machine, MobileMachine, Footer, MobileFooter, MobileButtons } from '../../components'
 import { Darkness } from "../preload/helpers"
 import { BalanceController } from './balance'
 
 // TODO: Create balance bindings for different modes ( FS FR Bonus )
 // TODO: Check index switching bug in Screen
+
+class MobileRoot extends Container {
+
+    constructor({
+        game,
+        config
+    }) {
+        super({ container: game.stage, x: 0.5, y: 0.5 })
+
+        this.game  = game
+        this.data  = game.data
+        this.state = game.state
+
+        this.bg = new Sprite({
+            container: this,
+            texture: 'preload_bg',
+            name: 'bg'
+        })
+
+        this.machine = new Machine({
+            container: this,
+            x: -0.1,
+            y: -0.01,
+            scale: 1.07,
+            config: {
+                symbols: game.data.symbols,
+                lines:   game.data.lines,
+                panel:   false
+            }
+        })
+
+        this.buttons = new MobileButtons({
+            container: this,
+            x: 0.375,
+            y: -0.02
+        })
+
+        this.footer = new Footer({
+            container: this
+        })
+
+        this.darkness = new Darkness({
+            container: this,
+            autoHide:  true
+        })
+
+        setTimeout(() => this.enable(), 0)
+    }
+
+    enable() {
+        // Balance
+        this.balanceCtrl     = new BalanceController({ game: this.game })
+        this.balanceRootCtrl = new RootFooterBalanceController({ game: this.game })
+        // Buttons
+        this.footerCtrl  = new FooterButtonsController({ game: this.game, config: {
+            fullscreen: false,
+            settings:   false,
+            sound: false,
+            info:  false,
+            fast:  false,
+        }})
+        this.buttonsCtrl = new MobileButtonsController({ game: this.game })
+        // Logic
+        this.ctrl     = new RootController({ game: this.game, config: {
+            lines: false,
+            idleFooter: false
+        }})
+        this.winCtrl  = new RootWinController({ game: this.game })
+        this.autoCtrl = new AutoplayController({ game: this.game })
+    }
+
+    disable() {
+        this.balanceCtrl.disable()
+        this.balanceRootCtrl.disable()
+        this.footerCtrl.disable()
+        this.buttonsCtrl.disable()
+        this.ctrl.disable()
+        this.winCtrl.disable()
+        this.autoCtrl.disable()
+    }
+
+}
 
 class Root extends Container {
 
@@ -50,12 +132,16 @@ class Root extends Container {
     }
     
     enable() {
-        this.balance = new BalanceController({ game: this.game })
-        this.balance.root = new RootBalanceController({ game: this.game })
-        this.buttons = new ButtonsController({ game: this.game })
-        this.ctrl    = new RootController({ game: this.game })
-        this.win     = new RootWinController({ game: this.game })
-        this.auto    = new AutoplayController({ game: this.game })
+        // Balance
+        this.balanceCtrl     = new BalanceController({ game: this.game })
+        this.balanceRootCtrl = new RootDesktopBalanceController({ game: this.game })
+        // Buttons
+        this.footerCtrl = new FooterButtonsController({ game: this.game })
+        this.panelCtrl  = new PanelButtonsController({ game: this.game })
+        // Logic
+        this.ctrl     = new RootController({ game: this.game })
+        this.winCtrl  = new RootWinController({ game: this.game })
+        this.autoCtrl = new AutoplayController({ game: this.game })
     }
 
     disable() {
@@ -76,39 +162,62 @@ const defaultRootConfig = {
         data: true
     },
     idle: true,
+    idleFooter: true,
     rolling: true,
     lines: true
 }
 
-const defaultButtonsConfig = {
-    footer: {
-        home: true,
-        settings: true,
-        info: true,
-        sound: true,
-        fast: true,
-        fullscreen: true
-    },
-    panel: {
-        level: {
-            minus: true,
-            plus: true,
-            min: true,
-            max: true
-        },
-        value: {
-            minus: true,
-            plus: true,
-            min: true,
-            max: true
-        },
-        auto: true,
-        item: true,
-        spin: true,
-        anim: true,
-        stop: true,
+// Buutons config
+const defaultFooterButtonsConfig = {
+    home: true,
+    settings: true,
+    info: true,
+    sound: true,
+    fast: true,
+    fullscreen: true
+}
+
+const defaultPanelButtonsConfig = {
+    level: {
+        minus: true,
+        plus: true,
+        min: true,
         max: true
     },
+    value: {
+        minus: true,
+        plus: true,
+        min: true,
+        max: true
+    },
+    auto: true,
+    item: true,
+    spin: true,
+    anim: true,
+    stop: true,
+    max: true
+}
+
+const defaultMobileButtonsConfig = {
+    settings: true,
+    auto: true,
+    spin: true,
+    bet: true,
+    sound: true
+}
+
+// Balance config
+const defaultRootFooterBalanceConfig = {
+    currency: true,
+    coin: {
+        sum: true,
+        bet: true
+    },
+    cash: {
+        sum: true,
+        bet: true,
+        win: true
+    }
 }
 
 const defaultRootBalanceConfig = {
@@ -120,14 +229,14 @@ const defaultRootBalanceConfig = {
     },
     coin: {
         sum: true,
-        bet: true,
-        win: true
+        bet: true
     },
     level: true,
     value: true,
     lines: true
 }
 
+// Autoplay and Win config
 const defaultRootWinConfig = {
     table: {
         show: true,
@@ -176,6 +285,9 @@ class RootController {
         this.balance = this.data.balance
         this.footer  = this.level.footer
         this.machine = this.level.machine
+        this.buttons = this.level.machine.panel
+            ? this.level.machine.panel.buttons
+            : this.level.buttons
 
         if (autoEnable) this.enable()        
     }
@@ -194,7 +306,7 @@ class RootController {
                     value: this.data.balance.value.current,
                     level: this.data.balance.level.current
                 })
-                this.level.balance.start()
+                this.level.balanceCtrl.start()
                 this.state.isRolling = true
             }))
 
@@ -226,22 +338,34 @@ class RootController {
         this.subs.push(
         this.idleTrueSub = this.state.isIdle$
             .filter(e => e)
-            .subscribe(e => {
-                this.machine.panel.buttons.enableAll()
-                this.footer.buttons.settings.enable()
-                this.footer.buttons.info.enable()
-            }))
+            .subscribe(e => this.buttons.enableAll()))
 
-        // When we not in Idle => disable buttons and Info and Settings button
         if (this.config.idle)
         this.subs.push(
         this.idleFalseSub = this.state.isIdle$
             .filter(e => !e)
+            .subscribe(e => this.buttons.disableAll()))
+
+
+        // Disabling footer buttons with idle state
+        if (this.config.idleFooter)
+        this.subs.push(
+        this.idleTrueSub = this.state.isIdle$
+            .filter(e => e)
             .subscribe(e => {
-                this.machine.panel.buttons.disableAll()
+                this.footer.buttons.settings.enable()
+                this.footer.buttons.info.enable()
+            }))
+
+        if (this.config.idleFooter)
+        this.subs.push(
+        this.idleFalseSub = this.state.isIdle$
+            .filter(e => !e)
+            .subscribe(e => {
                 this.footer.buttons.settings.disable()
                 this.footer.buttons.info.disable()
             }))
+
 
         // When Rolling Starts => change Idle to false
         if (this.config.rolling)
@@ -288,37 +412,7 @@ class RootController {
 
 }
 
-class ButtonsController {
-
-    constructor({
-        game,
-        config,
-        autoEnable = true
-    }) {
-        this.config = defaultsDeep(config, defaultButtonsConfig)
-        this.game  = game
-
-        if (autoEnable) this.enable()        
-    }
-
-    enable() {
-        this.panel  = new PanelButtonsController({
-            game: this.game,
-            config: this.config.panel
-        }) 
-        this.footer = new FooterButtonsController({
-            game: this.game,
-            config: this.config.footer
-        })
-    }
-
-    disable() {
-        this.panel.disable()
-        this.footer.disable()
-    }
-
-}
-
+// Buttons Controllers
 class FooterButtonsController {
     
     constructor({
@@ -326,7 +420,7 @@ class FooterButtonsController {
         config,
         autoEnable = true
     }) {
-        this.config = defaultsDeep(config, defaultButtonsConfig.footer)
+        this.config = defaultsDeep(config, defaultFooterButtonsConfig)
 
         this.game = game
         this.buttons  = game.root.footer.buttons
@@ -414,7 +508,7 @@ class PanelButtonsController {
         config,
         autoEnable = true
     }) {
-        this.config = defaultsDeep(config, defaultButtonsConfig.panel)
+        this.config = defaultsDeep(config, defaultPanelButtonsConfig)
 
         this.game = game
         this.level = game.root
@@ -564,23 +658,23 @@ class PanelButtonsController {
 
 }
 
-class RootBalanceController {
+class MobileButtonsController {
 
     constructor({
         game,
         config,
         autoEnable = true
     }) {
-        this.config = defaultsDeep(config, defaultRootBalanceConfig)
-        this.game = game
+        this.config = defaultsDeep(config, defaultMobileButtonsConfig)
+
+        this.game  = game
         this.level = game.root
         this.data  = game.data
         this.state = game.state
         this.balance = this.data.balance
         this.footer  = this.level.footer
         this.machine = this.level.machine
-        this.footerBal  = this.footer.balance.bottom
-        this.machineBal = this.machine.panel.balance
+        this.buttons = this.level.buttons
 
         if (autoEnable) this.enable()
     }
@@ -588,19 +682,108 @@ class RootBalanceController {
     enable() {
         this.subs = []
 
-        // Footer Balance
+        // Menu
+        if (this.config.menu)
+        this.subs.push(
+        this.menuSub = this.buttons.menu.down$
+            .subscribe(e => console.log('I am Menu:', e)))
+
+        // Autoplay
+        if (this.config.auto)
+        this.subs.push(
+        this.autoSub = this.buttons.auto.down$
+            .subscribe(e => console.log('I am Autoplay:', e)))
+
+        // Spin
+        if (this.config.spin)
+        this.subs.push(
+        this.spinSub = this.buttons.spin.down$
+            .subscribe(e => this.machine.screen.roll()))
+
+        // Autoplay
+        if (this.config.bet)
+        this.subs.push(
+        this.betSub = this.buttons.bet.down$
+            .subscribe(e => console.log('I am Bet:', e)))
+
+        // Sound
+        if (this.config.sound)
+        this.subs.push(
+        this.soundSub = this.buttons.sound.down$
+            .subscribe(e => this.state.settings.isSound = !this.state.settings.isSound))
+
+        if (this.config.sound)
+        this.subs.push(
+        this.soundStateSub = this.state.settings.isSound$
+            .subscribe(e => this.buttons.sound.to(e)))
+    }
+
+    disable() {
+        this.subs.forEach(s => s.unsubscribe())
+    }
+
+}
+
+// Balance Controllers
+class RootFooterBalanceController {
+
+    constructor({
+        game,
+        config,
+        autoEnable = true
+    }) {
+        this.config = defaultsDeep(config, defaultRootFooterBalanceConfig)
+
+        this.game  = game
+        this.level = game.root
+        this.data  = game.data
+        this.state = game.state
+        this.balance = this.data.balance
+        this.footer  = this.level.footer
+        this.top     = this.footer.balance.top
+        this.bottom  = this.footer.balance.bottom
+
+        if (autoEnable) this.enable()
+    }
+
+    enable() {
+        this.subs = []
+
         // Currency
         if (this.config.currency)
         this.subs.push(
         this.currencySub = this.balance.currency$
             .subscribe(e => this.footer.balance.setCurrency(e)))
-        
+
+        // Top
+        // Coin Sum
+        if (this.config.coin.sum)
+        this.subs.push(
+        this.coinSumStartSub = this.balance.coin.sum$
+            .filter(e => !this.state.isRolling)
+            .subscribe(e => this.top.left.set(e)))
+
+        // Coin Sum at the Roll End
+        if (this.config.coin.sum)
+        this.subs.push(
+        this.coinSumEndSub = this.balance.coin.sum$
+            .filter(e => this.state.isRolling)
+            .sample(this.state.isRolling$)
+            .subscribe(e => this.top.left.set(e)))
+
+        // Coin Bet
+        if (this.config.coin.bet)
+        this.subs.push(
+        this.coinBetSub = this.balance.coin.bet$
+            .subscribe(e => this.top.right.set(e)))
+
+        // Bottom
         // Cash Sum
         if (this.config.cash.sum)
         this.subs.push(
         this.cashSumStartSub = this.balance.cash.sum$
             .filter(e => !this.state.isRolling)
-            .subscribe(e => this.footerBal.left.set(e)))
+            .subscribe(e => this.bottom.left.set(e)))
 
         // Cash Sum at the Roll End
         if (this.config.cash.sum)
@@ -608,20 +791,20 @@ class RootBalanceController {
         this.cashSumEndSub = this.balance.cash.sum$
             .filter(e => this.state.isRolling)
             .sample(this.state.isRolling$)
-            .subscribe(e => this.footerBal.left.set(e)))
-        
+            .subscribe(e => this.bottom.left.set(e)))
+
         // Cash Bet
         if (this.config.cash.bet)
         this.subs.push(
         this.cashBetSub = this.balance.cash.bet$
-            .subscribe(e => this.footerBal.center.set(e)))
-        
+            .subscribe(e => this.bottom.center.set(e)))
+
         // Cash Win
         if (this.config.cash.win)
         this.subs.push(
         this.cashWinStartSub = this.balance.cash.win$
             .filter(e => !this.state.isRolling)
-            .subscribe(e => this.footerBal.right.set(e)))
+            .subscribe(e => this.bottom.right.set(e)))
         
         // Cash Win at the Roll End
         if (this.config.cash.win)
@@ -629,8 +812,41 @@ class RootBalanceController {
         this.cashWinEndSub = this.balance.cash.win$
             .filter(e => this.state.isRolling)
             .sample(this.state.isRolling$)
-            .subscribe(e => this.footerBal.right.set(e)))
+            .subscribe(e => this.bottom.right.set(e)))
 
+    }
+
+    disable() {
+        this.subs.forEach(s => s.unsubscribe())
+    }
+
+}
+
+class RootDesktopBalanceController extends RootFooterBalanceController {
+
+    constructor({
+        game,
+        config,
+        autoEnable = true
+    }) {
+        super({ game, autoEnable, config: {
+            coin: {
+                sum: false,
+                bet: false
+            }
+        }})
+ 
+        this.config = defaultsDeep(config, defaultRootBalanceConfig)
+
+        this.machine    = this.level.machine
+        this.machineBal = this.machine.panel.balance
+
+        if (autoEnable) this.enable()
+    }
+
+    enable() {
+        super.enable()
+        
         // Panel Balance
         // Lines
         if (this.config.lines)
@@ -672,12 +888,9 @@ class RootBalanceController {
             .subscribe(e => this.machineBal.sum.set(e)))
     }
 
-    disable() {
-        this.subs.forEach(s => s.unsubscribe()) 
-    }
-
 }
 
+// Win and Autoplay Controllers
 class RootWinController {
 
     constructor({
@@ -836,7 +1049,9 @@ class AutoplayController {
         this.balance = this.data.balance
         this.footer  = this.level.footer
         this.machine = this.level.machine
-        this.buttons = this.machine.panel.buttons
+        this.buttons = this.machine.panel
+            ? this.machine.panel.buttons
+            : this.level.buttons
 
         if (autoEnable) this.enable()
     }
@@ -929,4 +1144,35 @@ class AutoplayController {
 
 }
 
-export { Root }
+class MobileRootController extends RootController {
+
+    constructor({
+        game,
+        config,
+        autoEnable = true
+    }) {
+        super({ game, autoEnable, config: Object.assign({
+            lines: false,
+            idle: false
+        }, config) })
+    }
+
+    enable() {
+        super.enable()
+
+        // Changing buttons states with isIdle state
+        this.subs.push(
+        this.idleTrueSub = this.state.isIdle$
+            .filter(e => e)
+            .subscribe(e => this.level.buttons.enableAll()))
+
+        // When we not in Idle => disable buttons and Info and Settings button
+        this.subs.push(
+        this.idleFalseSub = this.state.isIdle$
+            .filter(e => !e)
+            .subscribe(e => this.level.buttons.disableAll()))
+    }
+
+}
+
+export { Root, MobileRoot }
