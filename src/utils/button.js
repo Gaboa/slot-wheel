@@ -18,7 +18,7 @@ class Button extends Sprite {
     }) {
         super({ container, x, y, texture, anchor, name, alpha, visible })
 
-        this.textureName = texture.split('_')[0]
+        this.textureName = texture
         this.textureNormal = PIXI.utils.TextureCache[texture]
         this.textureOn = PIXI.utils.TextureCache[`${this.textureName}_on`]
         this.textureOff = PIXI.utils.TextureCache[`${this.textureName}_off`]
@@ -102,6 +102,7 @@ class Button extends Sprite {
         this.enabled = false
         this.interactive = false
         if (this.textureDisabled) this.texture = this.textureDisabled
+        else if (this.textureOff) this.texture = this.textureOff
         else this.alpha = 0.3
     }
     
@@ -110,6 +111,7 @@ class Button extends Sprite {
         this.enabled = true
         this.interactive = true
         if (this.textureDisabled) this.texture = this.textureNormal
+        else if (this.textureOff) this.texture = this.textureNormal
         else this.alpha = 1
     }
 
