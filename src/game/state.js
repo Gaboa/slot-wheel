@@ -24,7 +24,7 @@ const defaultState = {
         isFast: false,
         isSound: true,
         isMusic: true,
-        isEffects: true
+        isEffects: true,
     }
 }
 

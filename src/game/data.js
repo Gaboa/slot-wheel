@@ -39,6 +39,7 @@ const defaultData = {
             sum: null,
             bet: null,
             win: null,
+            // ???
             auto: {
                 start: null,
                 increase: null,
