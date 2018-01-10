@@ -1,7 +1,7 @@
 import defaultsDeep from 'lodash.defaultsdeep'
 import { Subject, Observable } from "rxjs"
 import { Container, Sprite } from "../../utils"
-import { Machine, MobileMachine, Footer, MobileFooter, MobileButtons } from '../../components'
+import { Machine, Footer, MobileButtons, MobileMenu } from '../../components'
 import { Darkness } from "../preload/helpers"
 import { BalanceController } from './balance'
 
@@ -48,6 +48,10 @@ class MobileRoot extends Container {
             container: this
         })
 
+        this.menu = new MobileMenu({
+            container: this
+        })
+
         this.darkness = new Darkness({
             container: this,
             autoHide:  true
@@ -69,6 +73,7 @@ class MobileRoot extends Container {
             fast:  false,
         }})
         this.buttonsCtrl = new MobileButtonsController({ game: this.game })
+        this.menuCtrl    = new MobileMenuController({ game: this.game })
         // Logic
         this.ctrl     = new RootController({ game: this.game, config: {
             lines: false,
@@ -199,7 +204,7 @@ const defaultPanelButtonsConfig = {
 }
 
 const defaultMobileButtonsConfig = {
-    settings: true,
+    menu: true,
     auto: true,
     spin: true,
     bet: true,
@@ -675,6 +680,7 @@ class MobileButtonsController {
         this.footer  = this.level.footer
         this.machine = this.level.machine
         this.buttons = this.level.buttons
+        this.menu    = this.level.menu
 
         if (autoEnable) this.enable()
     }
@@ -686,13 +692,13 @@ class MobileButtonsController {
         if (this.config.menu)
         this.subs.push(
         this.menuSub = this.buttons.menu.down$
-            .subscribe(e => console.log('I am Menu:', e)))
+            .subscribe(e => this.menu.open('settings')))            
 
         // Autoplay
         if (this.config.auto)
         this.subs.push(
         this.autoSub = this.buttons.auto.down$
-            .subscribe(e => console.log('I am Autoplay:', e)))
+            .subscribe(e => this.menu.open('auto')))
 
         // Spin
         if (this.config.spin)
@@ -704,7 +710,7 @@ class MobileButtonsController {
         if (this.config.bet)
         this.subs.push(
         this.betSub = this.buttons.bet.down$
-            .subscribe(e => console.log('I am Bet:', e)))
+            .subscribe(e => this.menu.open('bet')))
 
         // Sound
         if (this.config.sound)
@@ -716,6 +722,55 @@ class MobileButtonsController {
         this.subs.push(
         this.soundStateSub = this.state.settings.isSound$
             .subscribe(e => this.buttons.sound.to(e)))
+    }
+
+    disable() {
+        this.subs.forEach(s => s.unsubscribe())
+    }
+
+}
+
+const defaultMobileMenuConfig = {
+    autoplay: true,
+    bet: {},
+    settings: {}
+}
+
+class MobileMenuController {
+
+    constructor({
+        game,
+        config,
+        autoEnable = true
+    }) {
+        this.config = defaultsDeep(config, defaultMobileMenuConfig)
+
+        this.game  = game
+        this.level = game.root
+        this.data  = game.data
+        this.state = game.state
+        this.balance = this.data.balance
+        this.buttons = this.level.buttons
+
+        this.bet      = this.level.menu.bet
+        this.auto     = this.level.menu.auto
+        this.settings = this.level.menu.settings
+
+        if (autoEnable) this.enable()
+    }
+
+    enable() {
+        this.subs = []
+
+        if (this.autoplay)
+        this.subs.push(
+        this.autoItemSub = this.auto.$
+            .do(e => console.log(e))
+            .map(e => e.value)
+            .subscribe(value => {
+                this.menu.close()
+                this.state.autoplay = value
+            }))
     }
 
     disable() {
