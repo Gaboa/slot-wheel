@@ -53,24 +53,24 @@ game.preload = new Preload({
 
             // Spritesheets
             { url: 'footer/buttons.json' },
-            { url: 'machine/buttons.json' },
+            // { url: 'machine/buttons.json' },
             { url: 'machine/numbers.json' },
             // Spines
             { name: 'logo',       url: 'machine/logo.json' },
-            { name: 'panel',      url: 'machine/panel.json' },
-            { name: 'spin',       url: 'machine/button.json' },
+            // { name: 'panel',      url: 'machine/panel.json' },
+            // { name: 'spin',       url: 'machine/button.json' },
             { name: 'splash',     url: 'machine/splash.json' },
             // Images
             { name: 'tile',       url: 'machine/tile.png' },
             { name: 'frame',      url: 'machine/frame.png' },
-            { name: 'panel_root', url: 'machine/panel_root.png' },
-            { name: 'panel_fs',   url: 'machine/panel_fs.png' },
+            // { name: 'panel_root', url: 'machine/panel_root.png' },
+            // { name: 'panel_fs',   url: 'machine/panel_fs.png' },
             { name: 'win_table',  url: 'machine/win_table.png' },
             { name: 'win_circle', url: 'machine/win_circle.png' },
 
             // Mobile
-            // { url: 'mobile/buttons.json' },
-            // { url: 'mobile/settings.json' },
+            { url: 'mobile/buttons.json' },
+            { url: 'mobile/settings.json' },
         ]
     }
 })
@@ -90,4 +90,4 @@ game.device.$
 
 game.preload.$
     .filter(e => e === 'REMOVED').take(1)
-    .subscribe(e => game.root = new Root({ game }))
+    .subscribe(e => game.root = new MobileRoot({ game }))
