@@ -1,5 +1,5 @@
 <template>
-    <p class=card__content>{{description.content}}</p>
+    <p class=card__info>{{description.content}}</p>
 </template>
 <script>
 export default {
@@ -12,8 +12,14 @@ export default {
 }
 </script>
 <style scoped>
-    .card__content{
+    .card__info{
         color: white;
+        font-size: 1.25vw;
+        font-family: 'Oswald', 'Arial', 'Helvetica', sans-serif;
+        line-height: 1.5;
+    }
+    p{
+        margin: 0;
     }
 
 </style>

@@ -1,6 +1,7 @@
 <template>
     <div class='info__card'>
-        <img alt='' :src='description.image.src'/>
+        <!-- <img alt='' :src='description.image.src'/> -->
+        <div class='info__image' :style='imageScr'></div>
         <ul class='info__card__list'>
             <li v-for='item in description.content' :key='item'>{{item}}</li>
         </ul>
@@ -14,6 +15,13 @@ export default {
         return{
             type: 'image-instance'
         }
+    },
+    computed:{
+        imageScr() {
+            return {
+                backgroundImage: 'url('+ this.$props.description.image.src + ')'
+            }
+        }
     }
 }
 </script>
@@ -23,17 +31,31 @@ export default {
         display: grid;
         grid-template-columns: 1fr 1fr;
         grid-template-rows: 1fr;
-        justify-items:  center;
+        justify-items:  start;
         align-items: center;
+        font-size: 1.25vw;
+        font-family: 'Oswald', 'Arial', 'Helvetica', sans-serif;
+        height: 100%;
     }
     .info__card__list{
         color: white;
         list-style-type:  none;
+        margin: 0;
+        padding: 0;
+        line-height: 1.5;
     }
 
-    img{
-        width: 150px;
+    .info__image{
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        height: 100%;
+         width: 100%;
     }
+
+    /* img{
+        max-width: 60%
+    } */
     
 
 </style>

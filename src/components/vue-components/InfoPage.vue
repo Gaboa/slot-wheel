@@ -37,10 +37,7 @@ export default {
     },
     computed: {
         contentGridSystem() {
-            return {
-                gridTemplateColumns: this.$props.pageInfo.body.grid.columns,
-                gridTemplateRows: this.$props.pageInfo.body.grid.rows
-            }
+            return this.$props.pageInfo.body.grid
         },
         cardGridSystem(card) {
             let vm = this;
@@ -75,9 +72,7 @@ export default {
         display: grid;
         padding: 0 2vw;
         max-width: 100%;
-        /* grid-template-columns: 25% 25% 25% 25%;
-        grid-template-rows: 50% 50%; */
-        grid-row-gap: 1.5vw
+        height: 27vw;
     }
     .info__header {
         margin: 0;
@@ -97,40 +92,4 @@ export default {
         line-height: 1.5;
         color: #888;
     }
-    /* .info__page {
-        position: absolute;
-        width: 80vw;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        max-width: 100%;
-    } */
-    /* .info__header {
-        margin: 1.5vw 0;
-        font-style: normal;
-        font-weight: normal;
-        font-family: 'Oswald', 'Arial', 'Helvetica', sans-serif;
-        font-size: 2vw;
-        color: #fff;
-    }
-    .info__content{
-        display: grid;
-        margin: 3vw auto;
-        width: 95%;
-        justify-items: center;
-        font-family: Arial, Helvetica, sans-serif;
-        height: 40vh;
-        align-items: center;
-    }
-    .info__footer {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        font-size: 0.75vw;
-        color: #888;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-    .info__footer li{
-        margin-bottom: 1vh;
-    } */
 </style>
