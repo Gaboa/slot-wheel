@@ -4,6 +4,7 @@ import { Container, Sprite } from "../../utils"
 import { Machine, Footer } from '../../components'
 import { Darkness } from "../preload/helpers"
 import { BalanceController } from './balance'
+import InfoController from '../../components/info'
 
 // TODO: Create balance bindings for different modes ( FS FR Bonus )
 // TODO: Add Spine helper class
@@ -42,6 +43,8 @@ class Root extends Container {
             container: this,
             autoHide:  true
         })
+
+        this.info = new InfoController({})
 
         setTimeout(() => this.enable(), 0)
     }
