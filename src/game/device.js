@@ -44,7 +44,7 @@ class DeviceManager {
     }
 
     setGlobalParams() {
-        if (this.isMobile) {
+        // if (this.isMobile) {
             window.SCALE_FIX   = this.config[this.config.mobile].fix
             window.GAME_WIDTH  = this.config[this.config.mobile].width
             window.GAME_HEIGHT = this.config[this.config.mobile].height
@@ -52,16 +52,16 @@ class DeviceManager {
             window.EL_HEIGHT = this.config[this.config.mobile].el.height
             window.GAME_DEVICE = 'mobile'
             window.GAME_RES = this.config.mobile
-        }
-        else {
-            window.SCALE_FIX   = this.config[this.config.desktop].fix
-            window.GAME_WIDTH  = this.config[this.config.desktop].width
-            window.GAME_HEIGHT = this.config[this.config.desktop].height
-            window.EL_WIDTH  = this.config[this.config.desktop].el.width
-            window.EL_HEIGHT = this.config[this.config.desktop].el.height
-            window.GAME_DEVICE = 'desktop'
-            window.GAME_RES = this.config.desktop
-        }
+        // }
+        // else {
+        //     window.SCALE_FIX   = this.config[this.config.desktop].fix
+        //     window.GAME_WIDTH  = this.config[this.config.desktop].width
+        //     window.GAME_HEIGHT = this.config[this.config.desktop].height
+        //     window.EL_WIDTH  = this.config[this.config.desktop].el.width
+        //     window.EL_HEIGHT = this.config[this.config.desktop].el.height
+        //     window.GAME_DEVICE = 'desktop'
+        //     window.GAME_RES = this.config.desktop
+        // }
     }
     
     setScaleMode() {
