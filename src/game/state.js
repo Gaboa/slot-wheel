@@ -22,6 +22,8 @@ const defaultState = {
     settings: {
         isFullscreen: false,
         isFast: false,
+        isRightSide: true,
+        isLowQuality: false,
         isSound: true,
         isMusic: true,
         isEffects: true,
