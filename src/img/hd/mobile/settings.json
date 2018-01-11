@@ -216,7 +216,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":104,"h":105},
 	"sourceSize": {"w":104,"h":105}
 },
-"settings_sound":
+"settings_effects":
 {
 	"frame": {"x":1,"y":693,"w":109,"h":109},
 	"rotated": false,
@@ -224,7 +224,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":109,"h":109},
 	"sourceSize": {"w":109,"h":109}
 },
-"settings_sound_on":
+"settings_effects_on":
 {
 	"frame": {"x":1,"y":693,"w":109,"h":109},
 	"rotated": false,
@@ -232,7 +232,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":109,"h":109},
 	"sourceSize": {"w":109,"h":109}
 },
-"settings_sound_off":
+"settings_effects_off":
 {
 	"frame": {"x":112,"y":733,"w":109,"h":109},
 	"rotated": false,
