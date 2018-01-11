@@ -2,11 +2,66 @@ import defaultsDeep from 'lodash.defaultsdeep'
 import { Container, Button, Text, BalanceText, Graphics, Sprite } from "../utils"
 import { Darkness } from '../levels/preload/helpers'
 import { Observable } from 'rxjs'
+import { TweenMax } from 'gsap'
 
 const defaultButtonsConfig = {
     buttons: ['menu', 'auto', 'stop', 'spin', 'bet', 'sound'],
     delta: 0.02,
     style: {}
+}
+
+const defaultMenuConfig = {
+    width: 0.26,
+    time: 0.5,
+    settings: {
+        header: 'SETTINGS',
+        rows: [0.23, 0.455, 0.68],
+        buttons: {
+            effects: {
+                label: 'EFFECTS',
+                side: -1,
+                row: 0
+            },
+            music: {
+                label: 'MUSIC',
+                side: 1,
+                row: 0
+            },
+            fast: {
+                label: 'FAST SPIN',
+                side: -1,
+                row: 1
+            },
+            hand: {
+                label: 'HAND MODE',
+                side: 1,
+                row: 1
+            },
+            info: {
+                label: 'INFO',
+                side: -1,
+                row: 2
+            },
+            quality: {
+                label: 'LOW QUALITY',
+                side: 1,
+                row: 2
+            }
+        },
+    },
+    auto: {
+        header: 'AUTOPLAY',
+        values: [10, 25, 50, 100, 250, 500],
+        rows: [0.25, 0.47, 0.7],
+        font: 60
+    },
+    bet: {
+        header: 'SET BET',
+        rows: [0.23, 0.475, 0.7],
+        max: true,
+        level: true,
+        value: true,
+    }
 }
 
 const defaultStyle = {
@@ -69,13 +124,13 @@ class MobileButtons extends Container {
 
     enableAll() {
         this.items
-            .filter(item => item !== this.sound)
+            .filter(item => item !== this.sound || item !== this.stop)
             .forEach(button => button.enable())
     }
 
     disableAll() {
         this.items
-            .filter(item => item !== this.sound)
+            .filter(item => item !== this.sound || item !== this.stop)
             .forEach(button => button.disable())
     }
 
@@ -89,59 +144,6 @@ class MobileButtons extends Container {
 
 }
 
-const defaultMenuConfig = {
-    width: 0.25,
-    settings: {
-        header: 'SETTINGS',
-        rows: [0.23, 0.455, 0.68],
-        buttons: {
-            sound: {
-                label: 'EFFECTS',
-                side: -1,
-                row: 0
-            },
-            music: {
-                label: 'MUSIC',
-                side: 1,
-                row: 0
-            },
-            fast: {
-                label: 'FAST SPIN',
-                side: -1,
-                row: 1
-            },
-            hand: {
-                label: 'HAND MODE',
-                side: 1,
-                row: 1
-            },
-            info: {
-                label: 'INFO',
-                side: -1,
-                row: 2
-            },
-            quality: {
-                label: 'LOW QUALITY',
-                side: 1,
-                row: 2
-            }
-        },
-    },
-    auto: {
-        header: 'AUTOPLAY',
-        values: [10, 25, 50, 100, 250, 500],
-        rows: [0.25, 0.47, 0.7],
-        font: 60
-    },
-    bet: {
-        header: 'SET BET',
-        rows: [0.23, 0.475, 0.7],
-        max: true,
-        level: true,
-        value: true,
-    }
-}
-
 class MobileMenu extends Container {
 
     constructor({
@@ -150,28 +152,37 @@ class MobileMenu extends Container {
         y,
         config
     }) {
-        super({ container, x, y })
-
+        super({ container })
+        
         this.config = defaultsDeep(config, defaultMenuConfig)
         this.name = 'menu'
-
+        this.tweenTime = this.config.time
+        
         this.darkness = new Darkness({ container: this, autoHide: true })
-        this.auto     = new MobileAutoMenu({ container: this, config: this.config })
-        this.settings = new MobileSettingsMenu({ container: this, config: this.config })
-        this.bet      = new MobileBetMenu({ container: this, config: this.config })
+        this.darkness.down$ = Observable.fromEvent(this.darkness, 'pointerdown')
+
+        this.menus    = new Container({ container: this, x, y })
+        this.auto     = new AutoMenu({ container: this.menus, config: this.config })
+        this.settings = new SettingsMenu({ container: this.menus, config: this.config })
+        this.bet      = new BetMenu({ container: this.menus, config: this.config })
+    }
+
+    changeSide(value) {
+        this.side = value ? 1 : -1 
+        this.menus.x = this.side * (0.5 + this.config.width / 2) * GAME_WIDTH
     }
 
     open(name) {
-        this.close()
-        this.current = name
-        this.visible = true
-        this[this.current].visible = true
+        this.darkness.interactive = true
+        this.darkness.show()
+        this.menus.setChildIndex(this[name], 2)
+        this.tween = TweenMax.to(this.menus, this.tweenTime, { x: this.side * (0.5 - this.config.width / 2) * GAME_WIDTH, overwrite: false })
     }
     
     close() {
-        this.visible = false
-        if (this.current)
-        this[this.current].visible = false
+        this.darkness.interactive = false        
+        this.darkness.hide()
+        this.tween = TweenMax.to(this.menus, this.tweenTime, { x: this.side * (0.5 + this.config.width / 2) * GAME_WIDTH, overwrite: false })        
     }
 
 }
@@ -188,10 +199,10 @@ class MenuTemplate extends Container {
 
         this.config = config
         this.pivot.set(this.config.width * GAME_WIDTH * 0.5, GAME_HEIGHT * 0.5)
-        this.visible = false
 
         // BG
         this.bg = new Graphics({ container: this })
+        this.bg.interactive = true
         this.bg.beginFill(0x000000)
         this.bg.drawRect(0, 0, this.config.width * GAME_WIDTH, GAME_HEIGHT)
         this.bg.endFill()
@@ -207,7 +218,7 @@ class MenuTemplate extends Container {
             }
         })
 
-        this.back = new Button({
+        this.close = new Button({
             container: this,
             texture: 'settings_return',
             x: this.config.width * 0.5,
@@ -217,6 +228,7 @@ class MenuTemplate extends Container {
 
 }
 
+// Autoplay Menu
 class AutoButton extends Container {
 
     constructor({
@@ -253,7 +265,7 @@ class AutoButton extends Container {
 
 }
 
-class MobileAutoMenu extends MenuTemplate {
+class AutoMenu extends MenuTemplate {
 
     constructor({
         container,
@@ -294,12 +306,13 @@ class MobileAutoMenu extends MenuTemplate {
             this.buttons.push(button)
         })
 
-        this.$ = Observable.merge([...this.buttons.map(b => b.$)])
+        this.$ = Observable.merge(...this.buttons.map(b => b.$))
 
     }
 
 }
 
+// Settings Menu
 class SettingButton extends Container {
 
     constructor({
@@ -335,29 +348,29 @@ class SettingButton extends Container {
         this.setupStreams()
     }
 
-    changeTo(mode) {
+    to(mode) {
         switch (mode) {
             case 'on':
-                this.changeToOn()
+                this.toOn()
                 break
             case true:
-                this.changeToOn()
+                this.toOn()
                 break
             case 'off':
-                this.changeToOff()
+                this.toOff()
                 break
             case false:
-                this.changeToOff()
+                this.toOff()
                 break
             default:
         }
     }
 
-    changeToOn() {
+    toOn() {
         this.sprite.changeTexture(`settings_${this.name}_on`)
     }
 
-    changeToOff() {
+    toOff() {
         this.sprite.changeTexture(`settings_${this.name}_off`)
     }
 
@@ -369,7 +382,7 @@ class SettingButton extends Container {
     }
 }
 
-class MobileSettingsMenu extends MenuTemplate {
+class SettingsMenu extends MenuTemplate {
 
     constructor({
         container,
@@ -397,6 +410,7 @@ class MobileSettingsMenu extends MenuTemplate {
 
 }
 
+// Bet Menu
 class MobileBalance extends Container {
 
     constructor({
@@ -407,6 +421,7 @@ class MobileBalance extends Container {
         text = 'bet level',
         delta = 0.01,
         labelStyle,
+        fixed = 0,
         textStyle
     }) {
         super({ container, x, y })
@@ -427,7 +442,7 @@ class MobileBalance extends Container {
 
         this.text = new BalanceText({
             container: this,
-            fixed: 0,
+            fixed,
             tweenTime: 0.3,
             text: 0,
             style: defaultsDeep(textStyle, defaultStyle)
@@ -447,8 +462,7 @@ class MobileBalance extends Container {
     }
 
 }
-
-class MobileBetMenu extends MenuTemplate {
+class BetMenu extends MenuTemplate {
 
     constructor({
         container,
@@ -470,6 +484,7 @@ class MobileBetMenu extends MenuTemplate {
             x: this.config.width / 2,
             y: this.config.rows[1],
             text: 'BET LEVEL',
+            fixed: 0,
             textStyle: { fontSize: 60 }
         })
         
@@ -478,7 +493,8 @@ class MobileBetMenu extends MenuTemplate {
             x: this.config.width / 2,
             y: this.config.rows[2],
             text: 'COIN VALUE',
-            textStyle: { fontSize: 60 }
+            fixed: 2,            
+            textStyle: { fontSize: 50 }
         })
 
     }
