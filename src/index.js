@@ -26,52 +26,61 @@ const game = new Game({
 // Remove it in Prod mode
 window.game = game
 
+const preload = [
+    { name: 'preload_bg',    url: 'preload/bg.jpg' },
+    { name: 'preload_bar',   url: 'preload/bar.png' },
+    { name: 'preload_light', url: 'preload/light.png' },
+    { url: 'preload/preload.json' }
+]
+
+const common = [
+    { url: 'machine/elements/elements.json' },
+            
+    { name: 'jack',   url: 'machine/elements/jack.json' },
+    { name: 'queen',  url: 'machine/elements/queen.json' },
+    { name: 'king',   url: 'machine/elements/king.json' },
+    { name: 'ace',    url: 'machine/elements/ace.json' },
+    { name: 'rabbit', url: 'machine/elements/rabbit.json' },
+    { name: 'mouse',  url: 'machine/elements/mouse.json' },
+    { name: 'owl',    url: 'machine/elements/owl.json' },
+    { name: 'cat',    url: 'machine/elements/cat.json' },
+    { name: 'wild',   url: 'machine/elements/wild.json' },
+    { name: 'bonus',  url: 'machine/elements/bonus.json' },
+    { name: 'pig',    url: 'machine/elements/pig.json' },
+
+    { url: 'footer/buttons.json' },
+    { url: 'machine/numbers.json' },
+    
+    { name: 'logo',       url: 'machine/logo.json' },
+    { name: 'splash',     url: 'machine/splash.json' },
+
+    { name: 'tile',       url: 'machine/tile.png' },
+    { name: 'frame',      url: 'machine/frame.png' },
+    { name: 'win_table',  url: 'machine/win_table.png' },
+    { name: 'win_circle', url: 'machine/win_circle.png' },
+]
+
+const mobile = [
+    { url: 'mobile/buttons.json' },
+    { url: 'mobile/settings.json' },
+]
+
+const desktop = [
+    { url: 'machine/buttons.json' },
+    { name: 'panel',      url: 'machine/panel.json' },
+    { name: 'spin',       url: 'machine/button.json' },
+    { name: 'panel_root', url: 'machine/panel_root.png' },
+    { name: 'panel_fs',   url: 'machine/panel_fs.png' }
+]
+
 game.preload = new Preload({
     game,
     base: `src/img/${GAME_RES}`,
     config: {
-        preload: [
-            { name: 'preload_bg',    url: 'preload/bg.jpg' },
-            { name: 'preload_bar',   url: 'preload/bar.png' },
-            { name: 'preload_light', url: 'preload/light.png' },
-            { url: 'preload/preload.json' }
-        ],
-        common: [
-            { url: 'machine/elements/elements.json' },
-            
-            { name: 'jack',   url: 'machine/elements/jack.json' },
-            { name: 'queen',  url: 'machine/elements/queen.json' },
-            { name: 'king',   url: 'machine/elements/king.json' },
-            { name: 'ace',    url: 'machine/elements/ace.json' },
-            { name: 'rabbit', url: 'machine/elements/rabbit.json' },
-            { name: 'mouse',  url: 'machine/elements/mouse.json' },
-            { name: 'owl',    url: 'machine/elements/owl.json' },
-            { name: 'cat',    url: 'machine/elements/cat.json' },
-            { name: 'wild',   url: 'machine/elements/wild.json' },
-            { name: 'bonus',  url: 'machine/elements/bonus.json' },
-            { name: 'pig',    url: 'machine/elements/pig.json' },
-
-            // Spritesheets
-            { url: 'footer/buttons.json' },
-            // { url: 'machine/buttons.json' },
-            { url: 'machine/numbers.json' },
-            // Spines
-            { name: 'logo',       url: 'machine/logo.json' },
-            // { name: 'panel',      url: 'machine/panel.json' },
-            // { name: 'spin',       url: 'machine/button.json' },
-            { name: 'splash',     url: 'machine/splash.json' },
-            // Images
-            { name: 'tile',       url: 'machine/tile.png' },
-            { name: 'frame',      url: 'machine/frame.png' },
-            // { name: 'panel_root', url: 'machine/panel_root.png' },
-            // { name: 'panel_fs',   url: 'machine/panel_fs.png' },
-            { name: 'win_table',  url: 'machine/win_table.png' },
-            { name: 'win_circle', url: 'machine/win_circle.png' },
-
-            // Mobile
-            { url: 'mobile/buttons.json' },
-            { url: 'mobile/settings.json' },
-        ]
+        preload,
+        common,
+        desktop,
+        mobile
     }
 })
 
@@ -90,4 +99,35 @@ game.device.$
 
 game.preload.$
     .filter(e => e === 'REMOVED').take(1)
-    .subscribe(e => game.root = new MobileRoot({ game }))
+    .subscribe(e => GAME_DEVICE === 'mobile' 
+        ? game.root = new MobileRoot({ game })
+        : game.root = new Root({ game }))
+
+function changeResDevice(newRes, newDevice) {
+
+    game.root.remove()
+    game.loader.reset() 
+    PIXI.utils.clearTextureCache()
+
+    
+
+    game.preload = new Preload({
+        game,
+        base: `src/img/${GAME_RES}`,
+        config: {
+            preload,
+            common,
+            desktop,
+            mobile
+        }
+    })
+
+    game.preload.$
+        .filter(e => e === 'REMOVED').take(1)
+        .subscribe(e => GAME_DEVICE === 'mobile'
+            ? game.root = new MobileRoot({ game })
+            : game.root = new Root({ game }))
+
+}
+
+window.changeResDevice = changeResDevice
