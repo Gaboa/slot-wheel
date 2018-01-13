@@ -9,7 +9,9 @@
     "**/**.js"
   ],
   "scripts": {
-    "start": "poi"
+    "start": "poi",
+    "dev": "poi build --config config/poi.dev.js",
+    "build": "poi build --config config/poi.build.js"
   },
   "dependencies": {
     "axios": "^0.17.1",
