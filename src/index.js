@@ -75,7 +75,7 @@ const desktop = [
 
 game.preload = new Preload({
     game,
-    base: `src/img/${GAME_RES}`,
+    base: `${GAME_RES}`,
     config: {
         preload,
         common,
@@ -113,7 +113,7 @@ function changeResDevice(newRes, newDevice) {
 
     game.preload = new Preload({
         game,
-        base: `src/img/${GAME_RES}`,
+        base: `${GAME_RES}`,
         config: {
             preload,
             common,
