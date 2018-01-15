@@ -1,6 +1,5 @@
 import defaultsDeep from 'lodash.defaultsdeep'
-import { Container, Button, Text, BalanceText, Graphics, Sprite } from "../utils"
-import { Darkness } from '../levels/preload/helpers'
+import { Container, Button, Text, BalanceText, Graphics, Sprite, Darkness } from "../utils"
 import { Observable } from 'rxjs'
 import { TweenMax } from 'gsap'
 
