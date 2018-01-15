@@ -1,8 +1,3 @@
-// TODO: Add methods for parsing init data
-// TODO: Add methods for parsing saved data
-// TODO: Add methods for parsing roll data
-// ????: Change data after request or in other moment ( roll end or something like this )
-
 class ParserManager {
 
     constructor({
@@ -35,7 +30,18 @@ class ParserManager {
         this.data.balance.cash.bet = this.data.balance.coin.bet * this.data.balance.value.current / 100
         this.data.balance.cash.win = 0
 
-        this.last(res.LastResult)
+        this.fr(res.FreeRounds)
+        this.roll(res.LastResult)
+    }
+
+    fr(data) {
+        if (!data) return null
+        this.data.balance.level.index = this.data.balance.level.arr.indexOf(data.BetLevel[0])
+        this.data.balance.value.index = this.data.balance.value.arr.indexOf(data.CoinValue[0])
+
+        this.data.fr.count = data.countFR - data.playedFR
+        this.data.fr.win.coin = data.FRWinCoins
+        this.data.fr.win.cash = data.FRWinCents / 100
     }
     
     roll(res) {
@@ -45,7 +51,11 @@ class ParserManager {
         this.state.next = res.NextMode
 
         // Win Lines
-        this.data.win.lines = res.WinLines.map(l => ({ number: l.Line, amount: l.Count, win: l.Win }))
+        if (res.WinLines) {
+            this.data.win.lines = res.WinLines.map(l => ({ number: l.Line, amount: l.Count, win: l.Win }))
+            this.data.balance.coin.win = res.Balance.TotalWinCoins
+            this.data.balance.cash.win = res.Balance.TotalWinCents / 100
+        }
 
         if (this.data.balance.level.index !== this.data.balance.level.arr.indexOf(res.Balance.BetLevel))
             this.data.balance.level.index = this.data.balance.level.arr.indexOf(res.Balance.BetLevel)
@@ -54,13 +64,8 @@ class ParserManager {
 
         this.data.balance.coin.sum = res.Balance.ScoreCoins
         this.data.balance.cash.sum = res.Balance.ScoreCents / 100
-        this.data.balance.coin.win = res.Balance.TotalWinCoins
-        this.data.balance.cash.win = res.Balance.TotalWinCents / 100
 
-    }
-
-    last() {
-
+        this.fr(res.FreeRounds)
     }
 
     currency(value) {
