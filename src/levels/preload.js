@@ -1,7 +1,7 @@
-import { loaders } from "pixi.js"
 import defaultsDeep from 'lodash.defaultsdeep'
-import { Subject, Observable } from "rxjs"
-import { Container, Sprite, JumpingButton, Darkness, Bar, Light, SoundTrigger } from "../utils"
+import { loaders } from 'pixi.js'
+import { Subject, Observable } from 'rxjs'
+import { Container, Sprite, JumpingButton, Darkness, Bar, Light, SoundTrigger } from '../utils'
 
 // TODO: Add error handling. Error can be in INIT request, and with loading assets
 
@@ -27,7 +27,8 @@ const defaultConfig = {
         texture: 'preload_bg',
         name: 'bg',
         x: 0,
-        y: 0
+        y: 0,
+        Constructor: Sprite
     },
 
     // Bar
@@ -36,7 +37,8 @@ const defaultConfig = {
         texture: 'preload_bar',
         name: 'bar',
         x: 0,
-        y: 0.335
+        y: 0.335,
+        Constructor: Bar
     },
 
     // Light
@@ -46,7 +48,8 @@ const defaultConfig = {
         name: 'light',
         x: 0,
         y: -0.1,
-        alpha: 0.4
+        alpha: 0.4,
+        Constructor: Light                
     },
 
     // Logo
@@ -55,25 +58,27 @@ const defaultConfig = {
         texture: 'preload_logo',
         name: 'logo',
         x: 0,
-        y: -0.1
+        y: -0.1,
+        Constructor: Sprite
     },
 
     // Copyright
     copy: {
         active: true,
+        Constructor: Sprite,
         desktop: {
             texture: 'preload_copy',
             name: 'copy',
             x: -0.425,
             y: 0.425,
-            scale: 1
+            scale: 1,
         },
         mobile: {
             texture: 'preload_copy',
             name: 'copy',
             x: -0.37,
             y: 0.39,
-            scale: 1.5
+            scale: 1.5,
         }
     },
 
@@ -87,24 +92,26 @@ const defaultConfig = {
         tweenY: 0.35,
         startScale: 0.85,
         endScale: 1.15,
+        Constructor: JumpingButton
     },
 
     // Sound
     sound: {
         active: true,
+        Constructor: SoundTrigger,            
         desktop: {
             x: 0.395,
             y: 0.425,
             scale: 1,
             color: 0x286e95,
-            alpha: 0.4
+            alpha: 0.4,
         },
         mobile: {
             x: 0.36,
             y: 0.39,
             scale: 1.6,
             color: 0x286e95,
-            alpha: 0.35
+            alpha: 0.35,
         }
     },
 
@@ -114,7 +121,8 @@ const defaultConfig = {
         x: 0,
         y: 0,
         autoShow: false,
-        autoHide: true
+        autoHide: true,
+        Constructor: Darkness        
     }
 
 }
@@ -133,11 +141,11 @@ class Preload extends Container {
         this.config = defaultsDeep(defaultConfig, config)
         this.createLoaders()
 
-        this.enablePreloadStreams()
+        this.enablePreload()
         this.loader.load()
     }
 
-    enablePreloadStreams() {
+    enablePreload() {
         this.subs = []
         this.$ = new Subject()
 
@@ -145,8 +153,8 @@ class Preload extends Container {
         this.subs.push(
         this.loaderCompleteSub = this.loader.$
             .subscribe({ complete: () => {
-                this.createLevel()
-                this.enableStreams()
+                this.create()
+                this.enable()
                 this.game.loader.load()
                 if (!this.game.data.sid) this.game.request.sendInit()
                 else this.$.next('INIT_DONE')
@@ -154,12 +162,11 @@ class Preload extends Container {
 
     }
 
-    enableStreams() {
+    enable() {
         // When progress loading game assets => change progress bar visibility
         this.subs.push(
         this.gameLoaderProgressSub = this.game.loader.$
-            .pluck('progress')
-            .subscribe(p => this.bar.progress(p)))
+            .subscribe(e => this.bar.progress(e.progress)))
 
         // When game assets loding finished => trigger LOAD_COMPLETE event
         this.subs.push(
@@ -204,12 +211,12 @@ class Preload extends Container {
         this.darknessShowSub = this.darkness.$
             .filter(e => e === 'SHOW')
             .take(1)
-            .subscribe(e => this.removeLevel()))
+            .subscribe(e => this.remove()))
 
         // Bind sound trigger state to global isSound state
         this.subs.push(
         this.soundStateSub = this.game.state.settings.isSound$
-            .subscribe(e => this.sound.changeTo(e)))
+            .subscribe(e => this.sound.to(e)))
 
         // When sound cliked => trigger isSound state
         this.subs.push(
@@ -218,15 +225,14 @@ class Preload extends Container {
         
     }
 
-    disableStreams() {
+    disable() {
         this.subs.forEach(sub => sub.unsubscribe())
         this.$.complete()
     }
 
     createButtonAndKeyboardListener() {
         this.space$ = Observable.fromEvent(document, 'keyup')
-            .pluck('code')
-            .map(code => String(code).toUpperCase())
+            .map(e => String(e.code).toUpperCase())
             .filter(code => code === 'SPACE')
         this.tap$ = Observable.merge(this.space$, this.button.$)
     }
@@ -255,30 +261,23 @@ class Preload extends Container {
         })
     }
 
-    createLevel() {
-        this.addView('bg', Sprite)
-        this.addView('light', Light)
-        this.addView('logo', Sprite)
-        this.addView('copy', Sprite)
-        this.addView('button', JumpingButton)
-        this.addView('bar', Bar)
-        this.addView('sound', SoundTrigger)
-        this.addView('darkness', Darkness)
+    create() {
+        for (let item in this.config)
+            this.addView(item)
         this.$.next('CREATED')
     }
 
-    addView(name, Constructor) {
+    addView(name) {
         if (this.config[name].active)
-            this[name] = new Constructor(Object.assign({
+            this[name] = new this.config[name].Constructor(Object.assign({
                 container: this
             }, this.config[name][GAME_DEVICE] || this.config[name]))
     }
 
-    removeLevel() {
+    remove() {
         PIXI.utils.resources = this.game.loader.resources
         this.$.next('REMOVED')
-        this.disableStreams()
-        this.removeChildren()
+        this.disable()
         this.destroy()
     }
 
