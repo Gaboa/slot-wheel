@@ -149,7 +149,8 @@ class Preload extends Container {
                 this.createLevel()
                 this.enableStreams()
                 this.game.loader.load()
-                this.game.request.sendInit()
+                if (!this.game.data.sid) this.game.request.sendInit()
+                else this.$.next('INIT_DONE')
             }}))
 
     }
