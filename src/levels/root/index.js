@@ -155,12 +155,13 @@ class Root extends Container {
     }
 
     disable() {
-        this.balance.disable()
-        this.balance.root.disable()
-        this.buttons.disable()
+        this.balanceCtrl.disable()
+        this.balanceRootCtrl.disable()
+        this.footerCtrl.disable()
+        this.panelCtrl.disable()
         this.ctrl.disable()
-        this.win.disable()
-        this.auto.disable()
+        this.winCtrl.disable()
+        this.autoCtrl.disable()
     }
 
     remove() {
@@ -773,8 +774,6 @@ class MobileButtonsController {
     }
 
 }
-
-
 
 class MobileMenuController {
 
