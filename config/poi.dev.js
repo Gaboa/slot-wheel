@@ -1,7 +1,7 @@
 const config = require("./config")
 
 module.exports = (options) => ({
-  staticFolder: 'src/img',
+  staticFolder: 'src/assets',
   dist: `${config.prodDir}`,
   homepage: `${config.devURL}`
 })
