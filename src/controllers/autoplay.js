@@ -52,7 +52,7 @@ class AutoplayController {
                 this.state.button = 'stop' // Change main button to stop
                 this.buttons.count.visible = true // Counter is visible now 
                 this.buttons.disableAll() // All buttons ( without Stop ) are disabled
-                this.balance.cash.auto.start = this.balance.cash.sum // Save start sum to check stop triggers on edges
+                this.data.auto.start = this.balance.cash.sum // Save start sum to check stop triggers on edges
 
                 this.machine.screen.roll() // First Autoplay roll
                 this.state.autoplay-- // Decrease autoplay value
@@ -107,10 +107,10 @@ class AutoplayController {
     }
 
     checkStoppers() {
-        if (this.balance.cash.auto.increase
-        && (this.balance.cash.sum - this.balance.cash.auto.start >= this.balance.cash.auto.increase)) return true
+        if (this.data.auto.increase
+        && (this.balance.cash.sum - this.data.auto.start >= this.data.auto.increase)) return true
         if (this.balance.cash.auto.decrease
-        && (this.balance.cash.auto.start - this.balance.cash.sum >= this.balance.cash.auto.decrease)) return true
+        && (this.data.auto.start - this.balance.cash.sum >= this.data.auto.decrease)) return true
         return false
     }
 
