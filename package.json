@@ -9,7 +9,7 @@
     "**/**.js"
   ],
   "scripts": {
-    "start": "poi",
+    "start": "poi --config config/poi.dev.js",
     "dev": "poi build --config config/poi.dev.js",
     "build": "poi build --config config/poi.build.js"
   },
