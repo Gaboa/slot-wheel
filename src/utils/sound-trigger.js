@@ -80,7 +80,7 @@ class SoundTrigger extends Container {
 
     }
 
-    changeTo(value) {
+    to(value) {
         if (value) {
             this.on.style.fill = '#ffffff'
             this.off.style.fill = this.color

@@ -20,7 +20,7 @@ class BalanceText extends Text {
         style,
 
         tweenTime = 0.3,
-        text = '0',
+        text   = '0',
         prefix = '',
         suffix = '',
         fixed = 2,
