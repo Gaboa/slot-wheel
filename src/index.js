@@ -103,13 +103,40 @@ game.preload.$
         ? game.root = new MobileRoot({ game })
         : game.root = new Root({ game }))
 
-function changeResDevice(newRes, newDevice) {
+function changeResDevice({
+    res,
+    device
+}) {
 
+    // Remove previous Root level
     game.root.remove()
+    // Clear Game loader
     game.loader.reset() 
+    // Clear TextureCache
     PIXI.utils.clearTextureCache()
 
-    
+    // Params res device
+    if (res === 'fullhd' && device === 'desktop') {
+        game.device.isMobile = () => false
+        game.device.config.desktop = 'fullhd'
+    }
+    if (res === 'hd' && device === 'desktop') {
+        game.device.isMobile = () => false
+        game.device.config.desktop = 'hd'
+    }
+    if (res === 'hd' && device === 'mobile') {
+        game.device.isMobile = () => true
+        game.device.config.desktop = 'hd'
+    }
+
+    // Change Global Params
+    game.device.setGlobalParams()
+    // Change Renderer and Game Size 
+    game.renderer.resize(GAME_WIDTH, GAME_HEIGHT)
+    game.view.width = GAME_WIDTH
+    game.view.height = GAME_HEIGHT
+    // Resize event trigger
+    game.device.setAspectMode()
 
     game.preload = new Preload({
         game,
