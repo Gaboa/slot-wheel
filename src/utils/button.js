@@ -41,7 +41,8 @@ class Button extends Sprite {
 
         this.over$ = Observable.fromEvent(this, 'pointerover').filter(e => this.enabled).map(e => ({ from: this, type: 'OVER', data: e }))
         this.out$ = Observable.fromEvent(this, 'pointerout').filter(e => this.enabled).map(e => ({ from: this, type: 'OUT', data: e }))
-        this.down$ = Observable.fromEvent(this, 'pointerdown').filter(e => this.enabled).map(e => ({ from: this, type: 'DOWN', data: e }))
+        this.end$ = Observable.fromEvent(this, 'touchend').filter(e => this.enabled).map(e => ({ from: this, type: 'END', data: e }))
+        this.down$ = Observable.fromEvent(this, 'mousedown').merge(this.end$).filter(e => this.enabled).map(e => ({ from: this, type: 'DOWN', data: e }))
         this.up$ = Observable.fromEvent(this, 'pointerup').filter(e => this.enabled).map(e => ({ from: this, type: 'UP', data: e }))
         this.$ = Observable.merge(this.over$, this.out$, this.down$, this.up$)
 
