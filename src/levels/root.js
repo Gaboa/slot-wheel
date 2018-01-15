@@ -1,6 +1,6 @@
 import defaultsDeep from 'lodash.defaultsdeep'
-import { Subject, Observable } from "rxjs"
-import { Container, Sprite, Darkness } from "../utils"
+import { Subject, Observable } from 'rxjs'
+import { Container, Sprite, Darkness } from '../utils'
 import { Machine, Footer, MobileButtons, MobileMenu } from '../components'
 import {
     BalanceController,

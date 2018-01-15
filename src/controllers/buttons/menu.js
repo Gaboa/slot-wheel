@@ -1,4 +1,5 @@
 import defaultsDeep from 'lodash.defaultsdeep'
+import { Observable } from 'rxjs/Observable'
 
 const defaultConfig = {
     autoplay: true,

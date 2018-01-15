@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject'
 import { Observable } from 'rxjs/Observable'
 import { TweenMax } from 'gsap/TweenMax'
 import { Wheel } from './wheel'
-import { SpriteElement } from './element'
+import { Element } from './element'
 import { Container } from '../utils'
 
 const defaultConfig = {
@@ -16,7 +16,7 @@ const defaultConfig = {
     dir: 'down',
 
     el: {
-        Element: SpriteElement,
+        Element,
         symbols: [],
         amount:  5,
         aside:   1,

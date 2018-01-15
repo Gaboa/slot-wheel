@@ -13,7 +13,7 @@ const game = new Game({
         url: buildConfig.serviceURL,
         mode: 'animalssteam',
         debug: {
-            active: false,
+            active: true,
             userID: 18,
             game: 'animalssteam'
         }
