@@ -124,13 +124,13 @@ class MobileButtons extends Container {
 
     enableAll() {
         this.items
-            .filter(item => item !== this.sound || item !== this.stop)
+            .filter(item => item !== this.sound && item !== this.stop)
             .forEach(button => button.enable())
     }
 
     disableAll() {
         this.items
-            .filter(item => item !== this.sound || item !== this.stop)
+            .filter(item => item !== this.sound && item !== this.stop)
             .forEach(button => button.disable())
     }
 
