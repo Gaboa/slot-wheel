@@ -1,30 +1,31 @@
 <template>
-    <div id="settings" :class='{ opened : isVisible, closed : !isVisible}'>
-        <!-- <div class=info__close @click=closeInfo></div> -->
+    <div :class='{ opened : visible, closed : !visible}'>
+
         <div class='settings__column'>
             <settings-title title="audio"></settings-title>
-            <range :details="[{name: 'Volume', id: 'volume'}]"></range>
-            <radio-button :details="[{name: 'Music', id: 'music'}]"></radio-button>
-            <radio-button :details="[{name: 'Effects', id: 'effects'}]" class="border__none"></radio-button>
+            <range :details="[{name: 'Volume', id: 'volume', key:'volume'}]" :state="volume"></range>
+            <radio-button :details="[{name: 'Music', id: 'music', key: 'isMusic'}]" :state="isMusic"></radio-button>
+            <radio-button :details="[{name: 'Effects', id: 'effects', key: 'isEffects'}]" class="border__none" :state="isEffects"></radio-button>
             <settings-title title="options"></settings-title>
-            <radio-button :details="[{name: 'Fast spin', id: 'fast'}]"></radio-button>
+            <radio-button :details="[{name: 'Fast spin', id: 'speed', key: 'isFast'}]" :state="isFast"></radio-button>
         </div>
+
         <div class='settings__column'>
             <settings-title title="autoplay"></settings-title>
-            <radio-button :details="[{name: 'Stop if cash increases by:', id: 'increase'}]">
+            <radio-button :details="[{name: 'Stop if cash increases by:', id: 'stopIfCashGreater', key:'stopIfCashGreater'}]" :state="stopIfCashGreater">
                 <span class="settings__input">
                     <input type="number" min="0" value="0" id="increase__text">
                 </span>
             </radio-button>
-            <radio-button :details="[{name: 'Stop if cash decreases by:', id: 'decrease'}]">
+            <radio-button :details="[{name: 'Stop if cash decreases by:', id: 'stopIfCashLess', key:'stopIfCashLess'}]" :state="stopIfCashLess">
                 <span class="settings__input">
                     <input type="number" min="0" value="0" id="increase__text">
                 </span>
             </radio-button>
-            <radio-button :details="[{name: 'Bonus stops the autoplay:', id: 'autoplay'}]" class="border__none"></radio-button>
+            <radio-button :details="[{name: 'Bonus stops the autoplay:', id: 'bonusStopsAutoPlay', key:'bonusStopsAutoPlay' }]" class="border__none" :state="bonusStopsAutoPlay"></radio-button>
             <settings-title title="mode"></settings-title>
             <div class='settings__row'>
-                <mode-button v-for="mode in modes" :key="mode" :name="mode">
+                <mode-button v-for="mode in modes" :key="mode" :name="mode" :isActive ='mode.toLowerCase() === activeMode' >
                     {{mode}}
                 </mode-button>
             </div>
@@ -41,6 +42,17 @@
     import Range from './settings-components/Range'
 
     export default {
+        props: [    
+            'visible',
+            'volume',
+            'isMusic',
+            'isEffects',
+            'isFast',
+            'activeMode',
+            'bonusStopsAutoPlay',
+            'stopIfCashLess',
+            'stopIfCashGreater'
+                ],
         components: {
             'settings-title': Title,
             'mode-button': Button,
@@ -49,30 +61,22 @@
         },
         data() {
             return {
-                isVisible: false,
                 modes: ['FullHD', 'HD', 'Mobile']
             }
-        },
-
-        mounted() {
-            console.log(document.querySelector('.settings__row'))
-        },
-
-        methods: {
-
-            closeInfo() {
-                this.isVisible = false
-            },
-
-            showInfo() {
-                this.isVisible = true
-            },
         }
     }
 </script>
 
 <style scoped>
-    #settings {
+
+    .opened {
+        z-index: 10;
+
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
         display: flex;
         padding: 3vw 2vw;
         box-sizing: border-box;
@@ -86,15 +90,6 @@
 
         font-family: 'Oswald', sans-serif;
         font-size: 2.5vw;
-    }
-
-    .opened {
-        z-index: 10;
-
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
     }
 
     .closed {
@@ -152,4 +147,5 @@
     .border__none{
         border-bottom: none;
     }
+
 </style>
