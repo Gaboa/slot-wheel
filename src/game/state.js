@@ -15,6 +15,8 @@ const defaultState = {
     mode: 'root',
     next: 'root',
 
+    error: null,
+
     // Main buttons mode in desktop 
     button: 'spin',
     autoplay: null,

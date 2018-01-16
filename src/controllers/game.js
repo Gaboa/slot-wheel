@@ -7,6 +7,10 @@ const defaultGameConfig = {
     roll: true,
     leave: true,
     fullscreen: true,
+    error: {
+        request: true,
+        handle: true
+    },
     preload: {
         level: true,
         logic: true
@@ -65,6 +69,21 @@ class GameController {
         this.subs.push(
         this.fullscreenSub = this.settings.isFullscreen$
             .subscribe(e => this.game.device[`${e ? 'enter' : 'cancel'}Fullscreen`]()))
+
+        // TODO: Change to Popup Open 
+        if (this.config.error.handle)
+        this.subs.push(
+        this.errorHandleSub = this.state.error$
+            .filter(e => e !== null)
+            .subscribe(e => console.log('Error: ', e)))
+        
+        // Request errors
+        if (this.config.error.request)
+        this.subs.push(
+        this.errorRequestSub = this.game.request.$
+            .subscribe({
+                error: (e) => this.game.state.error = e
+            }))
         
     }
 

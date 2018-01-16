@@ -3,7 +3,8 @@ import { loaders } from 'pixi.js'
 import { Subject, Observable } from 'rxjs'
 import { Container, Sprite, JumpingButton, Darkness, Bar, Light, SoundTrigger } from '../utils'
 
-// TODO: Add error handling. Error can be in INIT request, and with loading assets
+// TODO: Add error handling. 
+// Error can be in INIT request, and with loading assets
 
 const defaultConfig = {
 
@@ -152,7 +153,9 @@ class Preload extends Container {
         // When loads prelod assets => create Preload level and start loading game assets with logic
         this.subs.push(
         this.loaderCompleteSub = this.loader.$
-            .subscribe({ complete: () => {
+            .subscribe({ 
+            error: (e) => this.game.state.error = 'Preload assets loading error.',
+            complete: () => {
                 this.create()
                 this.enable()
                 this.game.loader.load()
@@ -171,7 +174,9 @@ class Preload extends Container {
         // When game assets loding finished => trigger LOAD_COMPLETE event
         this.subs.push(
         this.gameLoaderCompleteSub = this.game.loader.$
-            .subscribe({ complete: () => this.$.next('LOAD_COMPLETE') }))
+            .subscribe({ 
+                error: (e) => this.game.state.error = 'Game assets loading error.',
+                complete: () => this.$.next('LOAD_COMPLETE') }))
 
         // When init request done => trigger INIT_DONE event
         this.subs.push(
