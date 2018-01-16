@@ -6,6 +6,7 @@ const defaultGameConfig = {
     init: true,
     roll: true,
     leave: true,
+    fullscreen: true,
     preload: {
         level: true,
         logic: true
@@ -31,6 +32,8 @@ class GameController {
         autoEnable = true
     }) {
         this.game = game
+        this.state = game.state
+        this.settings = game.state.settings
         this.config = defaultsDeep(config, defaultGameConfig)
 
         if (autoEnable)
@@ -56,7 +59,12 @@ class GameController {
         this.subs.push(
         this.leaveSub = this.game.device.$
             .filter(e => e.type === 'LEAVE')
-            .subscribe(res => game.request.sendLogout()))
+            .subscribe(e => game.request.sendLogout()))
+
+        if (this.config.fullscreen)
+        this.subs.push(
+        this.fullscreenSub = this.settings.isFullscreen$
+            .subscribe(e => this.game.device[`${e ? 'enter' : 'cancel'}Fullscreen`]()))
         
     }
 
@@ -76,9 +84,7 @@ class GameController {
         if (this.config.preload.logic)
         this.game.preload.$
             .filter(e => e === 'REMOVED').take(1)
-            .subscribe(e => GAME_DEVICE === 'mobile'
-                ? this.game.root = new this.config.constructors.MobileRoot({ game: this.game })
-                : this.game.root = new this.config.constructors.DesktopRoot({ game: this.game }))
+            .subscribe(e => game.root = new this.config.constructors[`${GAME_DEVICE.split('').map((ch, i) => i === 0 ? ch.toUpperCase() : ch).join('')}Root`]({ game: this.game }))
 
     }
 
