@@ -6,6 +6,7 @@ const defaultConfig = {
         end: true,
         data: true
     },
+    fast: true,
     idle: true,
     idleFooter: true,
     rolling: true,
@@ -49,7 +50,9 @@ class RootController {
                     value: this.data.balance.value.current,
                     level: this.data.balance.level.current
                 })
-                this.level.balanceCtrl.start()
+                this.balance.coin.sum = this.balance.coin.sum - this.balance.coin.bet
+                this.balance.cash.sum = (this.balance.cash.sum * 100 - this.balance.cash.bet * 100) / 100
+                this.balance.cash.win = 0
                 this.state.isRolling = true
             }))
 
@@ -75,6 +78,10 @@ class RootController {
             .skip(1)
             .subscribe(s => this.machine.screen.setEndScreen(s)))
         
+        if (this.config.fast)
+        this.subs.push(
+        this.fastSub = this.state.settings.isFullscreen$
+            .subscribe(e => this.machine.screen.setRollSpeed(this.machine.screen.config.roll[e ? 'fast' : 'normal'])))
 
         // Changing buttons states with isIdle state
         if (this.config.idle)
