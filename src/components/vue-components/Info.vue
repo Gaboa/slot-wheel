@@ -50,6 +50,7 @@ export default {
             } else {
                 this.activePage +=1
             }
+            this.$parent.$emit('page_changes', {type:'NEXT_PAGE', state:'CHANGED', activePage: this.activePage})
         },
 
         prev(){
@@ -58,10 +59,11 @@ export default {
             } else {
                 this.activePage -=1
             }
+            this.$parent.$emit('page_changes', {type:'NEXT_PAGE', state:'CHANGED', activePage: this.activePage})
         },
 
         closeInfo(){
-            this.$emit('close', {type:'CLOSE'})
+            this.$parent.$emit('close_info', {type:'CLOSE', state:'CHANGED',})
         }
 
     }

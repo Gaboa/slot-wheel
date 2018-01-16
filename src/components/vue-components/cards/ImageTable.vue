@@ -2,7 +2,7 @@
     <div class="info__card">
             <img class="info__image" :src="description.image.src">
             <div class="info__card__table">
-                <div v-for="row in description.table.rows" :key="row">
+                <div v-for="row in description.table.rows" :key="row + Date.now()">
                     {{row}}
                 </div>
             </div>
@@ -20,6 +20,7 @@ export default {
 }
 </script>
 <style scoped>
+
     .info__card{
         display: grid;
         grid-template-columns: 50% 50% ;

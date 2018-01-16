@@ -1,6 +1,5 @@
 <template>
     <div class='info__card'>
-        <!-- <img alt='' :src='description.image.src'/> -->
         <div class='info__image' :style="imageScr"></div>
         <p>{{description.content}}</p>
     </div>
@@ -37,17 +36,11 @@ export default {
         line-height: 1.5;
     }
     .info__image{
-        /* background-image: url('~/src/img/info/skull.png'); */
         background-repeat: none;
         background-position: center;
         background-size: cover;
         height : 100%; 
         width: 100%;
     }
-
-    img{
-        width: 50%;
-    }
-    
-
+        
 </style>

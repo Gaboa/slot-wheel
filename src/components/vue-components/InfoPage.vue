@@ -61,6 +61,7 @@ export default {
 </script>
 
 <style scoped>
+
     .info__page {
         display: flex;
         flex-direction: column;
@@ -92,4 +93,5 @@ export default {
         line-height: 1.5;
         color: #888;
     }
+
 </style>

@@ -23,10 +23,6 @@ export default {
 
 <style scoped>
 
-    /* .info__card img{
-        object-fit: contain;
-        max-width: 44%;
-    } */
     .info__card{
         background-image: url(~/src/img/info/cannon.png);
         background-repeat: no-repeat;

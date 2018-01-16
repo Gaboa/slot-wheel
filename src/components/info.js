@@ -1,6 +1,6 @@
 import Vue from 'vue' 
 import Info from './vue-components/Info'
-import Subject from 'rxjs'
+import {Subject} from 'rxjs'
 
 const defaultInfoData = {
     //visible: true,
@@ -24,7 +24,7 @@ const defaultInfoData = {
                                      src: 'src/img/info/clubs.png'
                                  },
                                  table: {
-                                    rows: ['Clubs',3,3,4,5,5,10]
+                                    rows: ['Clubs',3,4,5,6,7,10]
                                  }
 
                         }
@@ -39,7 +39,7 @@ const defaultInfoData = {
                                 src: 'src/img/info/heart.png'
                             },
                             table: {
-                                rows:  ['Heart', 3,3,4,5,5,10]
+                                rows:  ['Heart',3,4,5,6,7,10]
                             }
 
                         }
@@ -54,7 +54,7 @@ const defaultInfoData = {
                                  src: 'src/img/info/spade.png'
                              },
                              table: {
-                                rows:  ['Spade',3,3,4,5,5,10]
+                                rows:  ['Spade',3,4,5,6,7,10]
                              }
 
                          }
@@ -69,7 +69,7 @@ const defaultInfoData = {
                                   src: 'src/img/info/tambourine.png'
                               },
                               table: {
-                                rows:  ['Tambourine', 3,3,4,5,5,10]
+                                rows:  ['Tambourine',3,4,5,6,7,10]
                               }
 
                           }
@@ -84,7 +84,7 @@ const defaultInfoData = {
                                    src: 'src/img/info/parrot.png'
                                },
                                table: {
-                                rows:  ['Parrot',3,3,4,5,5,10]
+                                rows:  ['Parrot',3,4,5,6,7,10]
                                }
 
                            }
@@ -99,7 +99,7 @@ const defaultInfoData = {
                                     src: 'src/img/info/hat.png'
                                 },
                                 table: {
-                                    rows:  ['Hat', 3,3,4,5,5,10]
+                                    rows:  ['Hat',3,4,5,6,7,10]
                                 }
 
                             }
@@ -114,7 +114,7 @@ const defaultInfoData = {
                                      src: 'src/img/info/anchor.png'
                                  },
                                  table: {
-                                    rows:  ['Anchor', 3,3,4,5,5,10]
+                                    rows:  ['Anchor',3,4,5,6,7,10]
                                  }
 
                              }
@@ -129,7 +129,7 @@ const defaultInfoData = {
                                       src: 'src/img/info/fish.png'
                                   },
                                   table: {
-                                    rows:  ['Fish', 3,3,4,5,5,10]
+                                    rows:  ['Fish',3,4,5,6,7,10]
                                   }
 
                               }
@@ -190,10 +190,10 @@ const defaultInfoData = {
                             },
                             content: [
                                 '2 Gifts = x3 multiplier',
-                                '2 Gifts = x3 multiplier',
-                                '2 Gifts = x3 multiplier',
-                                '2 Gifts = x3 multiplier',
-                                '2 Gifts = x3 multiplier',
+                                '3 Gifts = x4 multiplier',
+                                '4 Gifts = x5 multiplier',
+                                '5 Gifts = x6 multiplier',
+                                '6 Gifts = x7 multiplier',
                             ],
                             image: {
                                 src: 'src/img/info/small_cannon.png'
@@ -213,9 +213,9 @@ const defaultInfoData = {
                                 src: 'src/img/info/small_cannon.png'
                             },
                             content: [
-                                'x3 = +20 Free spins',
-                                'x3 = +20 Free spins',
-                                'x3 = +20 Free spins',
+                                'x3 = +21 Free spins',
+                                'x3 = +22 Free spins',
+                                'x3 = +23 Free spins',
                             ]
                         }
                     }
@@ -513,13 +513,11 @@ const defaultInfoData = {
 export default class InfoController {
 
     constructor({
-        //config
     }) {
 
-        //this.config = config
         this.config = defaultInfoData
-        this.visible = true
-        //this.$ = new Subject()
+        this.visible = false
+        this.$ = new Subject()
 
         const self = this
 
@@ -531,8 +529,17 @@ export default class InfoController {
                     visible: self.visible,
                 }
             },
-            mount(){
-                console.log('beee')
+
+            mounted(){
+                this.$on('close_info', val => {
+                    self.close()
+                    console.log(val)
+                    self.$.next(val)
+                })
+                this.$on('page_changes', val => {
+                    console.log(val)
+                    self.$.next(val)
+                })
             },
 
             render(h){
@@ -544,7 +551,6 @@ export default class InfoController {
                 )
             }
         })
-
     }
 
     open() {

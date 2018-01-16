@@ -1,6 +1,5 @@
 <template>
     <div class='info__card'>
-        <!-- <img alt='' :src='description.image.src'/> -->
         <div class='info__image' :style='imageScr'></div>
         <ul class='info__card__list'>
             <li v-for='item in description.content' :key='item'>{{item}}</li>
@@ -27,6 +26,7 @@ export default {
 </script>
 
 <style scoped>
+
     .info__card{
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -52,10 +52,5 @@ export default {
         height: 100%;
          width: 100%;
     }
-
-    /* img{
-        max-width: 60%
-    } */
-    
 
 </style>

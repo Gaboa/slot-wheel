@@ -46,6 +46,7 @@ export default {
 </script>
 
 <style scoped>
+
     .info__card__wrapper p{
         color: white;
         font-size: 1.25vw;
@@ -68,4 +69,5 @@ export default {
     img{
         width: 90%
     }
+    
 </style>

@@ -12,6 +12,7 @@ export default {
 }
 </script>
 <style scoped>
+
     .card__info{
         color: white;
         font-size: 1.25vw;
