@@ -1,12 +1,24 @@
 import defaultsDeep from 'lodash.defaultsdeep'
 
 const defaultConfig = {
-    home: true,
+    home: {
+        request: true,
+        redirect: true
+    },
     settings: true,
     info: true,
-    sound: true,
-    fast: true,
-    fullscreen: true
+    sound: {
+        button: true,
+        state: true
+    },
+    fast: {
+        button: true,
+        state: true
+    },
+    fullscreen: {
+        button: true,
+        state: true
+    }
 }
 
 class FooterButtonsController {
@@ -29,65 +41,68 @@ class FooterButtonsController {
     enable() {
         this.subs = []
 
-        // Home
-        // TODO: Add handling homeUrl
-        if (this.config.home)
+        // Home button Request
+        if (this.config.home.request)
         this.subs.push(
-        this.homeSub = this.buttons.home.down$
+        this.homeRequestSub = this.buttons.home.down$
             .subscribe(e => this.game.request.sendLogout()))
+            
+        // TODO: Add handling homeUrl
+        // Home button Redirect
+        if (this.config.home.redirect)
+        this.subs.push(
+        this.homeRedirectSub = this.buttons.home.down$
+            .subscribe(e => window.history.back()))
 
         // TODO: Some Settings bindings
+        // Settings button
         if (this.config.settings)
         this.subs.push(
         this.settingsSub = this.buttons.settings.down$
             .subscribe(e => e))
 
         // TODO: Some Info bindings
+        // Info button
         if (this.config.info)
         this.subs.push(
         this.infoSub = this.buttons.info.down$
             .subscribe(e => e))
 
-        // Sound
-        if (this.config.sound)
+        // Sound Button
+        if (this.config.sound.button)
         this.subs.push(
-        this.soundSub = this.buttons.sound.down$
+        this.soundButtonSub = this.buttons.sound.down$
             .subscribe(e => this.settings.isSound = !this.settings.isSound))
         
-        if (this.config.sound)        
+        // Sound State
+        if (this.config.sound.state)        
         this.subs.push(
         this.soundStateSub = this.settings.isSound$
             .subscribe(e => this.buttons.sound.to(e)))
 
-        // Fast
-        if (this.config.fast)
+        // Fast Button
+        if (this.config.fast.button)
         this.subs.push(
-        this.fastSub = this.buttons.fast.down$
+        this.fastButtonSub = this.buttons.fast.down$
             .subscribe(e => this.settings.isFast = !this.settings.isFast))
-        
-        if (this.config.fast)
+            
+        // Fast State
+        if (this.config.fast.state)
         this.subs.push(
         this.fastStateSub = this.settings.isFast$
-            .subscribe(e => {
-                this.buttons.fast.to(e)
-                // ??? Where must be this part of logic
-                this.screen.setRollSpeed(this.screen.config.roll[e ? 'fast' : 'normal'])
-            }))                        
+            .subscribe(e => this.buttons.fast.to(e)))                        
 
-        // Fullscreen
-        if (this.config.fullscreen)
+        // Fullscreen Button
+        if (this.config.fullscreen.button)
         this.subs.push(
-        this.fullscreenSub = this.buttons.fullscreen.down$
+        this.fullscreenButtonSub = this.buttons.fullscreen.down$
             .subscribe(e => this.settings.isFullscreen = !this.settings.isFullscreen))
 
-        if (this.config.fullscreen)
+        // Fullscreen State
+        if (this.config.fullscreen.state)
         this.subs.push(
         this.fullscreenStateSub = this.settings.isFullscreen$
-            .subscribe(e => {
-                this.buttons.fullscreen.to(e)
-                // ??? Where must be this part of logic
-                this.game.device[`${e ? 'enter' : 'cancel'}Fullscreen`]()
-            }))
+            .subscribe(e => this.buttons.fullscreen.to(e)))
 
     }
 
