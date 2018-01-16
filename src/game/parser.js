@@ -45,6 +45,7 @@ class ParserManager {
     }
     
     roll(res) {
+        if (!res) return null        
         this.data.screen = res.Screen.map(r => r.map(el => ({ type: 'static', el })))
         
         this.state.mode = res.Mode
