@@ -47,6 +47,7 @@ class WinController {
     enable() {
         this.subs = []
 
+        // ------  Table  ------
         // Show Win Table when we have win coins in the End of Roll
         if (this.config.table.show)
         this.subs.push(
@@ -62,6 +63,7 @@ class WinController {
             .filter(e => e)
             .subscribe(e => this.machine.table.hide()))
 
+        // ------  Lines  ------
         // Show Win Lines when we have win combinations in the End of Roll
         if (this.config.lines.show)
         this.subs.push(
@@ -78,6 +80,7 @@ class WinController {
             .filter(e => this.data.win.lines)
             .subscribe(e => this.data.win.lines.forEach(line => this.machine.lines.hide(line.number))))
 
+        // ------  Numbers  ------
         // Show Win Numbers when we have win combinations in the End of Roll
         if (this.config.numbers.show)
         this.subs.push(
@@ -94,6 +97,7 @@ class WinController {
             .filter(e => this.data.win.lines)
             .subscribe(e => this.data.win.lines.forEach(line => this.machine.numbers.hide(line.number))))
 
+        // ------  Elements  ------
         // Show Win Elements when we have win combinations in the End of Roll
         if (this.config.els.show)
         this.subs.push(
@@ -110,6 +114,7 @@ class WinController {
             .sample(this.state.isRolling$.filter(e => e))
             .subscribe(data => this.machine.screen.getElementsFromLines(data).forEach(el => el.playNormal())))
 
+        // ------  Elements - Alpha  ------
         // Hide Not Win Elements in alpha when we have win combinations
         if (this.config.els.alpha)
         this.subs.push(
@@ -128,6 +133,7 @@ class WinController {
             .sample(this.state.isRolling$.filter(e => e))
             .subscribe(data => this.machine.screen.elements.forEach(el => el.alpha = 1)))
 
+        // ------  One After Another  ------
         // One after another logic
         if (this.config.oneAfterAnother)
         this.subs.push(
@@ -142,7 +148,7 @@ class WinController {
             .subscribe(({ data, index }) => {
                 if (data.number < 0) return null
                 
-                this.hideBeforeLine(data[index].number)
+                this.hideAllWithoutLine(data[index].number)
                 this.showLine(data[index])
             }))
     }
@@ -151,18 +157,27 @@ class WinController {
         this.subs.forEach(s => s.unsubscribe()) 
     }
 
-    hideBeforeLine(num) {
-        this.machine.table.hide()
-        this.machine.screen.elements.forEach(el => el.playNormal())
-        this.machine.numbers.hideAllWithout(num)
-        this.machine.lines.hideAllWithout(num)
+    hideAllWithoutLine(num) {
+        try {
+            this.machine.table.hide()
+            this.machine.screen.elements.forEach(el => el.playNormal())
+            this.machine.numbers.hideAllWithout(num)
+            this.machine.lines.hideAllWithout(num)
+        } catch (e) {
+            console.error('WinCtrl, Hide All Without Line Error: ', e)
+        }
+        
     }
 
     showLine(line) {
-        this.machine.lines.show(line.number)
-        this.machine.numbers.show(line.number)
-        this.machine.screen.getElementsFromLine(line).forEach(el => el.playWin())
-        this.machine.screen.getLastElementFromLine(line).win.show(line.win)
+        try {
+            this.machine.lines.show(line.number)
+            this.machine.numbers.show(line.number)
+            this.machine.screen.getElementsFromLine(line).forEach(el => el.playWin())
+            this.machine.screen.getLastElementFromLine(line).win.show(line.win)    
+        } catch (e) {
+            console.error('WinCtrl, Show Line Error: ', e)
+        }
     }
 
 }
