@@ -109,7 +109,7 @@ class AutoplayController {
     checkStoppers() {
         if (this.data.auto.increase
         && (this.balance.cash.sum - this.data.auto.start >= this.data.auto.increase)) return true
-        if (this.balance.cash.auto.decrease
+        if (this.data.auto.decrease
         && (this.data.auto.start - this.balance.cash.sum >= this.data.auto.decrease)) return true
         return false
     }
