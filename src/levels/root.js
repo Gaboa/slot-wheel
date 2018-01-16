@@ -153,8 +153,11 @@ class DesktopRoot extends Container {
     
     enable() {
         // Balance
-        this.balanceCtrl     = new BalanceController({ game: this.game })
-        this.balanceRootCtrl = new DesktopBalanceController({ game: this.game })
+        this.commonBalanceCtrl  = new BalanceController({ game: this.game })
+        this.desktopBalanceCtrl = new DesktopBalanceController({ game: this.game })
+        this.footerBalanceCtrl  = new FooterBalanceController({ game: this.game, 
+            config: {coin: { bet: false, sum: { idle: false, end: false }}
+        }})
         // Buttons
         this.footerCtrl = new FooterButtonsController({ game: this.game })
         this.panelCtrl  = new PanelButtonsController({ game: this.game })
@@ -165,8 +168,9 @@ class DesktopRoot extends Container {
     }
 
     disable() {
-        this.balanceCtrl.disable()
-        this.balanceRootCtrl.disable()
+        this.commonBalanceCtrl.disable()
+        this.desktopBalanceCtrl.disable()
+        this.footerBalanceCtrl.disable()
         this.footerCtrl.disable()
         this.panelCtrl.disable()
         this.ctrl.disable()
@@ -180,5 +184,7 @@ class DesktopRoot extends Container {
     }
 
 }
+
+
 
 export { DesktopRoot, MobileRoot }
