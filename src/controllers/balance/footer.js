@@ -3,13 +3,22 @@ import defaultsDeep from 'lodash.defaultsdeep'
 const defaultConfig = {
     currency: true,
     coin: {
-        sum: true,
+        sum: {
+            idle: true,
+            end: true
+        },
         bet: true
     },
     cash: {
-        sum: true,
+        sum: {
+            idle: true,
+            end: true
+        },
         bet: true,
-        win: true
+        win: {
+            idle: true,
+            end: true
+        }
     }
 }
 
@@ -27,6 +36,7 @@ class FooterBalanceController {
         this.data  = game.data
         this.state = game.state
         this.balance = this.data.balance
+
         this.footer  = this.level.footer
         this.top     = this.footer.balance.top
         this.bottom  = this.footer.balance.bottom
@@ -45,14 +55,14 @@ class FooterBalanceController {
 
         // Top
         // Coin Sum
-        if (this.config.coin.sum)
+        if (this.config.coin.sum.idle)
         this.subs.push(
-        this.coinSumStartSub = this.balance.coin.sum$
+        this.coinSumIdleSub = this.balance.coin.sum$
             .filter(e => !this.state.isRolling)
             .subscribe(e => this.top.left.set(e)))
 
         // Coin Sum at the Roll End
-        if (this.config.coin.sum)
+        if (this.config.coin.sum.end)
         this.subs.push(
         this.coinSumEndSub = this.balance.coin.sum$
             .filter(e => this.state.isRolling)
@@ -67,14 +77,14 @@ class FooterBalanceController {
 
         // Bottom
         // Cash Sum
-        if (this.config.cash.sum)
+        if (this.config.cash.sum.idle)
         this.subs.push(
-        this.cashSumStartSub = this.balance.cash.sum$
+        this.cashSumIdleSub = this.balance.cash.sum$
             .filter(e => !this.state.isRolling)
             .subscribe(e => this.bottom.left.set(e)))
 
         // Cash Sum at the Roll End
-        if (this.config.cash.sum)
+        if (this.config.cash.sum.end)
         this.subs.push(
         this.cashSumEndSub = this.balance.cash.sum$
             .filter(e => this.state.isRolling)
@@ -88,14 +98,14 @@ class FooterBalanceController {
             .subscribe(e => this.bottom.center.set(e)))
 
         // Cash Win
-        if (this.config.cash.win)
+        if (this.config.cash.win.idle)
         this.subs.push(
-        this.cashWinStartSub = this.balance.cash.win$
+        this.cashWinIdleSub = this.balance.cash.win$
             .filter(e => !this.state.isRolling)
             .subscribe(e => this.bottom.right.set(e)))
         
         // Cash Win at the Roll End
-        if (this.config.cash.win)
+        if (this.config.cash.win.end)
         this.subs.push(
         this.cashWinEndSub = this.balance.cash.win$
             .filter(e => this.state.isRolling)
