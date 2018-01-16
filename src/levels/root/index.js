@@ -5,6 +5,7 @@ import { Machine, Footer } from '../../components'
 import { Darkness } from "../preload/helpers"
 import { BalanceController } from './balance'
 import InfoController from '../../components/info'
+import SettingsController from '../../components/settings'
 
 // TODO: Create balance bindings for different modes ( FS FR Bonus )
 // TODO: Add Spine helper class
@@ -45,6 +46,7 @@ class Root extends Container {
         })
 
         this.info = new InfoController({})
+        this.settings = new SettingsController({})
 
         setTimeout(() => this.enable(), 0)
     }
