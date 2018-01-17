@@ -84,6 +84,8 @@ class BitmapText extends PIXI.extras.BitmapText {
 
          this.anchor.set(anchorX, 0.5)
     }
+
+    //TODO добавить возможность задавать промежуток между буквами и чтоб это работало с твином
 }
 
 export { BitmapText }
