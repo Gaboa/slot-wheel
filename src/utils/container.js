@@ -1,4 +1,5 @@
 import { Container as PIXI_Container } from "pixi.js";
+import {BitmapText} from "./bitmap-text";
 
 class Container extends PIXI_Container {
     constructor({
@@ -17,8 +18,11 @@ class Container extends PIXI_Container {
 
         // Index of child
         this.container = container
-        if (Number.isInteger(index))
-            this.container.addChildAt(this, index)
+        if (Number.isInteger(index)) {
+            let parentLength = this.container.children.length
+            let innerIndex = (index > parentLength) ? parentLength - 1 : index
+            this.container.addChildAt(this, innerIndex)
+        }
         else
             this.container.addChild(this)
 
