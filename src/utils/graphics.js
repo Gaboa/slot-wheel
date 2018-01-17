@@ -11,8 +11,11 @@ class Graphics extends PIXI_Graphics {
 
         // Index of child
         this.container = container
-        if (index)
-            this.container.addChildAt(this, index)
+        if (Number.isInteger(index)) {
+            let parentLength = this.container.children.length
+            let innerIndex = (index > parentLength) ? parentLength - 1 : index
+            this.container.addChildAt(this, innerIndex)
+        }
         else
             this.container.addChild(this)
 
