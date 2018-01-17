@@ -51,19 +51,19 @@ class GameController {
         this.subs.push(
         this.parseInitSub = this.game.request.$
             .filter(e => e.type === 'INIT')
-            .subscribe(res => game.parser.init(res.data)))
+            .subscribe(res => this.game.parser.init(res.data)))
 
         if (this.config.roll)
         this.subs.push(
         this.parseRollSub = this.game.request.$
             .filter(e => e.type === 'ROLL')
-            .subscribe(res => game.parser.roll(res.data)))
+            .subscribe(res => this.game.parser.roll(res.data)))
 
         if (this.config.leave)
         this.subs.push(
         this.leaveSub = this.game.device.$
             .filter(e => e.type === 'LEAVE')
-            .subscribe(e => game.request.sendLogout()))
+            .subscribe(e => this.game.request.sendLogout()))
 
         if (this.config.fullscreen)
         this.subs.push(
