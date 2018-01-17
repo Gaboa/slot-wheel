@@ -4,25 +4,25 @@
         <div class='settings__column'>
             <settings-title title="audio"></settings-title>
             <range :details="[{name: 'Volume', id: 'volume', key:'volume'}]" :state="volume"></range>
-            <radio-button :details="[{name: 'Music', id: 'music', key: 'isMusic'}]" :state="isMusic"></radio-button>
-            <radio-button :details="[{name: 'Effects', id: 'effects', key: 'isEffects'}]" class="border__none" :state="isEffects"></radio-button>
+            <radio :details="[{name: 'Music', id: 'music', key: 'isMusic'}]" :state="isMusic"></radio>
+            <radio :details="[{name: 'Effects', id: 'effects', key: 'isEffects'}]" class="border__none" :state="isEffects"></radio>
             <settings-title title="options"></settings-title>
-            <radio-button :details="[{name: 'Fast spin', id: 'speed', key: 'isFast'}]" :state="isFast"></radio-button>
+            <radio :details="[{name: 'Fast spin', id: 'speed', key: 'isFast'}]" :state="isFast"></radio>
         </div>
 
         <div class='settings__column'>
             <settings-title title="autoplay"></settings-title>
-            <radio-button :details="[{name: 'Stop if cash increases by:', id: 'stopIfCashGreater', key:'stopIfCashGreater'}]" :state="stopIfCashGreater">
+            <radio :details="[{name: 'Stop if cash increases by:', id: 'stopIfCashGreater', key:'stopIfCashGreater'}]" :state="stopIfCashGreater">
                 <span class="settings__input">
                     <input type="number" min="0" value="0" id="increase__text">
                 </span>
-            </radio-button>
-            <radio-button :details="[{name: 'Stop if cash decreases by:', id: 'stopIfCashLess', key:'stopIfCashLess'}]" :state="stopIfCashLess">
+            </radio>
+            <radio :details="[{name: 'Stop if cash decreases by:', id: 'stopIfCashLess', key:'stopIfCashLess'}]" :state="stopIfCashLess">
                 <span class="settings__input">
                     <input type="number" min="0" value="0" id="increase__text">
                 </span>
-            </radio-button>
-            <radio-button :details="[{name: 'Bonus stops the autoplay:', id: 'bonusStopsAutoPlay', key:'bonusStopsAutoPlay' }]" class="border__none" :state="bonusStopsAutoPlay"></radio-button>
+            </radio>
+            <radio :details="[{name: 'Bonus stops the autoplay:', id: 'bonusStopsAutoPlay', key:'bonusStopsAutoPlay' }]" class="border__none" :state="bonusStopsAutoPlay"></radio>
             <settings-title title="mode"></settings-title>
             <div class='settings__row'>
                 <mode-button v-for="mode in modes" :key="mode" :name="mode" :isActive ='mode.toLowerCase() === activeMode' >
@@ -38,7 +38,7 @@
     import InfoPage from './InfoPage.vue'
     import Title from './settings-components/Title'
     import Button from './settings-components/Button'
-    import RadioButton from './settings-components/RadioButton'
+    import Radio from './settings-components/Radio'
     import Range from './settings-components/Range'
 
     export default {
@@ -56,7 +56,7 @@
         components: {
             'settings-title': Title,
             'mode-button': Button,
-            'radio-button': RadioButton,
+            'radio': Radio,
             'range': Range
         },
         data() {

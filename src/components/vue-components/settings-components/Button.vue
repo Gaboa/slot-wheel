@@ -1,5 +1,5 @@
 <template>
-    <button :class= 'classObject' @click='handleClick'>{{name}}</button>
+    <button :class= 'classObject' @click='handleClick'>{{ name }}</button>
 </template>
 <script>
 export default {
@@ -20,7 +20,6 @@ export default {
 }
 </script>
 <style scoped>
-
     .setting__button{
         width: 25%;
         height: 3.5vw;

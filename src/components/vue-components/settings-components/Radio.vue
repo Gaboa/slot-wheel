@@ -1,18 +1,18 @@
 <template>
     <div class="settings__row">
-            <span class="settings__name">{{details[0].name}}</span>
-            <slot></slot>
-            <span class="settings__item">
-                <div class="checkbox">
-                    <input class="checkbox__input" 
-                        type="checkbox" 
-                        :name="details[0].name" 
-                        :id="details[0].id" 
-                        :checked="state" 
-                        @change="handleChange">
-                    <label class="checkbox__label" :for="details[0].id"></label>
-                </div>
-            </span>
+        <span class="settings__name">{{details[0].name}}</span>
+        <slot></slot>
+        <span class="settings__item">
+            <div class="checkbox">
+                <input class="checkbox__input" 
+                    type="checkbox" 
+                    :name="details[0].name" 
+                    :id="details[0].id" 
+                    :checked="state" 
+                    @change="handleChange">
+                <label class="checkbox__label" :for="details[0].id"></label>
+            </div>
+        </span>
     </div>
 </template>
 <script>

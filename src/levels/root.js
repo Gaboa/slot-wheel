@@ -15,8 +15,8 @@ import {
     AutoplayController
 } from '../controllers'
 
-import InfoController from '../components/info'
-import SettingsController from '../components/settings'
+import { Info } from '../components/info'
+import { Settings } from '../components/settings'
 
 // TODO: Create balance bindings for different modes ( FS FR Bonus )
 // TODO: Check index switching bug in Screen
@@ -70,8 +70,8 @@ class MobileRoot extends Container {
             autoHide:  true
         })
 
-        this.info     = new InfoController({})
-        this.settings = new SettingsController({})
+        this.info     = new Info({})
+        this.settings = new Settings({})
 
         setTimeout(() => this.enable(), 0)
     }
@@ -154,8 +154,8 @@ class DesktopRoot extends Container {
             autoHide:  true
         })
 
-        this.info = new InfoController({})
-        this.settings = new SettingsController({})
+        this.info = new Info({})
+        this.settings = new Settings({})
 
         setTimeout(() => this.enable(), 0)
     }

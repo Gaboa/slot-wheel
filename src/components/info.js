@@ -1,8 +1,9 @@
+import defaultsDeep from 'lodash.defaultsdeep'
 import { Subject } from 'rxjs'
 import Vue from 'vue' 
-import Info from './vue-components/Info'
+import InfoView from './vue-components/InfoView'
 
-const defaultInfoData = {
+const defaultData = {
     //visible: true,
     pages: [
         {
@@ -509,12 +510,18 @@ const defaultInfoData = {
         },
     ]
 }
-export default class InfoController {
+class Info {
 
     constructor({
+        id = 'app',
+        data
     }) {
 
-        this.config = defaultInfoData
+        const info = document.createElement('div')
+        info.setAttribute('id', 'info')
+        document.getElementById(id).appendChild(info)
+
+        this.config = defaultsDeep(data, defaultData)
         this.visible = false
         this.$ = new Subject()
 
@@ -529,22 +536,18 @@ export default class InfoController {
                 }
             },
 
-            mounted(){
+            mounted() {
                 this.$on('close_info', val => {
                     self.close()
-                    console.log(val)
                     self.$.next(val)
                 })
-                this.$on('page_changes', val => {
-                    console.log(val)
-                    self.$.next(val)
-                })
+                this.$on('page_changes', val => self.$.next(val))
             },
 
-            render(h){
-                return h (Info, 
+            render(h) {
+                return h (InfoView, 
                     {props: {
-                        info: this.info,
+                        info:    this.info,
                         visible: this.visible,
                     }}
                 )
@@ -561,3 +564,5 @@ export default class InfoController {
     }
 
 }
+
+export { Info }
