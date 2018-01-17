@@ -16,6 +16,10 @@ class Light extends Sprite {
         this.blendMode = PIXI.BLEND_MODES.ADD
         this.alpha = alpha
 
+        this.addTween()
+    }
+
+    addTween() {
         this.tween = TweenMax.to(this, 25, {
             rotation: 2 * Math.PI,
             repeat: -1,
