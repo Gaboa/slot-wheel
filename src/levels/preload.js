@@ -18,6 +18,8 @@ const defaultConfig = {
     mobile: [],
     desktop: [],
 
+    music: 'init',
+
     /*-----------------------*/
     /* -------- View ------- */
     /*-----------------------*/
@@ -176,7 +178,7 @@ class Preload extends Container {
         this.gameLoaderCompleteSub = this.game.loader.$
             .subscribe({ 
                 error: (e) => this.game.state.error = 'Game assets loading error.',
-                complete: () => this.$.next('LOAD_COMPLETE') }))
+                complete: () => this.$.next('LOAD_DONE') }))
 
         // When init request done => trigger INIT_DONE event
         this.subs.push(
@@ -184,13 +186,21 @@ class Preload extends Container {
             .filter(r => r.type === 'INIT')
             .subscribe(() => this.$.next('INIT_DONE')))
 
+        // When audio load done => trigger AUDIO_DONE event
+        this.subs.push(
+        this.audioLoadSub = this.game.audio.$
+            .filter(r => r.type  === 'LOAD')
+            .filter(r => r.state === 'COMPLETE')
+            .subscribe(() => this.$.next('AUDIO_DONE')))
+
         // When LOAD_COMPLETE and INIT_DONE events triggers => trigger COMPLETE event
         this.subs.push(
         this.initAndLoadCompleteSub = this.$
-            .bufferCount(2).take(1)
+            .bufferCount(3).take(1)
             .subscribe(arr => {
-                if (arr.indexOf('INIT_DONE') !== -1
-                 && arr.indexOf('LOAD_COMPLETE') !== -1)
+                if (arr.indexOf('INIT_DONE')  !== -1
+                 && arr.indexOf('LOAD_DONE')  !== -1
+                 && arr.indexOf('AUDIO_DONE') !== -1)
                     this.$.next('COMPLETE')
             }))
 
@@ -201,6 +211,8 @@ class Preload extends Container {
             .subscribe(e => {
                 this.bar.hide()
                 this.button.show()
+                if (this.config.music)
+                    this.game.audio.play(this.config.music)
             }))
 
         // When COMPLETE triggers => you can tap on button or space once to show DARKNESS
@@ -227,6 +239,17 @@ class Preload extends Container {
         this.subs.push(
         this.soundTriggerSub = this.sound.$
             .subscribe(e => this.game.state.settings.isSound = !this.game.state.settings.isSound))
+
+        // Change AudioManager mute when we complete loading
+        this.subs.push(
+        this.soundStateSub = this.game.state.settings.isSound$
+            .sample(this.$.filter(e => e === 'COMPLETE'))
+            .subscribe(e => this.game.audio[`${e ? 'un' : ''}muteAll`]()))
+
+        this.subs.push(
+        this.soundStateSub = this.game.state.settings.isSound$
+            .skipUntil(this.$.filter(e => e === 'COMPLETE'))
+            .subscribe(e => this.game.audio[`${e ? 'un' : ''}muteAll`]()))
         
     }
 
@@ -281,6 +304,7 @@ class Preload extends Container {
 
     remove() {
         PIXI.utils.resources = this.game.loader.resources
+        this.game.audio.stop(this.config.music)
         this.$.next('REMOVED')
         this.disable()
         this.destroy()
