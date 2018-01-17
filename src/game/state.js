@@ -8,6 +8,7 @@ const defaultState = {
     
     isIdle: true,
     isRolling: false,
+    isAutoplay: false,
     isFR: false,
     isMenu: false,
     isTransition: false,
@@ -17,11 +18,9 @@ const defaultState = {
     mode: 'root',
     next: 'root',
 
-    error: null,
-
     // Main buttons mode in desktop 
     button: 'spin',
-    autoplay: null,
+    error: null,
 
     settings: {
         isFullscreen: false,

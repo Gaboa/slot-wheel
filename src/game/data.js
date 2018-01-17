@@ -17,8 +17,9 @@ const defaultData = {
         line: null
     },
 
-    auto: {
+    autoplay: {
         start: null,
+        count: null,
         increase: null,
         decrease: null
     },
