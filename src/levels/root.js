@@ -8,6 +8,7 @@ import {
     DesktopBalanceController,
     FooterButtonsController,
     PanelButtonsController,
+    MachineController,
     MobileButtonsController,
     MobileMenuController,
     RootController,
@@ -91,9 +92,19 @@ class MobileRoot extends Container {
         this.buttonsCtrl = new MobileButtonsController({ game: this.game })
         this.menuCtrl    = new MobileMenuController({ game: this.game })
         // Logic
-        this.ctrl     = new RootController({ game: this.game, config: {
-            lines: false,
-            idleFooter: false
+        this.machineCtrl = new MachineController({ game: this.game, config: {
+            lines: {
+                show: false,
+                hide: false
+            }
+        }})        
+        this.ctrl = new RootController({ game: this.game, config: {
+            idle: {
+                footer: {
+                    enable: false,
+                    disable: false
+                }
+            }
         }})
         this.winCtrl  = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
@@ -104,6 +115,7 @@ class MobileRoot extends Container {
         this.balanceRootCtrl.disable()
         this.footerCtrl.disable()
         this.buttonsCtrl.disable()
+        this.machineCtrl.disable()        
         this.ctrl.disable()
         this.winCtrl.disable()
         this.autoCtrl.disable()
@@ -171,8 +183,9 @@ class DesktopRoot extends Container {
         this.footerCtrl = new FooterButtonsController({ game: this.game })
         this.panelCtrl  = new PanelButtonsController({ game: this.game })
         // Logic
-        this.ctrl     = new RootController({ game: this.game })
-        this.winCtrl  = new WinController({ game: this.game })
+        this.machineCtrl = new MachineController({ game: this.game })
+        this.ctrl = new RootController({ game: this.game })
+        this.winCtrl = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
     }
 
@@ -182,6 +195,7 @@ class DesktopRoot extends Container {
         this.footerBalanceCtrl.disable()
         this.footerCtrl.disable()
         this.panelCtrl.disable()
+        this.machineCtrl.disable()
         this.ctrl.disable()
         this.winCtrl.disable()
         this.autoCtrl.disable()
