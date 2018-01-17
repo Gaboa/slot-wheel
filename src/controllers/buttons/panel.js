@@ -113,13 +113,13 @@ class PanelButtonsController {
 
 
         // ------  AutoItem  ------
-        // AutoItem change button to Stop
-        if (this.config.item.button)
-        this.subs.push(
-        this.autoItemButtonSub = this.buttons.panel.$
-            .throttleTime(this.config.item.delta)
-            .map(e => e.value)
-            .subscribe(value => this.state.button = 'stop'))
+        // // AutoItem change button to Stop
+        // if (this.config.item.button)
+        // this.subs.push(
+        // this.autoItemButtonSub = this.buttons.panel.$
+        //     .throttleTime(this.config.item.delta)
+        //     .map(e => e.value)
+        //     .subscribe(value => this.state.button = 'stop'))
 
         // AutoItem starts autoplay
         if (this.config.item.autoplay)
@@ -127,7 +127,10 @@ class PanelButtonsController {
         this.autoItemAutoplaySub = this.buttons.panel.$
             .throttleTime(this.config.item.delta)
             .map(e => e.value)
-            .subscribe(value => this.state.autoplay = value ))
+            .subscribe(value => {
+                this.state.isAutoplay = true
+                this.data.autoplay.count = value
+            }))
 
 
         // ------  Stop  ------
@@ -141,7 +144,7 @@ class PanelButtonsController {
         if (this.config.stop.autoplay)
         this.subs.push(
         this.stopAutoplaySub = this.buttons.stop.down$
-            .subscribe(e => this.state.autoplay = null ))
+            .subscribe(e => this.state.isAutoplay = false ))
 
         // ------  Max  ------
         // Max Button change Level to Maximum amount

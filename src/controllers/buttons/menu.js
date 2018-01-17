@@ -99,7 +99,10 @@ class MobileMenuController {
         if (this.config.item.autoplay)
         this.subs.push(
         this.autoItemAutoplaySub = this.auto.$
-            .subscribe(value => this.state.autoplay = value ))
+            .subscribe(value => {
+                this.state.isAutoplay = true
+                this.data.autoplay.count = value
+            }))
 
         // ------  Set Bet  ------
 
