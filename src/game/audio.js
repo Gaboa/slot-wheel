@@ -8,7 +8,7 @@
 import { Howl } from 'howler'
 import { Subject, Observable } from "rxjs"
 
-class Audio {
+class AudioManager {
     constructor({
         src,
         sprites
@@ -268,4 +268,4 @@ class SoundInstance {
     }
 }
 
-export {Audio}
+export { AudioManager }
