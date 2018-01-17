@@ -84,14 +84,10 @@ class Button extends Sprite {
     to(mode) {
         switch (mode) {
             case true:
-                this.toOn()
-                break
             case 'on':
                 this.toOn()
                 break
             case false:
-                this.toOff()
-                break
             case 'off':
                 this.toOff()
                 break
@@ -111,8 +107,7 @@ class Button extends Sprite {
         if (this.isMin || this.isMax) return null
         this.enabled = true
         this.interactive = true
-        if (this.textureDisabled) this.texture = this.textureNormal
-        else if (this.textureOff) this.texture = this.textureNormal
+        if (this.textureDisabled || this.textureOff) this.texture = this.textureNormal
         else this.alpha = 1
     }
 
