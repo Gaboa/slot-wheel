@@ -36,4 +36,6 @@ class Bar extends Sprite {
 
 }
 
+//TODO переделать логику прогресса
+
 export { Bar }
