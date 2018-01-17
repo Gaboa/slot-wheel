@@ -19,7 +19,18 @@ class JumpingButton extends Sprite {
         this.startScale = startScale
         this.endScale = endScale
         this.tweenY = tweenY
+        this.interactive = true
+        this.buttonMode = true
+        this.$ = Observable.fromEvent(this, 'pointerdown')
 
+        this.addTween();
+    }
+
+    show() {
+        TweenMax.to(this, 0.4, { y: this.tweenY * GAME_HEIGHT, ease: Elastic.easeOut })
+    }
+
+    addTween() {
         this.tween = TweenMax.fromTo(this.scale, 1, {
             x: this.startScale,
             y: this.startScale
@@ -29,15 +40,6 @@ class JumpingButton extends Sprite {
             repeat: -1,
             yoyo: true
         })
-
-        this.interactive = true
-        this.buttonMode = true
-
-        this.$ = Observable.fromEvent(this, 'pointerdown')
-    }
-
-    show() {
-        TweenMax.to(this, 0.4, { y: this.tweenY * GAME_HEIGHT, ease: Elastic.easeOut })
     }
 
 }
