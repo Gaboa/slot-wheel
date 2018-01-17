@@ -11,6 +11,8 @@ const defaultState = {
     isFR: false,
     isMenu: false,
     isTransition: false,
+    isInfoOpened: false,
+    isSettingsOpened: false,
 
     mode: 'root',
     next: 'root',
@@ -29,6 +31,11 @@ const defaultState = {
         isSound: true,
         isMusic: true,
         isEffects: true,
+        activeMode: 'fullhd',
+        bonusStopsAutoPlay: true,
+        stopIfCashLess: true,
+        stopIfCashGreater: true,
+        volume: 50
     }
 }
 
