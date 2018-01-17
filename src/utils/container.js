@@ -17,7 +17,7 @@ class Container extends PIXI_Container {
 
         // Index of child
         this.container = container
-        if (index)
+        if (Number.isInteger(index))
             this.container.addChildAt(this, index)
         else
             this.container.addChild(this)
