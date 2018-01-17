@@ -1,13 +1,13 @@
+import { Subject } from 'rxjs'
 import Vue from 'vue' 
 import Settings from './vue-components/Settings'
-import {Subject} from 'rxjs'
 
 export default class SettingsController {
 
     constructor({
     }) {
         this.$ = new Subject()
-        this.visible = true
+        this.visible = false
 
         this.keys = [
             'mode_changed', 'sound_changed', 
