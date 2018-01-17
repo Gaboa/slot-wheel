@@ -14,6 +14,9 @@ class BitmapText extends PIXI.extras.BitmapText {
         container,
         x = 0,
         y = 0,
+        scale = 1,
+        visible = true,
+        name,
         text,
         fontSize,
         fontName,
@@ -29,15 +32,33 @@ class BitmapText extends PIXI.extras.BitmapText {
                 },
                 align,
                 tint
-            });
-        this.x = x;
-        this.y = y;
-        this.tweenTime = tweenTime;
-        this.container = container;
-        this.$ = new Subject();
+            })
 
-        this.changeAnchor(align);
-        this.container.addChild(this);
+        this.container = container
+        if (index)
+            this.container.addChildAt(this, index)
+        else
+            this.container.addChild(this)
+
+        // Set params
+        this.scale.set(scale)
+        this.visible = visible
+        this.name = name
+        this.tweenTime = tweenTime
+
+        // Relative coords
+        if (Math.abs(x) < 1 && window.GAME_WIDTH)
+            this.x = Math.round(x * GAME_WIDTH)
+        else
+            this.x = x
+        if (Math.abs(y) < 1 && window.GAME_HEIGHT)
+            this.y = Math.round(y * GAME_HEIGHT)
+        else
+            this.y = y
+
+        this.$ = new Subject()
+
+        this.setAnchor(align)
     }
 
     tweenText(value) {
@@ -51,18 +72,18 @@ class BitmapText extends PIXI.extras.BitmapText {
     }
 
     writeText(value) {
-        this.$.next({type: 'change', source: this}),
+        this.$.next({type: 'change', source: this})
 
-        this.text = value;
+        this.text = value
     }
 
-    changeAnchor(side) {
-         let anchorX = 0.5;
-         if(side === 'left') anchorX = 0;
-         if(side === 'right') anchorX = 1;
+    setAnchor(side) {
+         let anchorX = 0.5
+         if(side === 'left') anchorX = 0
+         if(side === 'right') anchorX = 1
 
-         this.anchor.set(anchorX, 0.5);
+         this.anchor.set(anchorX, 0.5)
     }
 }
 
-export {BitmapText}
+export { BitmapText }
