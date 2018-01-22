@@ -55,14 +55,14 @@ class BitmapText extends PIXI.extras.BitmapText {
         TweenMax.to(this, this.tweenTime, {
             text: value,
             roundProps: 'text',
-            onStart: () => this.$.next({type: 'tweenStart', source: this, startValue: this.text, endValue: value}),
-            onUpdate: () => this.$.next({type: 'update', source: this, value: this.text}),
-            onComplete: () => this.$.next({type: 'tweenEnd', source: this}),
+            onStart: () => this.$.next({type: 'TWEEN_START', source: this, startValue: this.text, endValue: value}),
+            onUpdate: () => this.$.next({type: 'UPDATE', source: this, value: this.text}),
+            onComplete: () => this.$.next({type: 'TWEEN_END', source: this}),
         })
     }
 
     writeText(value) {
-        this.$.next({type: 'change', source: this})
+        this.$.next({type: 'CHANGE', source: this})
 
         this.text = value
     }
