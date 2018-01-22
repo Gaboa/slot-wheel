@@ -17,12 +17,22 @@
             <settings-title title="autoplay"></settings-title>
             <radio :details="[{name: 'Stop if cash increases by:', id: 'stopIfCashGreater', key:'stopIfCashGreater'}]" :state="stopIfCashGreater">
                 <span class="settings__input">
-                    <input type="number" min="0" value="0" id="increase__text">
+                    <input type="number" 
+                        min="0" 
+                        value="0" 
+                        id="increase__text"
+                        @change="(e) => handleNumberInputChange(e, 'stopIfCashGreater')"
+                    >
                 </span>
             </radio>
             <radio :details="[{name: 'Stop if cash decreases by:', id: 'stopIfCashLess', key:'stopIfCashLess'}]" :state="stopIfCashLess">
                 <span class="settings__input">
-                    <input type="number" min="0" value="0" id="increase__text">
+                    <input type="number" 
+                        min="0" 
+                        value="0" 
+                        id="increase__text"
+                        @change="(e) => handleNumberInputChange(e, 'stopIfCashLess')"
+                    >
                 </span>
             </radio>
             <radio :details="[{name: 'Bonus stops the autoplay:', id: 'bonusStopsAutoPlay', key:'bonusStopsAutoPlay' }]" class="border__none" :state="bonusStopsAutoPlay"></radio>
@@ -71,6 +81,9 @@
         methods: {
             closeInfo(){
                 this.$parent.$emit('close_info', {type:'CLOSE', state:'CHANGED',})
+            },
+            handleNumberInputChange(e, o){
+                this.$parent.$emit(`${o}_changed`, {type:`${o.toUpperCase()}`, state: 'NUMBER_CHANGED', val: e.target.value, key: o})
             }
         }
     }
