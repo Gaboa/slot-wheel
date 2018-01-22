@@ -151,7 +151,7 @@ class GameController {
         })
 
         if (this.config.preload.logic)
-        this.game.preload.$
+        this.nextRootSub = this.game.preload.$
             .filter(e => e === 'REMOVED').take(1)
             .subscribe(e => game.root = new this.config.constructors[`${GAME_DEVICE.split('').map((ch, i) => i === 0 ? ch.toUpperCase() : ch).join('')}Root`]({ game: this.game }))
 
@@ -163,7 +163,11 @@ class GameController {
     }) {
 
         // Clear old session
-        this.game.root.remove()
+        if (this.game.root) this.game.root.remove()
+        if (this.game.preload) {
+            this.nextRootSub.unsubscribe()
+            this.game.preload.remove()
+        }
         this.game.loader.reset()
         PIXI.utils.clearTextureCache()
 
