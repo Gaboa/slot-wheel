@@ -7,13 +7,14 @@ class Spine extends PIXI.spine.Spine {
         x = 0,
         y = 0,
         name,
-        anim,
+        animation,
         index,
         visible = true,
         mixes = [
             ['idle', 'win', 0.15],
             ['win', 'idle', 0.15]
         ]
+        //TODO дефолтным я бы сделал пустой массив
     }) {
         super(PIXI.utils.resources[name].spineData)
 
@@ -43,10 +44,13 @@ class Spine extends PIXI.spine.Spine {
 
         this.enable()
 
-        if (anim) 
-            this.state.setAnimation(anim.track, anim.name, anim.repeat)
+        if (typeof(animation) === 'string') {
+            let {track, name, repeat} = animation
+            this.state.setAnimation(track, name, repeat)
+        }
 
     }
+
 
     createMixes() {
         this.mixes.forEach(([anim1, anim2, delta]) => {
@@ -76,7 +80,7 @@ class Spine extends PIXI.spine.Spine {
 
         this.subs.push(
         this.eventSub = this.state.addListener({
-            event: entry => this.$.next({ type: 'EVENT', spine: this, el: this.name, data: entry, event: event, anim: entry.animation.name })
+            event: (entry, event) => this.$.next({ type: 'EVENT', spine: this, el: this.name, data: entry, event: event, anim: entry.animation.name })
         }))
 
     }
@@ -86,6 +90,13 @@ class Spine extends PIXI.spine.Spine {
         this.subs.forEach(s => s.unsubscribe())
     }
 
+    play({index = 0, name, loop = true}) {
+        this.state.setAnimation(index, name, loop)
+    }
+
+    add({index = 0, name, loop = true, delay = 0}) {
+        this.state.addAnimation(index, name, loop, delay)
+    }
 }
 
 export { Spine }
