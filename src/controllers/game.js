@@ -7,6 +7,16 @@ const defaultGameConfig = {
     roll: true,
     leave: true,
     fullscreen: true,
+    audio: {
+        sound: {
+            on: true,
+            off: true
+        },
+        music: true,
+        effects: true,
+        volume: true,
+        musicAndEffects: true
+    },
     error: {
         request: true,
         handle: true
@@ -69,6 +79,46 @@ class GameController {
         this.subs.push(
         this.fullscreenSub = this.settings.isFullscreen$
             .subscribe(e => this.game.device[`${e ? 'enter' : 'cancel'}Fullscreen`]()))
+
+        // Audio Logic
+        if (this.config.audio.sound.off)        
+        this.subs.push(
+        this.soundOffSub = this.state.settings.isSound$
+            .distinctUntilChanged()
+            .filter(e => !e)
+            .subscribe(e => this.state.settings.isEffects = this.state.settings.isMusic = e))
+
+        if (this.config.audio.sound.on)        
+        this.subs.push(
+        this.soundOnSub = this.state.settings.isSound$
+            .distinctUntilChanged()
+            .filter(e => e)
+            .filter(e => !this.state.settings.isEffects && !this.state.settings.isMusic)
+            .subscribe(e => this.state.settings.isEffects = this.state.settings.isMusic = e ))
+
+        if (this.config.audio.musicAndEffects)        
+        this.subs.push(
+        this.musicAndEffectsSub = this.state.settings.isMusic$
+            .combineLatest(this.state.settings.isEffects$)
+            .subscribe(arr => {
+                if (arr.every(e => !e)) this.state.settings.isSound = false
+                else this.state.settings.isSound = true
+            }))
+
+        if (this.config.audio.music)        
+        this.subs.push(
+        this.musicSub = this.state.settings.isMusic$
+            .subscribe(e => this.game.audio[`${e ? 'un' : '' }muteMusic`]()))
+
+        if (this.config.audio.effects)        
+        this.subs.push(
+        this.effectsSub = this.state.settings.isEffects$
+            .subscribe(e => this.game.audio[`${e ? 'un' : '' }muteEffects`]()))
+
+        if (this.config.audio.volume)        
+        this.subs.push(
+        this.volumeSub = this.state.settings.volume$
+            .subscribe(e => this.game.audio.volume = e / 100))
 
         // TODO: Change to Popup Open 
         if (this.config.error.handle)
