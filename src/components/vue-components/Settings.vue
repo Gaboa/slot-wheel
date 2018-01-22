@@ -1,4 +1,5 @@
 <template>
+<div :class='{ darkness__visible : visible, darkness__hidden : !visible}'>
     <div :class='{ opened : visible, closed : !visible}'>
 
         <div class=info__close @click=closeInfo></div>
@@ -34,6 +35,7 @@
 
         </div>
     </div>
+</div>
 </template>
 
 <script>
@@ -75,6 +77,23 @@
 </script>
 
 <style scoped>
+
+    .darkness__hidden{
+        display: hidden;
+    }
+
+    .darkness__visible{
+        display: block; 
+        position: fixed; 
+        z-index: 1; 
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0); 
+        background-color: rgba(0,0,0,0.4);
+    }
 
     .opened {
         z-index: 10;
