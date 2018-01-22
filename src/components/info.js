@@ -3,7 +3,6 @@ import Info from './vue-components/Info'
 import {Subject} from 'rxjs'
 
 const defaultInfoData = {
-    //visible: true,
     pages: [
         {
             index: 0,
