@@ -74,6 +74,8 @@ class MobileRoot extends Container {
         this.info     = new Info({})
         this.settings = new Settings({})
 
+        this.game.audio.play('main')
+
         setTimeout(() => this.enable(), 0)
     }
 
@@ -168,6 +170,8 @@ class DesktopRoot extends Container {
 
         this.info = new Info({})
         this.settings = new Settings({})
+
+        this.game.audio.play('main')
 
         setTimeout(() => this.enable(), 0)
     }
