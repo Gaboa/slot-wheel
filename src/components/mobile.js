@@ -6,7 +6,7 @@ import { TweenMax } from 'gsap'
 const defaultButtonsConfig = {
     buttons: ['menu', 'auto', 'stop', 'spin', 'bet', 'sound'],
     delta: 0.02,
-    style: {}
+    style: { fontSize: 90 }
 }
 
 const defaultMenuConfig = {
@@ -147,7 +147,7 @@ class MobileMenu extends Container {
 
     constructor({
         container,
-        x,
+        x = 2000,
         y,
         config
     }) {
@@ -458,6 +458,8 @@ class MobileBalance extends Container {
         this.plus.x = this.bg.width / 2 + this.delta + this.plus.width / 2
         this.minus.x = -this.bg.width / 2 - this.delta - this.minus.width / 2
 
+        this.buttons = [this.plus, this.minus]
+
     }
 
 }
@@ -495,6 +497,8 @@ class BetMenu extends MenuTemplate {
             fixed: 2,            
             textStyle: { fontSize: 50 }
         })
+
+        this.buttons = [this.max, ...this.level.buttons, ...this.value.buttons]
 
     }
 
