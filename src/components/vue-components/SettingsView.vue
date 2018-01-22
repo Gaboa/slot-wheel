@@ -1,5 +1,5 @@
 <template>
-<div :class='{ darkness__visible : visible, darkness__hidden : !visible}' @click=closeInfo>
+<div :class='{ darkness__visible : visible, darkness__hidden : !visible}' @click.self=closeInfo>
     <div :class='{ opened : visible, closed : !visible}'>
 
         <div class=info__close @click=closeInfo></div>
