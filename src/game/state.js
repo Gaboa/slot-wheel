@@ -32,9 +32,9 @@ const defaultState = {
         isEffects: true,
         activeMode: 'fullhd',
         bonusStopsAutoPlay: true,
-        stopIfCashLess: true,
-        stopIfCashGreater: true,
-        volume: 50
+        stopIfCashLess: false,
+        stopIfCashGreater: false,
+        volume: 30
     }
 }
 
