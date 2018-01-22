@@ -1,16 +1,21 @@
+import { Subject } from 'rxjs'
 import Vue from 'vue' 
-import Settings from './vue-components/Settings'
-import {Subject} from 'rxjs'
+import SettingsView from './vue-components/SettingsView'
 
-export default class SettingsController {
+class Settings {
 
     constructor({
+        id = 'app'
     }) {
         this.$ = new Subject()
-        this.visible = true
+        this.visible = false
+
+        const settings = document.createElement('div')
+        settings.setAttribute('id', 'settings')
+        document.getElementById(id).appendChild(settings)
 
         this.keys = [
-            'mode_changed', 'sound_changed', 
+            'mode_changed',  'sound_changed', 
             'music_changed', 'effects_changed',
             'speed_changed', 'bonusStopsAutoPlay_changed', 
             'stopIfCashLess_changed', 'stopIfCashGreater_changed'
@@ -51,7 +56,7 @@ export default class SettingsController {
             },
 
             render(h){
-                return h (Settings, {
+                return h (SettingsView, {
                     props: {
                         visible: this.visible,
                         volume: this.volume,
@@ -77,3 +82,5 @@ export default class SettingsController {
     }
 
 }
+
+export { Settings }

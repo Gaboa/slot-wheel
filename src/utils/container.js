@@ -6,11 +6,14 @@ class Container extends PIXI_Container {
         x = 0,
         y = 0,
         index,
+        scale = 1,
         name
     }) {
         super()
 
         this.name = name
+
+        this.scale.set(scale)
 
         // Index of child
         this.container = container

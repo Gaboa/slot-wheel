@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject'
 import { Observable } from 'rxjs/Observable'
 import { TweenMax } from 'gsap/TweenMax'
 import { Wheel } from './wheel'
-import { SpriteElement } from './element'
+import { Element } from './element'
 import { Container } from '../utils'
 
 const defaultConfig = {
@@ -16,7 +16,7 @@ const defaultConfig = {
     dir: 'down',
 
     el: {
-        Element: SpriteElement,
+        Element,
         symbols: [],
         amount:  5,
         aside:   1,
@@ -65,18 +65,7 @@ const defaultConfig = {
         fast: 2
     },
 
-    lines: [
-        [{ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }, { x: 4, y: 1 }],
-        [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }, { x: 4, y: 0 }],
-        [{ x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 2 }],
-        [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 1 }, { x: 4, y: 0 }],
-        [{ x: 0, y: 2 }, { x: 1, y: 1 }, { x: 2, y: 0 }, { x: 3, y: 1 }, { x: 4, y: 2 }],
-        [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 1 }, { x: 3, y: 0 }, { x: 4, y: 0 }],
-        [{ x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 1 }, { x: 3, y: 2 }, { x: 4, y: 2 }],
-        [{ x: 0, y: 1 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }, { x: 4, y: 1 }],
-        [{ x: 0, y: 1 }, { x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 1 }],
-        [{ x: 0, y: 2 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }, { x: 4, y: 2 }]
-    ],
+    lines: [],
 
     log: {
         el: false,
@@ -285,6 +274,8 @@ class Screen extends Container {
 
     // Getters for Elements
     getElementsFromLine({ number, amount }) {
+        // TODO: Add parsing this type of lines
+        if (number < 0) return null
         const result = []
         this.config.lines[number - 1]
             .filter((el, i) => i < amount)

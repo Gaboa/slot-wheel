@@ -11,19 +11,23 @@ class Button extends Sprite {
         y,
         anchor,
         visible,
-        isHover = true
+        name,
+        alpha,
+        isHover = true,
+        isTap = true
     }) {
-        super({ container, x, y, texture, anchor, visible })
+        super({ container, x, y, texture, anchor, name, alpha, visible })
 
-        this.textureName = texture.split('_')[0]
+        this.textureName = texture
         this.textureNormal = PIXI.utils.TextureCache[texture]
-        this.textureOn = PIXI.utils.TextureCache[`${this.textureName}_on`]
-        this.textureOff = PIXI.utils.TextureCache[`${this.textureName}_off`]
-        this.textureHover = PIXI.utils.TextureCache[`${this.textureName}_hover`]
-        this.textureTap = PIXI.utils.TextureCache[`${this.textureName}_tap`]
+        this.textureOn     = PIXI.utils.TextureCache[`${this.textureName}_on`]
+        this.textureOff    = PIXI.utils.TextureCache[`${this.textureName}_off`]
+        this.textureHover  = PIXI.utils.TextureCache[`${this.textureName}_hover`]
+        this.textureTap    = PIXI.utils.TextureCache[`${this.textureName}_tap`]
         this.textureDisabled = PIXI.utils.TextureCache[`${this.textureName}_disabled`]
 
         this.isHover = isHover
+        this.isTap = isTap
         this.enabled = true
         this.isMax = false
         this.isMin = false
@@ -36,18 +40,21 @@ class Button extends Sprite {
         this.buttonMode = true
 
         this.over$ = Observable.fromEvent(this, 'pointerover').filter(e => this.enabled).map(e => ({ from: this, type: 'OVER', data: e }))
-        this.out$ = Observable.fromEvent(this, 'pointerout').filter(e => this.enabled).map(e => ({ from: this, type: 'OUT', data: e }))
-        this.down$ = Observable.fromEvent(this, 'pointerdown').filter(e => this.enabled).map(e => ({ from: this, type: 'DOWN', data: e }))
-        this.up$ = Observable.fromEvent(this, 'pointerup').filter(e => this.enabled).map(e => ({ from: this, type: 'UP', data: e }))
-        this.$ = Observable.merge(this.over$, this.out$, this.down$, this.up$)
+        this.out$  = Observable.fromEvent(this, 'pointerout').filter(e => this.enabled).map(e => ({ from: this, type: 'OUT', data: e }))
+        this.end$  = Observable.fromEvent(this, 'touchend').filter(e => this.enabled).map(e => ({ from: this, type: 'END', data: e }))
+        this.down$ = Observable.fromEvent(this, 'mousedown').merge(this.end$).filter(e => this.enabled).map(e => ({ from: this, type: 'DOWN', data: e }))
+        this.up$   = Observable.fromEvent(this, 'pointerup').filter(e => this.enabled).map(e => ({ from: this, type: 'UP', data: e }))
+        this.$     = Observable.merge(this.over$, this.out$, this.down$, this.up$)
 
         if (this.isHover) {
             this.over$.subscribe(next => this.hover())
             this.out$.subscribe(next => this.normal())
         }
 
-        this.down$.subscribe(next => this.tap())
-        this.up$.subscribe(next => this.hover())
+        if (this.isTap) {
+            this.down$.subscribe(next => this.tap())
+            this.up$.subscribe(next => this.hover())
+        }
     }
 
     normal() {
@@ -96,6 +103,7 @@ class Button extends Sprite {
         this.enabled = false
         this.interactive = false
         if (this.textureDisabled) this.texture = this.textureDisabled
+        else if (this.textureOff) this.texture = this.textureOff
         else this.alpha = 0.3
     }
     
@@ -104,6 +112,7 @@ class Button extends Sprite {
         this.enabled = true
         this.interactive = true
         if (this.textureDisabled) this.texture = this.textureNormal
+        else if (this.textureOff) this.texture = this.textureNormal
         else this.alpha = 1
     }
 
