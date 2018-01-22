@@ -16,7 +16,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":101},
 	"sourceSize": {"w":100,"h":101}
 },
-"mobile_auto_stop":
+"mobile_stop":
 {
 	"frame": {"x":103,"y":353,"w":100,"h":101},
 	"rotated": false,
