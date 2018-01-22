@@ -47,6 +47,12 @@ class Settings {
                         self.$.next(obj)
                     })
                 })
+
+                this.$on('close_info', obj => {
+                    console.log(obj)
+                    this.visible = false
+                    self.$.next(obj)
+                })
             },
 
             render(h){
