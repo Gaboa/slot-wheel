@@ -47,6 +47,22 @@ class RootController {
     enable() {
         this.subs = []
 
+        // Settings Experiment
+        for (let prop in this.state.settings) {
+            
+            this.subs.push(
+            this[`${prop}StateSub`] = this.state.settings[`${prop}$`]
+                .subscribe(e => this.level.settings.vm[prop] = e))
+    
+            this.subs.push(
+            this[`${prop}Sub`] = this.level.settings.$
+                .filter(e => e.key === prop)
+                .map(e => e.val)
+                .subscribe(e => this.state.settings[prop] = e))
+
+        }
+
+        
         // Changing buttons states with isIdle state
         if (this.config.idle.buttons.enable)
         this.subs.push(
