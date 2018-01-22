@@ -17,7 +17,6 @@ class RequestManager {
         this.debug = debug
 
         this.getSearchParams()
-        this.getLocalParams()
         this.$ = new Subject()
     }
 
@@ -30,12 +29,6 @@ class RequestManager {
         this.mode = this.search.get('mode') || this.mode
         this.devSid = `dev_${Math.round(Math.random() * 10000)}`
         this.sid = this.search.get('sid') || this.devSid
-    }
-
-    getLocalParams() {
-        if (localStorage.getItem('forcedSid'))
-            this.sid = localStorage.getItem('forcedSid')
-        localStorage.removeItem('forcedSid')
     }
 
     // Requests
