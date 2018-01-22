@@ -8,6 +8,7 @@
 // Face - назваие шрифта которые будете юзать и пусть к файлу на нормальный.
 
 import { Subject, Observable } from "rxjs"
+import ToolBox from './toolBox'
 
 class BitmapText extends PIXI.extras.BitmapText {
     constructor({
@@ -35,26 +36,15 @@ class BitmapText extends PIXI.extras.BitmapText {
             })
 
         this.container = container
-        if (index)
-            this.container.addChildAt(this, index)
-        else
-            this.container.addChild(this)
+        ToolBox.combineContainers(container, this, index)
+        this.x = ToolBox.getX(x)
+        this.y = ToolBox.getY(y)
 
         // Set params
         this.scale.set(scale)
         this.visible = visible
         this.name = name
         this.tweenTime = tweenTime
-
-        // Relative coords
-        if (Math.abs(x) < 1 && window.GAME_WIDTH)
-            this.x = Math.round(x * GAME_WIDTH)
-        else
-            this.x = x
-        if (Math.abs(y) < 1 && window.GAME_HEIGHT)
-            this.y = Math.round(y * GAME_HEIGHT)
-        else
-            this.y = y
 
         this.$ = new Subject()
 

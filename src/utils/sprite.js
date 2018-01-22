@@ -1,4 +1,5 @@
 import { Sprite as PIXI_Sprite } from "pixi.js"
+import ToolBox from './toolBox'
 
 class Sprite extends PIXI_Sprite {
 
@@ -16,12 +17,9 @@ class Sprite extends PIXI_Sprite {
     }) {
         super(PIXI.utils.TextureCache[texture])
 
-        // Index of child
-        this.container = container
-        if (index)
-            this.container.addChildAt(this, index)
-        else
-            this.container.addChild(this)
+        ToolBox.combineContainers(container, this, index)
+        this.x = ToolBox.getX(x)
+        this.y = ToolBox.getY(y)
 
         // Set anchor
         this.anchor.set(anchor)
@@ -29,16 +27,6 @@ class Sprite extends PIXI_Sprite {
         this.alpha = alpha
         this.visible = visible
         this.name = name
-
-        // Relative coords
-        if (Math.abs(x) < 1 && window.GAME_WIDTH)
-            this.x = Math.round(x * GAME_WIDTH)
-        else
-            this.x = x
-        if (Math.abs(y) < 1 && window.GAME_HEIGHT)
-            this.y = Math.round(y * GAME_HEIGHT)
-        else
-            this.y = y
     }
 
     changeTexture(name) {

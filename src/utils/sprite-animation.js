@@ -4,18 +4,9 @@
 //{type: 'complete', name: 'bird', source: this}
 //{type: 'loop', name: 'bird', source: this}
 import { Subject } from 'rxjs'
+import ToolBox from './toolBox'
 
 class SpriteAnimation extends PIXI.extras.AnimatedSprite {
-
-    static getTextures(name, frames) {
-        let textureArray = []
-
-        for (let i = 0; i < frames; i++)
-            textureArray.push(PIXI.Texture.fromImage(`${name}${i}`))
-
-        return textureArray
-    }
-
     constructor({
         container,
         name,
@@ -30,13 +21,12 @@ class SpriteAnimation extends PIXI.extras.AnimatedSprite {
         autoEnable = true,
         autoPlay = true
     }) {
-        super(SpriteAnimation.getTextures(name, frames))
+        super(ToolBox.getTextures(name, frames))
 
         this.container = container
-        if (index)
-            this.container.addChildAt(this, index)
-        else
-            this.container.addChild(this)
+        ToolBox.combineContainers(container, this, index)
+        this.x = ToolBox.getX(x)
+        this.y = ToolBox.getY(y)
 
         // Set params
         this.anchor.set(anchor)
@@ -45,16 +35,6 @@ class SpriteAnimation extends PIXI.extras.AnimatedSprite {
         this.loop = loop
         this.visible = visible
         this.name = name
-
-        // Relative coords
-        if (Math.abs(x) < 1 && window.GAME_WIDTH)
-            this.x = Math.round(x * GAME_WIDTH)
-        else
-            this.x = x
-        if (Math.abs(y) < 1 && window.GAME_HEIGHT)
-            this.y = Math.round(y * GAME_HEIGHT)
-        else
-            this.y = y
  
         if (autoEnable)
             this.enable()

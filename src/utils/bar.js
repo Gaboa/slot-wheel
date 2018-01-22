@@ -12,6 +12,8 @@ class Bar extends Sprite {
         y
     }) {
         super({ container, texture, name, x, y })
+
+        this.container = container;
         this.addMask()
     }
 
