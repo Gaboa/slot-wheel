@@ -20,10 +20,11 @@ class BalanceText extends Text {
         style,
 
         tweenTime = 0.3,
-        text = '0',
+        text   = '0',
         prefix = '',
         suffix = '',
         fixed = 2,
+        visible = true,
         name
     }) {
         super({
@@ -35,6 +36,7 @@ class BalanceText extends Text {
         })
 
         this.name = name
+        this.visible = visible
         this.tweenTime = tweenTime
         this.currentText = Number(text)
         this.prefix = prefix

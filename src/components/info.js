@@ -1,6 +1,7 @@
+import defaultsDeep from 'lodash.defaultsdeep'
+import { Subject } from 'rxjs'
 import Vue from 'vue' 
-import Info from './vue-components/Info'
-import {Subject} from 'rxjs'
+import InfoView from './vue-components/InfoView'
 
 const defaultInfoData = {
     pages: [
@@ -20,7 +21,7 @@ const defaultInfoData = {
                         description: {
                              position: null,
                                  image: {
-                                     src: 'src/img/info/clubs.png'
+                                     src: 'info/clubs.png'
                                  },
                                  table: {
                                     rows: ['Clubs',3,4,5,6,7,10]
@@ -35,7 +36,7 @@ const defaultInfoData = {
                         description: {
                             position:null,
                             image: {
-                                src: 'src/img/info/heart.png'
+                                src: 'info/heart.png'
                             },
                             table: {
                                 rows:  ['Heart',3,4,5,6,7,10]
@@ -50,7 +51,7 @@ const defaultInfoData = {
                          description: {
                              position: null,
                              image: {
-                                 src: 'src/img/info/spade.png'
+                                 src: 'info/spade.png'
                              },
                              table: {
                                 rows:  ['Spade',3,4,5,6,7,10]
@@ -65,7 +66,7 @@ const defaultInfoData = {
                           description: {
                               position: null,
                               image: {
-                                  src: 'src/img/info/tambourine.png'
+                                  src: 'info/tambourine.png'
                               },
                               table: {
                                 rows:  ['Tambourine',3,4,5,6,7,10]
@@ -80,7 +81,7 @@ const defaultInfoData = {
                            description: {
                                position: null,
                                image: {
-                                   src: 'src/img/info/parrot.png'
+                                   src: 'info/parrot.png'
                                },
                                table: {
                                 rows:  ['Parrot',3,4,5,6,7,10]
@@ -95,7 +96,7 @@ const defaultInfoData = {
                             description: {
                                 position: null,
                                 image: {
-                                    src: 'src/img/info/hat.png'
+                                    src: 'info/hat.png'
                                 },
                                 table: {
                                     rows:  ['Hat',3,4,5,6,7,10]
@@ -110,7 +111,7 @@ const defaultInfoData = {
                              description: {
                                  position: null,
                                  image: {
-                                     src: 'src/img/info/anchor.png'
+                                     src: 'info/anchor.png'
                                  },
                                  table: {
                                     rows:  ['Anchor',3,4,5,6,7,10]
@@ -125,7 +126,7 @@ const defaultInfoData = {
                               description: {
                                   position: null,
                                   image: {
-                                      src: 'src/img/info/fish.png'
+                                      src: 'info/fish.png'
                                   },
                                   table: {
                                     rows:  ['Fish',3,4,5,6,7,10]
@@ -160,7 +161,7 @@ const defaultInfoData = {
                                 columns: [1, 2]
                             },
                             image: {
-                                src: 'src/img/info/cannon.png'
+                                src: 'info/cannon.png'
                             }
                         }
                         
@@ -195,7 +196,7 @@ const defaultInfoData = {
                                 '6 Gifts = x7 multiplier',
                             ],
                             image: {
-                                src: 'src/img/info/small_cannon.png'
+                                src: 'info/small_cannon.png'
                             }
                         }
                         
@@ -209,7 +210,7 @@ const defaultInfoData = {
                                 columns: [2, 2]
                             },
                             image:{
-                                src: 'src/img/info/small_cannon.png'
+                                src: 'info/small_cannon.png'
                             },
                             content: [
                                 'x3 = +21 Free spins',
@@ -245,7 +246,7 @@ const defaultInfoData = {
                                 columns: [1, 1]
                             },
                             image: {
-                                src: 'src/img/info/skull.png'
+                                src: 'info/skull.png'
                             },
                             content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
                             in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
@@ -264,7 +265,7 @@ const defaultInfoData = {
                                 columns: [2, 2]
                             },
                             image: {
-                                src: 'src/img/info/ship.png'
+                                src: 'info/ship.png'
                             },
                             content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
                             in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
@@ -282,7 +283,7 @@ const defaultInfoData = {
                                 columns: [2, 2]
                             },
                             image: {
-                                src: 'src/img/info/chest.png'
+                                src: 'info/chest.png'
                             },
                             content: `Starts by 3, 4, 5 Krampus bonus symbols. Every Krampus symbol 
                             in FS bonus game gives +1 free spin and collects 1 gift from the X-mas tree. 
@@ -316,7 +317,7 @@ const defaultInfoData = {
                             index: 1,
                             position: null,
                             image: {
-                                src: 'src/img/info/mini.png'
+                                src: 'info/mini.png'
                             },
                             rows: 3,
                             columns: 5,
@@ -331,7 +332,7 @@ const defaultInfoData = {
                             position: null,
                             index: 2,
                             image: {
-                                src: 'src/img/info/mini.png'
+                                src: 'info/mini.png'
                             },
                             rows: 3,
                             columns: 5,
@@ -346,7 +347,7 @@ const defaultInfoData = {
                             position: null,
                             index: 3,
                             image: {
-                                src: 'src/img/info/mini.png'
+                                src: 'info/mini.png'
                             },
                             rows: 3,
                             columns: 5,
@@ -361,7 +362,7 @@ const defaultInfoData = {
                             position: null,
                             index: 4,
                             image: {
-                                src: 'src/img/info/mini.png'
+                                src: 'info/mini.png'
                             },
                             rows: 3,
                             columns: 5,
@@ -376,7 +377,7 @@ const defaultInfoData = {
                             position: null,
                             index: 5,
                             image: {
-                                src: 'src/img/info/mini.png'
+                                src: 'info/mini.png'
                             },
                             rows: 3,
                             columns: 5,
@@ -391,7 +392,7 @@ const defaultInfoData = {
                             index: 6,
                             position: null,
                             image: {
-                                src: 'src/img/info/mini.png'
+                                src: 'info/mini.png'
                             },
                             rows: 3,
                             columns: 5,
@@ -406,7 +407,7 @@ const defaultInfoData = {
                             index: 7,
                             position: null,
                             image: {
-                                src: 'src/img/info/mini.png'
+                                src: 'info/mini.png'
                             },
                             rows: 3,
                             columns: 5,
@@ -421,7 +422,7 @@ const defaultInfoData = {
                             position: null,
                             index: 8,
                             image: {
-                                src: 'src/img/info/mini.png'
+                                src: 'info/mini.png'
                             },
                             rows: 3,
                             columns: 5,
@@ -436,7 +437,7 @@ const defaultInfoData = {
                             position: null,
                             index: 9,
                             image: {
-                                src: 'src/img/info/mini.png'
+                                src: 'info/mini.png'
                             },
                             rows: 3,
                             columns: 5,
@@ -451,7 +452,7 @@ const defaultInfoData = {
                             index: 10,
                             position: null,
                             image: {
-                                src: 'src/img/info/mini.png'
+                                src: 'info/mini.png'
                             },
                             rows: 3,
                             columns: 5,
@@ -482,7 +483,7 @@ const defaultInfoData = {
                         description: {
                             position: null,
                             image: {
-                                src: 'src/img/info/control.png'
+                                src: 'info/control.png'
                             },
                         }
                         
@@ -493,7 +494,7 @@ const defaultInfoData = {
                         description: {
                             position: null,
                             image: {
-                                src: 'src/img/info/panel.png'
+                                src: 'info/panel.png'
                             },
                         }
                     },
@@ -508,13 +509,18 @@ const defaultInfoData = {
         },
     ]
 }
-
-export default class InfoController {
+class Info {
 
     constructor({
+        id = 'app',
+        data
     }) {
 
-        this.config = defaultInfoData
+        const info = document.createElement('div')
+        info.setAttribute('id', 'info')
+        document.getElementById(id).appendChild(info)
+
+        this.config = defaultsDeep(data, defaultData)
         this.visible = false
         this.$ = new Subject()
 
@@ -529,22 +535,18 @@ export default class InfoController {
                 }
             },
 
-            mounted(){
+            mounted() {
                 this.$on('close_info', val => {
                     self.close()
-                    console.log(val)
                     self.$.next(val)
                 })
-                this.$on('page_changes', val => {
-                    console.log(val)
-                    self.$.next(val)
-                })
+                this.$on('page_changes', val => self.$.next(val))
             },
 
-            render(h){
-                return h (Info, 
+            render(h) {
+                return h (InfoView, 
                     {props: {
-                        info: this.info,
+                        info:    this.info,
                         visible: this.visible,
                     }}
                 )
@@ -561,3 +563,5 @@ export default class InfoController {
     }
 
 }
+
+export { Info }

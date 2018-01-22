@@ -44,7 +44,7 @@ class Game extends Application {
         this.ParserManager  = parser.Manager  || ParserManager
         this.AudioManager   = audio.Manager   || AudioManager
 
-        // Audio
+        this.audio   = new AudioManager(defaultsDeep({}, audio))
         this.device  = new DeviceManager(defaultsDeep({ view: this.view, renderer: this.renderer }, device))
         this.request = new RequestManager(defaultsDeep({}, request))
         this.state   = new StateManager(defaultsDeep({}, state))

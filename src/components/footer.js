@@ -128,10 +128,10 @@ const defaultConfig = {
             }
         },
         time: {
-            x: 0.475,
+            x: 0.455,
             style: {
                 fontFamily: 'Arial, Helvetica, sans-serif',
-                fontSize: 16,
+                fontSize: 29,
                 fontWeight: 'lighter',
                 fill: ['#ffffff', '#B2B2B2'],
                 dropShadow: true,
@@ -144,114 +144,57 @@ const defaultConfig = {
         buttons: {
             position: 'middle',
             amount: 1,
-            start: 0.033,
+            start: 0.045,
             delta: 0,
             home: {
                 index: 0,
                 texture: 'home',
-                startScale: 1.5,
-                finalScale: 1.9,
+                startScale: 2.5,
+                finalScale: 2.5,
                 visible: true
-            },
-            settings: {
-                index: 1,
-                texture: 'settings',
-                visible: false
-            },
-            sound: {
-                index: 2,
-                texture: 'sound',
-                visible: false
-            },
-            fast: {
-                index: 3,
-                texture: 'fast',
-                visible: false
-            },
-            info: {
-                index: 4,
-                texture: 'home',
-                visible: false
-            },
-            fullscreen: {
-                index: 5,
-                texture: 'fullscreen',
-                visible: false
-            },
+            }
         },
         balance: {
             top: {
-                delta: 0.1,
-                style: { fontSize: 29 },
-                frSum: {
+                delta: 0.15,
+                style: { fontSize: 35 },
+                left: {
                     x: -0.5,
                     text: 0,
                     fixed: 0,
                     prefix: 'Coins: ',
                 },
-                sum: {
-                    x: -0.5,
-                    text: 0,
-                    fixed: 0,
-                    prefix: 'Coins: ',
-                },
-                bet: {
+                right: {
                     x: 0.5,
                     text: 0,
                     fixed: 0,
                     prefix: 'Bet: ',
-                },
-                win: {
-                    x: 0.5,
-                    text: 0,
-                    fixed: 0,
-                    prefix: 'Win: ',
-                },
-                total: {
-                    x: -0.5,
-                    text: 0,
-                    fixed: 0,
-                    prefix: 'Total Win: ',
-                },
+                }
             },
             bottom: {
-                delta: 0.1,
-                style: { fontSize: 25 },
-                frCount: {
-                    x: -1,
-                    text: 0,
-                    fixed: 0,
-                    prefix: 'Free Rounds: ',
-                    suffix: ''
-                },
-                sum: {
+                delta: 0.15,
+                style: { fontSize: 32 },
+                left: {
                     x: -1,
                     text: 0,
                     fixed: 2,
                     prefix: 'Cash: ',
                     suffix: ' $'
                 },
-                bet: {
+                center: {
                     x: 0,
                     text: 0,
                     fixed: 2,
                     prefix: 'Bet: ',
                     suffix: ' $'
                 },
-                win: {
+                right: {
                     x: 1,
                     text: 0,
                     fixed: 2,
                     prefix: 'Win: ',
                     suffix: ' $'
-                },
-                frWin: {
-                    x: 1,
-                    text: 0,
-                    fixed: 2,
-                    prefix: 'Total Win: ',
-                    suffix: ' $'
-                },
+                }
             }
         }
     }
@@ -409,7 +352,7 @@ class Balance extends Container {
                             fixed: balance.fixed,
                             prefix: balance.prefix,
                             suffix: balance.suffix,
-                            style: current.style,
+                            style: this.config[part].style,
                             name: item
                         })
 

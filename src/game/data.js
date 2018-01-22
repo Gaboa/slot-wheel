@@ -1,24 +1,37 @@
 import defaultsDeep from 'lodash.defaultsdeep'
 import { ReactiveObject } from '../utils'
 
-// TODO: Set init config for data
-// TODO: Add method to handle init data
-// TODO: Add method to handle roll data
-// TODO: Add method to handle save and storage data
 // TODO: Add methods for validation new data value
-// TODO: Add methods to add and remove data fields
 
 const defaultData = {
+
     sid: null,
     mode: '',
     next: '',
     lines: null,
     symbols: null,
     screen: null,
+
     win: {
-        lines: null,
+        lines: [],
         line: null
     },
+
+    autoplay: {
+        start: null,
+        count: null,
+        increase: null,
+        decrease: null
+    },
+
+    fr: {
+        count: null,
+        win: {
+            coin: null,
+            cash: null
+        }
+    },
+
     balance: {
         currency: '$',
         level: {
@@ -43,7 +56,7 @@ const defaultData = {
         cash: {
             sum: null,
             bet: null,
-            win: null
+            win: null,
         }
     }
 }

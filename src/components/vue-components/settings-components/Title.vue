@@ -1,5 +1,5 @@
 <template>
-    <h2 class='settings__title'>{{title}}</h2>
+    <h2 class='settings__title'>{{ title }}</h2>
 </template>
 <script>
 export default {

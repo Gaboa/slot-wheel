@@ -31,7 +31,6 @@ export default {
 }
 </script>
 <style scoped>
-
     .settings__row {
         color: #FFFFFF;
         padding: 1.5vw 2vw;

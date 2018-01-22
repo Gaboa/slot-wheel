@@ -8,7 +8,8 @@ class Text extends PIXI_Text {
         text = '',
         style,
         index,
-        anchor = 0.5
+        anchor = 0.5,
+        withFix = true
     }) {
         super(text, style)
 
@@ -30,6 +31,10 @@ class Text extends PIXI_Text {
             this.y = Math.round(y * GAME_HEIGHT)
         else
             this.y = y
+
+        // Multiply fontSize by global vars
+        if (withFix)
+            this.style.fontSize = this.style.fontSize * SCALE_FIX
     }
 }
 
