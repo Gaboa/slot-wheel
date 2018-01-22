@@ -1,14 +1,21 @@
 import defaultsDeep from 'lodash.defaultsdeep'
+import { Observable } from 'rxjs/Observable';
 
 const defaultConfig = {
     menu: true,
     auto: true,
+    stop: true,
     spin: true,
     bet: true,
     sound: {
         button: true,
         state: true
-    }
+    },
+    autoplay: {
+        start: true,
+        end: true
+    },
+    audio: 'click_1'
 }
 
 class MobileButtonsController {
@@ -49,6 +56,12 @@ class MobileButtonsController {
         this.autoSub = this.buttons.auto.down$
             .subscribe(e => this.menu.open('auto')))
 
+        // Stop Button
+        if (this.config.stop)
+        this.subs.push(
+        this.stopSub = this.buttons.stop.down$
+            .subscribe(e => this.state.isAutoplay = false))
+
         // Spin Button
         if (this.config.spin)
         this.subs.push(
@@ -72,6 +85,35 @@ class MobileButtonsController {
         this.subs.push(
         this.soundStateSub = this.settings.isSound$
             .subscribe(e => this.buttons.sound.to(e)))
+
+        // Buttons audio
+        if (this.config.audio)
+        this.subs.push(
+        this.audioSub = Observable.merge(...this.buttons.items.map(e => e.$))
+            .subscribe(e => this.game.audio.play(this.config.audio)))
+
+        // Autoplay buttons logic
+        // Start
+        if (this.config.autoplay.start)        
+        this.subs.push(
+        this.autoStartSub = this.state.button$
+            .filter(e => e === 'stop')
+            .subscribe(e => {
+                this.buttons.spin.changeTexture('mobile_spin_empty', true)
+                this.buttons.auto.visible = false
+                this.buttons.stop.visible = true
+            }))
+
+        // End
+        if (this.config.autoplay.end)
+        this.subs.push(
+        this.autoEndSub = this.state.button$
+            .filter(e => e === 'spin')
+            .subscribe(e => {
+                this.buttons.spin.changeTexture('mobile_spin_off')
+                this.buttons.auto.visible = true
+                this.buttons.stop.visible = false
+            }))
     }
 
     disable() {
