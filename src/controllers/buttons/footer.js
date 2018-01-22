@@ -1,4 +1,5 @@
 import defaultsDeep from 'lodash.defaultsdeep'
+import { Observable } from 'rxjs/Observable'
 
 const defaultConfig = {
     home: {
@@ -18,7 +19,8 @@ const defaultConfig = {
     fullscreen: {
         button: true,
         state: true
-    }
+    },
+    audio: 'click_2'
 }
 
 class FooterButtonsController {
@@ -30,7 +32,8 @@ class FooterButtonsController {
     }) {
         this.config = defaultsDeep(config, defaultConfig)
 
-        this.game = game
+        this.game  = game
+        this.level = game.root
         this.buttons  = game.root.footer.buttons
         this.screen   = game.root.machine.screen
         this.settings = game.state.settings
@@ -59,14 +62,14 @@ class FooterButtonsController {
         if (this.config.settings)
         this.subs.push(
         this.settingsSub = this.buttons.settings.down$
-            .subscribe(e => e))
+            .subscribe(e => this.level.settings.open()))
 
         // TODO: Some Info bindings
         // Info button
         if (this.config.info)
         this.subs.push(
         this.infoSub = this.buttons.info.down$
-            .subscribe(e => e))
+            .subscribe(e => this.level.info.open()))
 
         // Sound Button
         if (this.config.sound.button)
@@ -103,6 +106,12 @@ class FooterButtonsController {
         this.subs.push(
         this.fullscreenStateSub = this.settings.isFullscreen$
             .subscribe(e => this.buttons.fullscreen.to(e)))
+
+        // Click sound
+        if (this.config.audio)
+        this.subs.push(
+        this.audioSub = Observable.merge(...this.buttons.children.map(item => item.down$))
+            .subscribe(e => this.game.audio.play(this.config.audio)))
 
     }
 

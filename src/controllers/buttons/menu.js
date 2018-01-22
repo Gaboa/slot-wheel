@@ -45,7 +45,8 @@ const defaultConfig = {
             state: true
         },
         info: true,
-    }
+    },
+    audio: 'click_2'
 }
 
 class MobileMenuController {
@@ -83,8 +84,18 @@ class MobileMenuController {
             this.bet.close.down$,
             this.auto.close.down$,
             this.settings.close.down$,
-            this.menu.darkness.down$
+            this.settings.info.$,
+            this.menu.darkness.down$,
         ).subscribe(value => this.menu.close()))
+
+        // Buttons audio
+        if (this.config.audio)
+        this.subs.push(
+        this.audioSub = Observable.merge(
+            ...this.bet.buttons.map(e => e.$),
+            ...this.auto.buttons.map(e => e.$),
+            ...this.settings.buttons.map(e => e.$),
+        ).subscribe(e => this.game.audio.play(this.config.audio)))
 
         // ------  Autoplay  ------
 
@@ -100,8 +111,8 @@ class MobileMenuController {
         this.subs.push(
         this.autoItemAutoplaySub = this.auto.$
             .subscribe(value => {
-                this.state.isAutoplay = true
                 this.data.autoplay.count = value
+                this.state.isAutoplay = true
             }))
 
         // ------  Set Bet  ------
@@ -230,8 +241,8 @@ class MobileMenuController {
         // TODO: Add Info handler
         if (this.config.settings.info)
         this.subs.push(
-        this.handSub = this.settings.hand.$
-            .subscribe(e => e))
+        this.infoSub = this.settings.info.$
+            .subscribe(e => this.level.info.open()))
 
         // ------  Quality  ------
         if (this.config.settings.quality.button)

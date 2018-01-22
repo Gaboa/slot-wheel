@@ -5,10 +5,12 @@ const defaultConfig = {
         start: {
             request: true,
             balance: true,
-            state: true
+            state: true,
+            audio: 'wheel'
         },
         end: {
-            state: true
+            state: true,
+            audio: true
         },
         data: {
             start: true,
@@ -85,6 +87,22 @@ class MachineController {
             .filter(e => e.state === 'END')
             .subscribe(e => this.state.isRolling = false ))
 
+        // Roll Start => play wheel sound
+        if (this.config.screen.start.audio)
+        this.subs.push(
+        this.screenStartAudioSub = this.screen.$
+            .filter(e => e.from  === 'SCREEN')
+            .filter(e => e.state === 'START')
+            .subscribe(e => this.game.audio.play(this.config.screen.start.audio) ))
+
+        // Roll End => stop wheel sound
+        if (this.config.screen.end.audio)
+        this.subs.push(
+        this.screenEndAudioSub = this.screen.$
+            .filter(e => e.from  === 'SCREEN')
+            .filter(e => e.state === 'END')
+            .subscribe(e => this.game.audio.stop(this.config.screen.start.audio) ))
+
         // Set Start Screen only when came first data
         if (this.config.screen.data.start)
         this.subs.push(
@@ -103,6 +121,7 @@ class MachineController {
         if (this.config.fast)
         this.subs.push(
         this.fastSub = this.settings.isFast$
+            .sample(this.state.isRolling$)
             .subscribe(e => this.screen.setRollSpeed(this.screen.config.roll[e ? 'fast' : 'normal'])))
 
         // Show Lines when hover on Numbers

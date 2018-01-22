@@ -38,7 +38,8 @@ const defaultConfig = {
         button: true,
         autoplay: true
     },
-    max: true
+    max: true,
+    audio: 'click_1'
 }
 
 class PanelButtonsController {
@@ -113,14 +114,6 @@ class PanelButtonsController {
 
 
         // ------  AutoItem  ------
-        // // AutoItem change button to Stop
-        // if (this.config.item.button)
-        // this.subs.push(
-        // this.autoItemButtonSub = this.buttons.panel.$
-        //     .throttleTime(this.config.item.delta)
-        //     .map(e => e.value)
-        //     .subscribe(value => this.state.button = 'stop'))
-
         // AutoItem starts autoplay
         if (this.config.item.autoplay)
         this.subs.push(
@@ -128,8 +121,8 @@ class PanelButtonsController {
             .throttleTime(this.config.item.delta)
             .map(e => e.value)
             .subscribe(value => {
-                this.state.isAutoplay = true
                 this.data.autoplay.count = value
+                this.state.isAutoplay = true
             }))
 
 
@@ -232,6 +225,12 @@ class PanelButtonsController {
         this.subs.push(
         this.valueMinSub = this.balance.value.min$
             .subscribe(e => this.buttons.value.minus.min(e)))
+
+        // Click sound
+        if (this.config.audio)
+        this.subs.push(
+        this.audioSub = Observable.merge(...this.buttons.items.map(item => item.down$), this.buttons.panel.$)
+            .subscribe(e => this.game.audio.play(this.config.audio)))
         
     }
 
