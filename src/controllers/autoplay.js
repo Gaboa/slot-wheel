@@ -3,6 +3,7 @@ import { Observable } from 'rxjs/Observable'
 
 const defaultConfig = {
     start: {
+        check: true,
         counter: true,
         button: true,
         idle: true,
@@ -85,8 +86,17 @@ class AutoplayController {
         this.subs.push(
         this.autoplayStartRollSub = this.state.isAutoplay$
             .filter(e => e)
+            .filter(e => this.data.autoplay.count)
             .delay(this.config.start.delay || 300)
             .subscribe(e => this.machine.screen.roll() ))
+
+        // When isAutoplay state = true -> check Counter to start
+        if (this.config.start.check)
+        this.subs.push(
+        this.autoplayCheckSub = this.state.isAutoplay$
+            .filter(e => e)
+            .filter(e => this.data.autoplay.count <= 0)
+            .subscribe(e => this.state.isAutoplay = false ))
     }
 
     enableCounter() {
