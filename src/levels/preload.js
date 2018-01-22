@@ -186,13 +186,6 @@ class Preload extends Container {
             .filter(r => r.type === 'INIT')
             .subscribe(() => this.$.next('INIT_DONE')))
 
-        // When audio load done => trigger AUDIO_DONE event
-        this.subs.push(
-        this.audioLoadSub = this.game.audio.$
-            .filter(r => r.type  === 'LOAD')
-            .filter(r => r.state === 'COMPLETE')
-            .subscribe(() => this.$.next('AUDIO_DONE')))
-
         // When LOAD_COMPLETE and INIT_DONE events triggers => trigger COMPLETE event
         this.subs.push(
         this.initAndLoadCompleteSub = this.$
@@ -203,6 +196,15 @@ class Preload extends Container {
                  && arr.indexOf('AUDIO_DONE') !== -1)
                     this.$.next('COMPLETE')
             }))
+
+        // When audio load done => trigger AUDIO_DONE event
+        this.subs.push(
+        this.audioLoadSub = this.game.audio.$
+            .filter(r => r.type  === 'LOAD')
+            .filter(r => r.state === 'COMPLETE')
+            .subscribe(() => this.$.next('AUDIO_DONE')))
+        if (this.game.audio.music && this.game.audio.effects)
+            this.$.next('AUDIO_DONE')
 
         // When COMPLETE triggers => hide BAR and show BUTTON
         this.subs.push(
