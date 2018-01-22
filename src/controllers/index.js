@@ -12,3 +12,5 @@ export { MobileMenuController }     from './buttons/menu'
 export { RootController }      from './root'
 export { AutoplayController }  from './autoplay'
 export { WinController }       from './win'
+
+export { TransitionController } from './transition' 

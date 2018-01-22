@@ -1,4 +1,7 @@
 import defaultsDeep from 'lodash.defaultsdeep'
+import { TransitionController } from './transition'
+import { Transition } from '../components/transition'
+import { Container, Sprite, Light, Darkness, JumpingButton } from '../utils'
 
 const defaultConfig = {
     screen: {
@@ -10,7 +13,8 @@ const defaultConfig = {
     idle: true,
     idleFooter: true,
     rolling: true,
-    lines: true
+    lines: true,
+    transition: true
 }
 
 class RootController {
@@ -29,6 +33,7 @@ class RootController {
         this.balance = this.data.balance
         this.footer  = this.level.footer
         this.machine = this.level.machine
+        this.transition = this.level.transition
         this.buttons = this.level.machine.panel
             ? this.level.machine.panel.buttons
             : this.level.buttons
@@ -153,6 +158,14 @@ class RootController {
         this.linesOutSub = this.machine.numbers.$
             .filter(e => e.type === 'OUT')
             .subscribe(e => this.machine.lines.hide(e.num)))
+
+        if(this.config.transition){
+            this.transitionInSub = this.state.isTransition$
+            .filter(e => e)
+            .subscribe(e => {
+                this.game.root.transitionController.draw()
+            })
+        }
         
     }
 
