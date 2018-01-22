@@ -179,8 +179,8 @@
         top: 1.5vw;
         right: 0.5vw;
         max-width: 6vw;
-        width: 50px;
-        height: 50px;
+        width: 3vw;
+        height: 3vw;
         cursor: pointer;
         border: none;
 
