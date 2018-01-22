@@ -28,6 +28,8 @@ class AudioManager {
             this.createGroups()
             setTimeout(() => {
                 this.Howler.mute(false)
+                this.volume = this._volume
+                this[`${ this._muted ? '' : 'un' }muteAll`]()
                 this.$.next({ type: 'LOAD', state: 'COMPLETE' })
             }, 0)
         })
@@ -77,8 +79,10 @@ class AudioManager {
 
     set volume(value) {
         this._volume = value
-        this.music.volume  = value
-        this.effects.volume = value
+        if (this.music && this.effects) {
+            this.music.volume = value
+            this.effects.volume = value
+        }
     }
 
     get volume() {
@@ -86,18 +90,22 @@ class AudioManager {
     }
 
     muteMusic() {
+        if (this.music)        
         this.music.mute()
     }
 
     unmuteMusic() {
+        if (this.music)
         this.music.unmute()
     }
 
     muteEffects() {
+        if (this.effects)        
         this.effects.mute()
     }
 
     unmuteEffects() {
+        if (this.effects)        
         this.effects.unmute()
     }
 
@@ -126,13 +134,19 @@ class AudioManager {
     }
 
     muteAll() {
-        this.muteMusic()
-        this.muteEffects()
+        if (this.music && this.effects) {
+            this.muteMusic()
+            this.muteEffects()
+        }
+        else this._muted = true
     }
 
     unmuteAll() {
-        this.unmuteMusic()
-        this.unmuteEffects()
+        if (this.music && this.effects) {
+            this.unmuteMusic()
+            this.unmuteEffects()
+        }    
+        else this._muted = false            
     }
 }
 
