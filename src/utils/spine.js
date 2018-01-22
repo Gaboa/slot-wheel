@@ -23,6 +23,7 @@ class Spine extends PIXI.spine.Spine {
         this.visible = visible
         this.mixes = mixes
         this.name = name
+        this.$ = new Subject()
 
         // Index of child
         this.container = container
@@ -31,8 +32,7 @@ class Spine extends PIXI.spine.Spine {
         this.y = ToolBox.getY(y)
 
         this.createMixes()
-
-        this.enable()
+        this.addListeners()
 
         if (typeof(animation) === 'string') {
             let {track, name, repeat} = animation
@@ -41,7 +41,6 @@ class Spine extends PIXI.spine.Spine {
 
     }
 
-
     createMixes() {
         this.mixes.forEach(([anim1, anim2, delta]) => {
             if (this.state.hasAnimation(anim1) && this.state.hasAnimation(anim2))
@@ -49,35 +48,22 @@ class Spine extends PIXI.spine.Spine {
         })
     }
 
-    enable() {
-        this.$ = new Subject()
-        this.subs = []
-
-        this.subs.push(
-        this.startSub = this.state.addListener({
+    addListeners() {
+        this.state.addListener({
             start: entry => this.$.next({ type: 'START', spine: this, el: this.name, data: entry, anim: entry.animation.name })
-        }))
+        })
 
-        this.subs.push(
-        this.completeSub = this.state.addListener({
+        this.state.addListener({
             complete: entry => this.$.next({ type: 'COMPLETE', spine: this, el: this.name, data: entry, anim: entry.animation.name })
-        }))
+        })
 
-        this.subs.push(
-        this.endSub = this.state.addListener({
+        this.state.addListener({
             end: entry => this.$.next({ type: 'END', spine: this, el: this.name, data: entry, anim: entry.animation.name })
-        }))
+        })
 
-        this.subs.push(
-        this.eventSub = this.state.addListener({
+        this.state.addListener({
             event: (entry, event) => this.$.next({ type: 'EVENT', spine: this, el: this.name, data: entry, event: event, anim: entry.animation.name })
-        }))
-
-    }
-
-    disable() {
-        this.$.complete()
-        this.subs.forEach(s => s.unsubscribe())
+        })
     }
 
     play({index = 0, name, loop = true}) {
