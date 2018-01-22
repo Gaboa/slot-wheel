@@ -99,9 +99,15 @@ class Button extends Sprite {
         }
     }
 
+    changeTexture(name, isImmutable = false) {
+        super.changeTexture(name)
+        this.isImmutable = isImmutable
+    }
+
     disable() {
         this.enabled = false
         this.interactive = false
+        if (this.isImmutable) return null
         if (this.textureDisabled) this.texture = this.textureDisabled
         else if (this.textureOff) this.texture = this.textureOff
         else this.alpha = 0.3
@@ -111,6 +117,7 @@ class Button extends Sprite {
         if (this.isMin || this.isMax) return null
         this.enabled = true
         this.interactive = true
+        if (this.isImmutable) return null        
         if (this.textureDisabled) this.texture = this.textureNormal
         else if (this.textureOff) this.texture = this.textureNormal
         else this.alpha = 1
