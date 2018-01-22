@@ -48,7 +48,7 @@ const desktop = [
 const sprites = [
     // Music
     { name: 'init', start: '0.00.000', end: '0.28.804', loop: true, type: 'music', volume: 0.25 },
-    { name: 'main', start: '0.28.804', end: '1.18.360', loop: true, type: 'music' },
+    { name: 'main', start: '0.28.804', end: '1.18.360', loop: true, type: 'music', volume: 0.35 },
     { name: 'fs',   start: '1.18.360', end: '1.52.250', loop: true, type: 'music' },
     { name: 'in',   start: '1.52.250', end: '2.01.852', loop: true, type: 'music' },
     { name: 'out',  start: '2.01.852', end: '2.11.467', loop: true, type: 'music' },
@@ -57,7 +57,7 @@ const sprites = [
     { name: 'win_1', start: '2.14.475', end: '2.16.407', type: 'effects' },
     { name: 'win_2', start: '2.16.407', end: '2.18.346', type: 'effects' },
     { name: 'click_1', start: '2.18.346', end: '2.18.598', type: 'effects' },
-    { name: 'click_1', start: '2.18.598', end: '2.18.875', type: 'effects' },
+    { name: 'click_2', start: '2.18.598', end: '2.18.875', type: 'effects' },
     // Thunders
     { name: 'el_1', start: '2.18.875', end: '2.19.012', type: 'effects' },
     { name: 'el_2', start: '2.19.012', end: '2.19.150', type: 'effects' },
