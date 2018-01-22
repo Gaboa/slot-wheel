@@ -1,7 +1,7 @@
 <template>
     <div class="settings__row">
         <span class="settings__name">{{details[0].name}}</span>
-        <slot></slot>
+        <slot ></slot>
         <span class="settings__item">
             <div class="checkbox">
                 <input class="checkbox__input" 
@@ -26,7 +26,9 @@ export default {
                 state: 'CHANGED', val: e.target.checked, 
                 key:`${this.$props.details[0].key}`
             })
-        }
+        },
+
+        
     }
 }
 </script>

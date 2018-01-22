@@ -3,8 +3,7 @@ import { Subject } from 'rxjs'
 import Vue from 'vue' 
 import InfoView from './vue-components/InfoView'
 
-const defaultData = {
-    //visible: true,
+const defaultInfoData = {
     pages: [
         {
             index: 0,
@@ -521,7 +520,7 @@ class Info {
         info.setAttribute('id', 'info')
         document.getElementById(id).appendChild(info)
 
-        this.config = defaultsDeep(data, defaultData)
+        this.config = defaultsDeep(data, defaultInfoData)
         this.visible = false
         this.$ = new Subject()
 
