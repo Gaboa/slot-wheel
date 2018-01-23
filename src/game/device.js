@@ -1,3 +1,4 @@
+import 'url-search-params-polyfill'
 import defaultsDeep from 'lodash.defaultsdeep'
 import { BehaviorSubject } from 'rxjs'
 
@@ -23,6 +24,7 @@ const defaultConfig = {
             height: 160
         }
     },
+    id: '#app',
     mobile: 'hd',
     desktop: 'fullhd',
     mode: 'aspect', // We have two modes: aspect and fullscreen
@@ -36,11 +38,30 @@ class DeviceManager {
         this.config = defaultsDeep(config, defaultConfig)
 
         this.enableStreams()
+        this.getSearchParams()
         this.setGlobalParams()
         this.setScaleMode()
         this.setOrientation()
         this.setTabLeave()
         this.setTabVisible()
+    }
+
+    getSearchParams() {
+        this.searchString = window.location.href.split('?').slice(1).join()
+        this.search = new URLSearchParams(this.searchString)
+
+        this.search.device = this.search.get('device')
+        this.search.res    = this.search.get('res')
+
+        if (this.search.device === 'mobile') {
+            this.isMobile = () => true
+            this.config.mobile = this.search.res || this.config.mobile
+        }
+
+        if (this.search.device === 'desktop') {
+            this.isMobile = () => false
+            this.config.desktop = this.search.res || this.config.desktop
+        }
     }
 
     setGlobalParams() {
@@ -147,12 +168,13 @@ class DeviceManager {
 
     enterFullscreen() {
         if (this.isIOS()) return null
-        if (this.config.view.requestFullScreen)
-            this.config.view.requestFullScreen()
-        else if (this.config.view.mozRequestFullScreen)
-            this.config.view.mozRequestFullScreen()
-        else if (this.config.view.webkitRequestFullScreen)
-            this.config.view.webkitRequestFullScreen()
+        const element = document.querySelector(this.config.id)
+        if (element.requestFullScreen)
+            element.requestFullScreen()
+        else if (element.mozRequestFullScreen)
+            element.mozRequestFullScreen()
+        else if (element.webkitRequestFullScreen)
+            element.webkitRequestFullScreen()
         this.$.next({ from: 'DEVICE', mode: 'FULLSCREEN', state: 'start' })
     }
     

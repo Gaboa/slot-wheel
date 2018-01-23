@@ -50,6 +50,16 @@ class Game extends Application {
         this.state   = new StateManager(defaultsDeep({}, state))
         this.data    = new DataManager(defaultsDeep({}, data))
         this.parser  = new ParserManager(defaultsDeep({ game: this }, parser))
+
+        this.getSearchParams()
+    }
+
+    getSearchParams() {
+        this.searchString = window.location.href.split('?').slice(1).join()
+        this.search = new URLSearchParams(this.searchString)
+
+        this.state.lang = this.search.get('lang') || null
+        this.state.home = this.search.get('homeURL') || this.search.get('home') || null
     }
 
     start(fps) {
