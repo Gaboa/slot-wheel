@@ -129,14 +129,20 @@ class MachineController {
         this.subs.push(
         this.linesShowSub = this.machine.numbers.$
             .filter(e => e.type === 'OVER')
-            .subscribe(e => this.machine.lines.show(e.num)))
+            .subscribe(e => {
+                this.machine.numbers.show(e.num)
+                this.machine.lines.show(e.num)
+            }))
             
         // Hide Lines when out of Numbers
         if (this.config.lines.hide)
         this.subs.push(
         this.linesHideSub = this.machine.numbers.$
             .filter(e => e.type === 'OUT')
-            .subscribe(e => this.machine.lines.hide(e.num)))
+            .subscribe(e => {
+                this.machine.numbers.hide(e.num)                
+                this.machine.lines.hide(e.num)
+            }))
 
     }
 
