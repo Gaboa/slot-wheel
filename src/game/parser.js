@@ -12,7 +12,7 @@ class ParserManager {
         this.data.sid = res.SessionID
         this.data.lines = res.Lines.map(line => line.map(el => ({ x: el.X, y: el.Y })))
         this.data.symbols = res.Symbols.map(s => ({ name: s.Name.toLowerCase(), symbol: Number(s.Symbol) }))
-        this.data.screen = res.FirstScreen.map(r => r.map(el => ({ type: 'static', el })))
+        this.data.screen = res.FirstScreen.map(r => r.map(el => ({ type: this.game.state.settings.isLowQuality ? 'static' : 'spine', el })))
 
         this.data.balance.currency = this.currency(res.Balance.Currency)
 
@@ -46,7 +46,7 @@ class ParserManager {
     
     roll(res) {
         if (!res) return null        
-        this.data.screen = res.Screen.map(r => r.map(el => ({ type: 'static', el })))
+        this.data.screen = res.Screen.map(r => r.map(el => ({ type: this.game.state.settings.isLowQuality ? 'static' : 'spine', el })))
         
         this.state.mode = res.Mode
         this.state.next = res.NextMode
@@ -66,7 +66,24 @@ class ParserManager {
         this.data.balance.coin.sum = res.Balance.ScoreCoins
         this.data.balance.cash.sum = res.Balance.ScoreCents / 100
 
+        this.fs(res)
         this.fr(res.FreeRounds)
+    }
+
+    fs(res) {
+        if (res.FsBonus) {
+            this.data.fs.count.current = res.FsBonus.CountFS
+            this.data.fs.count.win = res.FreeSpinsWin
+            this.data.fs.level = res.FsBonus.Level
+            this.data.fs.win.coin = res.FsBonus.TotalFSWinCoins
+            this.data.fs.win.cash = res.FsBonus.TotalFSWinCents / 100
+            this.data.fs.bonus.coin = res.FsBonus.BonusWinCoins
+            this.data.fs.bonus.cash = res.FsBonus.BonusWinCents / 100
+        }
+        else {
+            if (res.FreeSpinsWin) this.data.fs.count.current = res.FreeSpinsWin
+            if (res.NextMode.indexOf('fsBonus') !== -1) this.data.fs.multi = +res.NextMode.slice(-1) + 1
+        }
     }
 
     currency(value) {
