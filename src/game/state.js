@@ -8,18 +8,19 @@ const defaultState = {
     
     isIdle: true,
     isRolling: false,
+    isAutoplay: false,
     isFR: false,
     isMenu: false,
     isTransition: false,
+    isInfoOpened: false,
+    isSettingsOpened: false,
 
     mode: 'root',
     next: 'root',
 
-    error: null,
-
     // Main buttons mode in desktop 
     button: 'spin',
-    autoplay: null,
+    error: null,
 
     settings: {
         isFullscreen: false,
@@ -29,6 +30,11 @@ const defaultState = {
         isSound: true,
         isMusic: true,
         isEffects: true,
+        activeMode: 'fullhd',
+        bonusStopsAutoPlay: true,
+        stopIfCashLess: false,
+        stopIfCashGreater: false,
+        volume: 30
     }
 }
 

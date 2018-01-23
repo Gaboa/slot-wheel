@@ -8,6 +8,7 @@ import {
     DesktopBalanceController,
     FooterButtonsController,
     PanelButtonsController,
+    MachineController,
     MobileButtonsController,
     MobileMenuController,
     RootController,
@@ -15,6 +16,9 @@ import {
     AutoplayController,
     TransitionController
 } from '../controllers'
+
+import { Info } from '../components/info'
+import { Settings } from '../components/settings'
 
 // TODO: Create balance bindings for different modes ( FS FR Bonus )
 // TODO: Check index switching bug in Screen
@@ -70,6 +74,11 @@ class MobileRoot extends Container {
 
         this.transition =  new Transition({ container: this.game.stage })
 
+        this.info     = new Info({})
+        this.settings = new Settings({})
+
+        this.game.audio.play('main')
+
         setTimeout(() => this.enable(), 0)
     }
 
@@ -88,14 +97,19 @@ class MobileRoot extends Container {
         this.buttonsCtrl = new MobileButtonsController({ game: this.game })
         this.menuCtrl    = new MobileMenuController({ game: this.game })
         // Logic
-        this.ctrl     = new RootController({ game: this.game, config: {
-            lines: false,
-            idleFooter: false,
-            transition: {
-                in: true,
-                out: true
+        this.machineCtrl = new MachineController({ game: this.game, config: {
+            lines: {
+                show: false,
+                hide: false
             }
-
+        }})        
+        this.ctrl = new RootController({ game: this.game, config: {
+            idle: {
+                footer: {
+                    enable: false,
+                    disable: false
+                }
+            }
         }})
         this.winCtrl  = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
@@ -107,6 +121,7 @@ class MobileRoot extends Container {
         this.balanceRootCtrl.disable()
         this.footerCtrl.disable()
         this.buttonsCtrl.disable()
+        this.machineCtrl.disable()        
         this.ctrl.disable()
         this.winCtrl.disable()
         this.autoCtrl.disable() 
@@ -160,6 +175,11 @@ class DesktopRoot extends Container {
 
         this.transition =  new Transition({container: this.game.stage})
 
+        this.info = new Info({})
+        this.settings = new Settings({})
+
+        this.game.audio.play('main')
+
         setTimeout(() => this.enable(), 0)
     }
     
@@ -181,6 +201,8 @@ class DesktopRoot extends Container {
             }
         } })
         this.winCtrl  = new WinController({ game: this.game })
+        this.machineCtrl = new MachineController({ game: this.game })
+        this.winCtrl = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
         this.transitionController =  new TransitionController({ game: this.game })
     }
@@ -191,6 +213,7 @@ class DesktopRoot extends Container {
         this.footerBalanceCtrl.disable()
         this.footerCtrl.disable()
         this.panelCtrl.disable()
+        this.machineCtrl.disable()
         this.ctrl.disable()
         this.winCtrl.disable()
         this.autoCtrl.disable()

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable'
 import { TweenMax } from 'gsap/TweenMax'
 import { Wheel } from './wheel'
 import { Element } from './element'
-import { Container } from '../utils'
+import { Container, Graphics } from '../utils'
 
 const defaultConfig = {
     Wheel,
@@ -71,7 +71,9 @@ const defaultConfig = {
         el: false,
         wheel: false,
         screen: false
-    }
+    },
+
+    mask: 'screen'
 
 }
 
@@ -301,8 +303,25 @@ class Screen extends Container {
     }
 
     // Mask
-    addMask() { this.wheels.forEach(w => w.addMask()) }
-    removeMask() { this.wheels.forEach(w => w.removeMask()) }
+    addMask() {
+        if (this.config.mask === 'wheel')
+            this.wheels.forEach(w => w.addMask())
+        if (this.config.mask === 'screen') {
+            this.mask = new Graphics({ container: this })
+            this.mask.drawRect(
+                -0.5 * EL_WIDTH * this.config.amount,
+                -0.5 * EL_HEIGHT * (this.config.el.amount - 2 * this.config.el.aside),
+                EL_WIDTH * this.config.amount,
+                EL_HEIGHT * (this.config.el.amount - 2 * this.config.el.aside)
+            )
+        }
+    }
+    removeMask() {
+        if (this.config.mask === 'wheel')
+            this.wheels.forEach(w => w.removeMask())
+        if (this.config.mask === 'screen')
+            this.mask = null
+    }
 
     // Wheel
     createWheels() {

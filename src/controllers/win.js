@@ -22,7 +22,8 @@ const defaultConfig = {
     oneAfterAnother: {
         delay: 4000,
         interval: 3000
-    }
+    },
+    audio: ['win_1', 'win_2']
 }
 
 class WinController {
@@ -97,6 +98,15 @@ class WinController {
             .filter(e => this.data.win.lines)
             .subscribe(e => this.data.win.lines.forEach(line => this.machine.numbers.hide(line.number))))
 
+        // ------  Audio  ------
+        if (this.config.audio)
+        this.subs.push(
+        this.audioSub = this.data.win.lines$
+            .filter(data => data && data.length)
+            .sample(this.state.isRolling$.filter(e => !e))
+                .subscribe(data => this.game.audio.play(this.config.audio[Math.round(Math.random() * this.config.audio.length - 1)])))
+
+            
         // ------  Elements  ------
         // Show Win Elements when we have win combinations in the End of Roll
         if (this.config.els.show)

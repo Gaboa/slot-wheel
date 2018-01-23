@@ -5,6 +5,7 @@ import 'pixi-spine'
 import buildConfig from '../config/config'
 import { Game } from './game'
 import { GameController } from './controllers'
+import { sprites } from './utils'
 
 const game = new Game({
     id: '#app',
@@ -17,6 +18,10 @@ const game = new Game({
             userID: 18,
             game: 'animalssteam'
         }
+    },
+    audio: {
+        src: ['sound/sprite.ogg', 'sound/sprite.mp3'],
+        sprites 
     }
 })
 

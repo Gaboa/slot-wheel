@@ -20,7 +20,8 @@ class ReactiveProperty {
             },
             get() {
                 return context[`_${prop}`]
-            }
+            },
+            enumerable: true
         })
         Object.defineProperty(context, `${prop}$`, {
             value: new BehaviorSubject()
