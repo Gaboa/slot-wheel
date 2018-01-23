@@ -71,7 +71,8 @@ class MobileRoot extends Container {
             autoHide:  true
         })
 
-        this.info     = new Info({})
+        document.querySelectorAll('.darkness__hidden').forEach(el => el.remove())
+        this.info = new Info({})
         this.settings = new Settings({})
 
         this.game.audio.play('main')
@@ -168,6 +169,7 @@ class DesktopRoot extends Container {
             autoHide:  true
         })
 
+        document.querySelectorAll('.darkness__hidden').forEach(el => el.remove())
         this.info = new Info({})
         this.settings = new Settings({})
 
