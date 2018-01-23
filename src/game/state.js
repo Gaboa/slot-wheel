@@ -10,17 +10,17 @@ const defaultState = {
     isRolling: false,
     isAutoplay: false,
     isFR: false,
-    isMenu: false,
     isTransition: false,
-    isInfoOpened: false,
-    isSettingsOpened: false,
-
+    
+    menu: null,
     mode: 'root',
     next: 'root',
 
     // Main buttons mode in desktop 
     button: 'spin',
     error: null,
+    lang: null,
+    home: null,
 
     settings: {
         isFullscreen: false,
