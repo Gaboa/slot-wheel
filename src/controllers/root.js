@@ -58,9 +58,62 @@ class RootController {
             this[`${prop}Sub`] = this.level.settings.$
                 .filter(e => e.key === prop)
                 .map(e => e.val)
-                .subscribe(e => this.state.settings[prop] = e))
+                .subscribe(e => {
+                    if (prop === 'stopIfCashLess' || prop === 'stopIfCashGreater') e = Math.abs(e)
+                    this.state.settings[prop] = e
+                }))
 
         }
+
+        this.subs.push(
+        this.modeChangeSub = this.state.settings.activeMode$
+            .skip(1)
+            .subscribe(e => {
+                this.state.menu = null
+                if (e === 'mobile') this.game.ctrl.changeMode({ device: 'mobile', res: 'hd' })
+                else this.game.ctrl.changeMode({ device: 'desktop', res: e })
+            }))
+
+        this.subs.push(
+        this.infoCloseSub = this.level.info.$
+            .filter(e => e.type === 'CLOSE')
+            .subscribe(e => this.state.menu = null))
+
+        this.subs.push(
+        this.settingsCloseSub = this.level.settings.$
+            .filter(e => e.type === 'CLOSE')
+            .subscribe(e => this.state.menu = null))
+
+        this.subs.push(
+        this.infoOpenSub = this.state.menu$
+            .filter(e => e === 'info')
+            .subscribe(e => this.level.info.open()))
+
+        this.subs.push(
+        this.settingsOpenSub = this.state.menu$
+            .filter(e => e === 'settings')
+            .subscribe(e => this.level.settings.open()))
+        
+        if (GAME_DEVICE === 'desktop')
+        this.subs.push(
+        this.buttonsLockSub = this.state.menu$
+            .filter(e => e === 'info' || e === 'settings')
+            .subscribe(e => this.level.panelCtrl.disable()))
+
+        if (GAME_DEVICE === 'desktop')
+        this.subs.push(
+        this.buttonsUnlockSub = this.state.menu$
+            .filter(e => e === null)
+            .skip(1)
+            .subscribe(e => this.level.panelCtrl.enable()))
+
+        this.subs.push(
+        this.infoAndSettingsCloseSub = this.state.menu$
+            .filter(e => e === null)
+            .subscribe(e => {
+                this.level.info.close()
+                this.level.settings.close()
+            }))
 
         
         // Changing buttons states with isIdle state
