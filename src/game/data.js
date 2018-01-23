@@ -24,6 +24,23 @@ const defaultData = {
         decrease: null
     },
 
+    fs: {
+        count: {
+            current: null,
+            win: null
+        },
+        win: {
+            coin: null,
+            cash: null
+        },
+        bonus: {
+            coin: null,
+            cash: null
+        },
+        multi: null,
+        level: null
+    },
+
     fr: {
         count: null,
         win: {
