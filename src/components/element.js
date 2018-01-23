@@ -117,7 +117,7 @@ class Element extends Container {
                 this.playBlur(anim.el)
             break
             case 'static':
-                this.playSpine(anim.el)
+                this.playStatic(anim.el)
             break
             case 'spine':
                 this.playSpine(anim.el)
