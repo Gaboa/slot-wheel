@@ -41,6 +41,7 @@ class AutoplayController {
         this.level = game.root
         this.data  = game.data
         this.state = game.state
+        this.settings = game.state.settings
         this.balance = this.data.balance
         this.footer  = this.level.footer
         this.machine = this.level.machine
@@ -185,10 +186,10 @@ class AutoplayController {
     }
 
     checkStoppers() {
-        if (this.data.autoplay.increase
-        && (this.balance.cash.sum - this.data.autoplay.start >= this.data.autoplay.increase)) return true
-        if (this.data.autoplay.decrease
-        && (this.data.autoplay.start - this.balance.cash.sum >= this.data.autoplay.decrease)) return true
+        if (this.settings.stopIfCashGreater && Number.isFinite(this.settings.stopIfCashGreater)
+        && (this.balance.cash.sum - this.data.autoplay.start >= this.settings.stopIfCashGreater)) return true
+        if (this.settings.stopIfCashLess && Number.isFinite(this.settings.stopIfCashLess)
+        && (this.data.autoplay.start - this.balance.cash.sum >= this.settings.stopIfCashLess)) return true
         return false
     }
 
