@@ -50,26 +50,27 @@ class FooterButtonsController {
         this.homeRequestSub = this.buttons.home.down$
             .subscribe(e => this.game.request.sendLogout()))
             
-        // TODO: Add handling homeUrl
         // Home button Redirect
         if (this.config.home.redirect)
         this.subs.push(
         this.homeRedirectSub = this.buttons.home.down$
-            .subscribe(e => window.history.back()))
+            .subscribe(e => {
+                if (this.game.state.home)
+                    window.location.href = this.game.state.home
+                else window.history.back()
+            }))
 
-        // TODO: Some Settings bindings
         // Settings button
         if (this.config.settings)
         this.subs.push(
         this.settingsSub = this.buttons.settings.down$
-            .subscribe(e => this.level.settings.open()))
+            .subscribe(e => this.game.state.menu = 'settings'))
 
-        // TODO: Some Info bindings
         // Info button
         if (this.config.info)
         this.subs.push(
         this.infoSub = this.buttons.info.down$
-            .subscribe(e => this.level.info.open()))
+            .subscribe(e => this.game.state.menu = 'info'))
 
         // Sound Button
         if (this.config.sound.button)
