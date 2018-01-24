@@ -1,8 +1,8 @@
 module.exports = {
     // URL params. change gameName in buildURL and gameURL
     "serviceURL": "https://frontqa.bossgs.net/service",
-    "buildURL": "/gamebuilds/animalssteam/",
-    "devURL": "/games/animalssteam/",
+    "buildURL": "/gamebuilds/themoney/",
+    "devURL": "/games/themoney/",
     "version": "1_0",
     "major": "1",
     "prodDir": "prod",
@@ -10,10 +10,10 @@ module.exports = {
     // Modes
     "modes": [
         {
-            "name": "root", "mode": "animalssteam"
+            "name": "root", "mode": "themoney"
         },
         {
-            "name": "fs", "mode": "animalsfs"
+            "name": "fs", "mode": "themoneyfs"
         }
     ]
 };

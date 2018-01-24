@@ -12,11 +12,11 @@ const game = new Game({
     fps: 60,
     request: {
         url: buildConfig.serviceURL,
-        mode: 'animalssteam',
+        mode: 'themoney',
         debug: {
             active: false,
             userID: 18,
-            game: 'animalssteam'
+            game: 'themoney'
         }
     },
     audio: {
