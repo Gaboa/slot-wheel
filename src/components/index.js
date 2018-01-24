@@ -7,3 +7,4 @@ export { Machine, WinTable } from "./machine"
 export { Numbers, WinNumber } from './numbers'
 export { Lines, Line, Part } from './lines'
 export { Panel, Buttons, Balance, AutoCounter, AutoPanel } from './panel'
+export { FSView } from './fsView.js'
