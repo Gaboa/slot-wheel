@@ -86,45 +86,6 @@ const defaultAutoPanelConfig = {
     }
 }
 
-class Panel extends Container {
-
-    constructor({
-        container,
-        x,
-        y,
-        config = {}
-    }) {
-        super({ container, x, y })
-        this.name = 'panel'
-        this.config = config
-
-        this.panel = new Spine({
-            container: this,
-            name: 'panel',
-            anim: { track: 0, name: 'idle', repeat: true }
-        })
-
-        this.labels = new Sprite({
-            container: this,
-            texture: 'panel_root',
-            name: 'labels'
-        })
-
-        this.buttons = new Buttons({
-            container: this,
-            y: 0.06,
-            config: this.config.buttons
-        })
-
-        this.balance = new Balance({
-            container: this,
-            y: 0.061,
-            config: this.config.balance
-        })
-    }
-
-}
-
 class AutoPanel extends Container {
 
     constructor({
@@ -369,6 +330,7 @@ class Balance extends Container {
         this.config = defaultsDeep(config, defaultBalanceConfig)
 
         this.items = []
+        
         for (const prop in this.config) {
             if (this.config.hasOwnProperty(prop) && prop !== 'style') {
                 const field = this.config[prop]
@@ -382,6 +344,90 @@ class Balance extends Container {
         }
 
     }
+
+}
+
+const defaultPanelConfig = {
+    panel:{
+        active: true,
+        Constructor: Spine,
+        name: 'panel',
+        general:{
+            name:'panel',
+            anim:{
+                track: 0,
+                name: 'idle',
+                repeat: true
+            }
+        }
+    },
+    labels:{
+        active: true,
+        Constructor: Sprite,
+        name: 'labels',
+        general:{
+            texture: 'panel_root',
+        }
+    },
+    buttons:{
+        active: true,
+        Constructor: Buttons,
+        name: 'buttons',
+        general:{
+            y: 0.06,
+        }
+    },
+    balance:{
+        active: true,
+        Constructor: Balance,
+        name: 'balance',
+        general:{
+            y: 0.06,
+        }
+    }
+}
+
+class Panel extends Container {
+
+    constructor({
+        container,
+        x,
+        y,
+        config = {}
+    }) {
+        super({ container, x, y })
+        this.name = 'panel'
+        this.config = defaultsDeep(config, defaultPanelConfig)
+        this.rootConfig = this.config
+
+        this.addView(this.config)
+    }
+
+    addView(conf){
+        for(let item in conf){
+            if(conf[item].active){
+                this.createSingleViewItem(conf[item])
+            }
+        }
+    }
+
+    createSingleViewItem(item){
+        this[item.name] = new item.Constructor(Object.assign(
+            {container: this},
+            item.general
+        ))
+        
+    }
+
+    rerender(newConfig){
+        this.clean()
+        this.addView(newConfig)
+    }
+
+    clean(){
+        this.removeChildren()
+    }
+
 
 }
 
