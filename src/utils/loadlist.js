@@ -30,6 +30,9 @@ const common = [
     { name: 'frame',      url: 'machine/frame.png' },
     { name: 'win_table',  url: 'machine/win_table.png' },
     { name: 'win_circle', url: 'machine/win_circle.png' },
+
+    { name: 'count_fs', url: 'fs/count_fs.png' },
+    { name: 'multi_fs', url: 'fs/multi_fs.png' },
 ]
 
 const mobile = [
