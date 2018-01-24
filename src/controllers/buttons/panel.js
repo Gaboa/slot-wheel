@@ -69,7 +69,7 @@ class PanelButtonsController {
         // Spin button starts Screen roll
         if (this.config.spin.button)
         this.subs.push(
-        this.spinSub = this.buttons.spin.down$
+        this.spinSub = this.buttons.spin.up$
             .merge(!this.config.spin.keyboard 
                 ? Observable.empty()
                 : Observable.fromEvent(document, 'keyup')
@@ -106,7 +106,7 @@ class PanelButtonsController {
         // Auto Button
         if (this.config.auto.button)
         this.subs.push(
-        this.autoSub = this.buttons.auto.down$
+        this.autoSub = this.buttons.auto.up$
             .throttleTime(this.config.auto.delta)
             .subscribe(e => (this.state.button === 'spin')
                 ? this.state.button = 'auto'
@@ -130,27 +130,27 @@ class PanelButtonsController {
         // Stop Button change button to Spin
         if (this.config.stop.button)
         this.subs.push(
-        this.stopButtonSub = this.buttons.stop.down$
+        this.stopButtonSub = this.buttons.stop.up$
             .subscribe(e => this.state.button = 'spin' ))
 
         // Stop Button stops Autoplay
         if (this.config.stop.autoplay)
         this.subs.push(
-        this.stopAutoplaySub = this.buttons.stop.down$
+        this.stopAutoplaySub = this.buttons.stop.up$
             .subscribe(e => this.state.isAutoplay = false ))
 
         // ------  Max  ------
         // Max Button change Level to Maximum amount
         if (this.config.max)        
         this.subs.push(
-        this.maxSub = this.buttons.max.down$
+        this.maxSub = this.buttons.max.up$
             .subscribe(e => this.balance.level.index = this.balance.level.arr.length - 1))
         
         // ------  Level  ------
         // Level Minus
         if (this.config.level.minus)
         this.subs.push(
-        this.levelMinusSub = this.buttons.level.minus.down$
+        this.levelMinusSub = this.buttons.level.minus.up$
             .merge(!this.config.level.keyboard 
                 ? Observable.empty()
                 : Observable.fromEvent(document, 'keyup')
@@ -162,7 +162,7 @@ class PanelButtonsController {
         // Level Plus
         if (this.config.level.plus)
         this.subs.push(
-        this.levelPlusSub = this.buttons.level.plus.down$
+        this.levelPlusSub = this.buttons.level.plus.up$
             .merge(!this.config.level.keyboard 
                 ? Observable.empty()
                 : Observable.fromEvent(document, 'keyup')
@@ -193,7 +193,7 @@ class PanelButtonsController {
         // Value Minus
         if (this.config.value.minus)                
         this.subs.push(
-        this.valueMinusSub = this.buttons.value.minus.down$
+        this.valueMinusSub = this.buttons.value.minus.up$
             .merge(!this.config.value.keyboard 
                 ? Observable.empty()
                 : Observable.fromEvent(document, 'keyup')
@@ -205,7 +205,7 @@ class PanelButtonsController {
         // Value Plus
         if (this.config.value.plus)                
         this.subs.push(
-        this.valuePlusSub = this.buttons.value.plus.down$
+        this.valuePlusSub = this.buttons.value.plus.up$
             .merge(!this.config.value.keyboard
                 ? Observable.empty()
                 : Observable.fromEvent(document, 'keyup')
