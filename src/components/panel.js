@@ -98,11 +98,11 @@ class Panel extends Container {
         this.name = 'panel'
         this.config = config
 
-        this.panel = new Spine({
-            container: this,
-            name: 'panel',
-            anim: { track: 0, name: 'idle', repeat: true }
-        })
+        // this.panel = new Spine({
+        //     container: this,
+        //     name: 'panel',
+        //     anim: { track: 0, name: 'idle', repeat: true }
+        // })
 
         this.labels = new Sprite({
             container: this,
@@ -112,13 +112,14 @@ class Panel extends Container {
 
         this.buttons = new Buttons({
             container: this,
-            y: 0.06,
+            y: 0.005,
             config: this.config.buttons
         })
+        this.buttons.anim.visible = false
 
         this.balance = new Balance({
             container: this,
-            y: 0.061,
+            y: 0.02,
             config: this.config.balance
         })
     }

@@ -62,11 +62,23 @@ class Element extends Container {
 
         this.index = index
         this.symbols = symbols
+        this.scale.set(0.85)
 
-        this.createSprite('bg')
-        this.createSprite('blur')
-        this.createSprite('static')
+        // this.createSprite('bg')
+        // this.createSprite('blur')
+        // this.createSprite('static')
+        // this.bottom = new Spine({
+        //     container: this,
+        //     name: 'bottom',
+        //     visible: false
+        // })
         this.createSpines()
+        // this.top = new Spine({
+        //     container: this,
+        //     name: 'top',
+        //     visible: false
+        // })
+        // this.top.scale.set(0.8)
         this.win = new WinCircle({ container: this, x: this.w * 0.3, y: this.h * -0.3 })
 
         this.enable()
@@ -126,28 +138,28 @@ class Element extends Container {
     }
 
     playBlur(i) {
-        this.static.visible = false
-        this.bg.visible = false
+        // this.static.visible = false
+        // this.bg.visible = false
         this.spines.forEach(s => s.visible = false)        
 
-        this.blur.visible = true
-        this.blur.changeTexture(`blur_${this.getSymbolName(i)}`)
+        // this.blur.visible = true
+        // this.blur.changeTexture(`blur_${this.getSymbolName(i)}`)
     }
     
     playStatic(i) {
-        this.blur.visible = false
+        // this.blur.visible = false
         this.spines.forEach(s => s.visible = false)        
 
-        this.bg.visible = true
-        this.bg.changeTexture(`bg_${this.getSymbolName(i)}`)
+        // this.bg.visible = true
+        // this.bg.changeTexture(`bg_${this.getSymbolName(i)}`)
 
-        this.static.visible = true
-        this.static.changeTexture(`static_${this.getSymbolName(i)}`)
+        // this.static.visible = true
+        // this.static.changeTexture(`static_${this.getSymbolName(i)}`)
     }
     
     playSpine(i) {
-        this.playStatic(i)
-        this.static.visible = false
+        // this.playStatic(i)
+        // this.static.visible = false
 
         this.active = this.spines
             .filter(s => s.name === this.getSymbolName(i))[0]
@@ -159,25 +171,33 @@ class Element extends Container {
     playWin() {
         if (this.active)
             this.active.state.setAnimation(0, 'win', true)
+
+        // this.bottom.visible = true
+        // this.top.visible = true
+        // this.bottom.state.setAnimation(0, 'win', true)
+        // this.top.state.setAnimation(0, 'win', true)
         
-        this.tween = TweenMax.to(this.scale, 0.2, {
-            x: 1.1,
-            y: 1.1,
-            onStart:    () => this.$.next({ type: 'WIN', state: 'START',    active: this.active }),
-            onComplete: () => this.$.next({ type: 'WIN', state: 'COMPLETE', active: this.active })
-        })
+        // this.tween = TweenMax.to(this.scale, 0.2, {
+        //     x: 1.1,
+        //     y: 1.1,
+        //     onStart:    () => this.$.next({ type: 'WIN', state: 'START',    active: this.active }),
+        //     onComplete: () => this.$.next({ type: 'WIN', state: 'COMPLETE', active: this.active })
+        // })
     }
     
     playNormal() {
         if (this.active)
             this.active.state.setAnimation(0, 'idle', true)
 
-        this.tween = TweenMax.to(this.scale, 0.2, {
-            x: 1,
-            y: 1,
-            onStart:    () => this.$.next({ type: 'NORMAL', state: 'START',    active: this.active }),
-            onComplete: () => this.$.next({ type: 'NORMAL', state: 'COMPLETE', active: this.active })
-        })
+        // this.bottom.visible = false
+        // this.top.visible = false
+
+        // this.tween = TweenMax.to(this.scale, 0.2, {
+        //     x: 1,
+        //     y: 1,
+        //     onStart:    () => this.$.next({ type: 'NORMAL', state: 'START',    active: this.active }),
+        //     onComplete: () => this.$.next({ type: 'NORMAL', state: 'COMPLETE', active: this.active })
+        // })
         this.win.hide()
     }
     

@@ -1,6 +1,6 @@
 import defaultsDeep from 'lodash.defaultsdeep'
 import { Subject, Observable } from "rxjs"
-import { Container, Sprite, Spine } from "../utils"
+import { Container, Sprite, Spine, Text } from "../utils"
 
 class WinNumber extends Container {
 
@@ -17,8 +17,18 @@ class WinNumber extends Container {
 
         this.sprite = new Sprite({
             container: this,
-            texture: `${value}_off`
+            texture: `number_off`
         })
+
+        this.text = new Text({
+            container: this,
+            text: value,
+            style: {
+                fill: '#f1dc76',
+                fontSize: 24
+            }
+        })
+        this.text.visible = false
 
         this.spine = new Spine({
             container: this,
@@ -46,12 +56,14 @@ class WinNumber extends Container {
     }
 
     show() {
-        this.sprite.changeTexture(`${this.name}_on`)
+        this.text.visible = true
+        this.sprite.changeTexture(`number_on`)
         this.spine.state.setAnimation(0, 'animation', false)
     }
 
     hide() {
-        this.sprite.changeTexture(`${this.name}_off`)
+        this.text.visible = false
+        this.sprite.changeTexture(`number_off`)
     }
 
 }
@@ -111,7 +123,8 @@ class Numbers extends Container {
             this[side].items.push(
                 new this.config[side].WinNumber({
                     container: this[side],
-                    y: position,
+                    x: position.x,
+                    y: position.y,
                     value: el,
                     size: this.config[side].size
                 })

@@ -151,7 +151,8 @@ class DesktopRoot extends Container {
 
         this.machine = new Machine({
             container: this,
-            y: -0.05,
+            x: 0,
+            y: -0.063,
             config: {
                 lines:   game.data.lines,
                 symbols: game.data.symbols
@@ -191,7 +192,9 @@ class DesktopRoot extends Container {
         // Logic
         this.machineCtrl = new MachineController({ game: this.game })
         this.ctrl = new RootController({ game: this.game })
-        this.winCtrl = new WinController({ game: this.game })
+        this.winCtrl = new WinController({ game: this.game, config: {
+            els: { alpha: false }
+        } })
         this.autoCtrl = new AutoplayController({ game: this.game })
     }
 

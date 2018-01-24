@@ -68,18 +68,25 @@ class Machine extends Container {
         
         // Machine BG
         if (this.config.bg)
-        this.bg = new PIXI.extras.TilingSprite(
-            PIXI.utils.TextureCache['tile'],
-            EL_WIDTH  * 5,
-            EL_HEIGHT * 3
-        )
-        this.bg.anchor.set(0.5)
-        this.bg.name = 'bg'
-        this.addChild(this.bg)
+        this.bg = new Sprite({
+            container: this,
+            y: 0.0213,
+            texture: 'machine_bg',
+            name: 'bg'
+        })
+        // this.bg = new PIXI.extras.TilingSprite(
+        //     PIXI.utils.TextureCache['tile'],
+        //     EL_WIDTH  * 5,
+        //     EL_HEIGHT * 3
+        // )
+        // this.bg.anchor.set(0.5)
+        // this.bg.name = 'bg'
+        // this.addChild(this.bg)
 
         if (this.config.lines)        
         this.lines = new Lines({
             container: this,
+            y: 0.0213,            
             config: { lines: this.config.lines }
         })
 
@@ -87,6 +94,7 @@ class Machine extends Container {
         if (this.config.screen)        
         this.screen = new Screen({
             container: this,
+            y: 0.0213,
             config: {
                 amount: 5,
                 dir: 'down',
@@ -140,20 +148,94 @@ class Machine extends Container {
 
         // Machine Logo
         if (this.config.logo)        
-        this.logo = new Spine({
-            container: this,
-            name: 'logo',
-            anim: { track: 0, name: 'idle', repeat: true },
-            y: -0.343
-        })
+        // this.logo = new Spine({
+        //     container: this,
+        //     name: 'logo',
+        //     anim: { track: 0, name: 'idle', repeat: true },
+        //     y: -0.343
+        // })
+
+        // Oswald Medium 36
+        // ffec82
+        // fff946 25 % 10px 
 
         // Panel with Buttons and Balance
         if (this.config.panel)        
-        this.panel = new Panel({ container: this, y: 0.35 })
+        this.panel = new Panel({
+            container: this,
+            y: 0.4389,
+            config: {
+                balance: {
+                    style: {
+                        fontFamily: 'Oswald, Arial, Helvetica',
+                        fill: '#ffec82',
+                        fontSize: 36,
+                        fontWeight: 600,
+                        dropShadow: true,
+                        dropShadowAlpha: 0.8,
+                        dropShadowColor: '#fff946',
+                        dropShadowBlur: 5,
+                        dropShadowDistance: 0
+                    },
+                    sum: {
+                        x: 0.28
+                    },
+                    value: {
+                        x: 0.177
+                    },
+                    level: {
+                        x: -0.163
+                    },
+                    lines: {
+                        x: -0.234
+                    },
+                    bet: {
+                        x: -0.298
+                    }
+                },
+                buttons: {
+                    max: {
+                        x: 141,
+                        y: -1
+                    },
+                    auto: {
+                        x: -141,
+                        y: -1
+                    },
+                    level: {
+                        x: -0.1635,
+                        y: 0.015,
+                        delta: 0.051
+                    },
+                    value: {
+                        x: 0.175,
+                        y: 0.015,
+                        delta: 0.074
+                    },
+                }
+            }
+        })
 
         // Win Numbers
         if (this.config.numbers)        
-        this.numbers = new Numbers({ container: this })
+        this.numbers = new Numbers({
+            container: this,
+            y: 0.0213, 
+            config: {
+                left: {
+                    x: -0.368,
+                    pattern: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    positions: [{ x: 0.0229, y: -0.2 }, { x: 0.014, y: -0.1555 }, { x: 0.00677, y: -0.1111 }, { x: 0.002, y: -0.0666 }, { x: 0, y: -0.0222 }, { x: 0, y: 0.0222 }, { x: 0.002, y: 0.0666 }, { x: 0.00677, y: 0.1111 }, { x: 0.014, y: 0.1555 }, { x: 0.0229, y: 0.2 }],
+                    size: 35
+                },
+                right: {
+                    x: 0.368,
+                    pattern: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+                    positions: [{ x: -0.0229, y: -0.2 }, { x: -0.014, y: -0.1555 }, { x: -0.00677, y: -0.1111 }, { x: -0.002, y: -0.0666 }, { x: 0, y: -0.0222 }, { x: 0, y: 0.0222 }, { x: -0.002, y: 0.0666 }, { x: -0.00677, y: 0.1111 }, { x: -0.014, y: 0.1555 }, { x: -0.0229, y: 0.2 }],
+                    size: 35
+                }
+            }
+        })
 
         // Win Table
         if (this.config.table)        
