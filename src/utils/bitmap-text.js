@@ -22,7 +22,8 @@ class BitmapText extends PIXI.extras.BitmapText {
         fontName,
         align = 'center',
         tint,
-        tweenTime = 1.5
+        tweenTime = 1.5,
+        index
     }) {
         super(
             text,
