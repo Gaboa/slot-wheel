@@ -1,0 +1,25 @@
+<font>
+	<info face="Transition" size="150" />
+	<common lineHeight="150" scaleW="379" scaleH="359" pages="1" />
+	<pages>
+		<page id="0" file="./bitmap-export.png" />
+	</pages>
+	<chars count="14">
+		<char id="48" x="0" y="132" width="79" height="131" xoffset="0" yoffset="19" xadvance="80" /><!-- 0 -->
+		<char id="56" x="159" y="132" width="76" height="131" xoffset="0" yoffset="19" xadvance="77" /><!-- 8 -->
+		<char id="54" x="236" y="132" width="73" height="131" xoffset="0" yoffset="19" xadvance="74" /><!-- 6 -->
+		<char id="50" x="80" y="132" width="78" height="131" xoffset="0" yoffset="19" xadvance="79" /><!-- 2 -->
+		<char id="55" x="310" y="0" width="68" height="131" xoffset="0" yoffset="19" xadvance="69" /><!-- 7 -->
+		<char id="51" x="236" y="0" width="73" height="131" xoffset="0" yoffset="19" xadvance="74" /><!-- 3 -->
+		<char id="52" x="0" y="0" width="84" height="131" xoffset="0" yoffset="19" xadvance="85" /><!-- 4 -->
+		<char id="57" x="162" y="0" width="73" height="131" xoffset="0" yoffset="19" xadvance="74" /><!-- 9 -->
+		<char id="49" x="310" y="132" width="52" height="131" xoffset="0" yoffset="19" xadvance="53" /><!-- 1 -->
+		<char id="53" x="85" y="0" width="76" height="131" xoffset="0" yoffset="19" xadvance="77" /><!-- 5 -->
+		<char id="43" x="0" y="264" width="76" height="94" xoffset="0" yoffset="37" xadvance="77" /><!-- + -->
+		<char id="88" x="77" y="264" width="43" height="90" xoffset="0" yoffset="41" xadvance="44" /><!-- X -->
+		<char id="32" x="0" y="0" width="0" height="0" xoffset="0" yoffset="0" xadvance="20" /><!--   -->
+		<char id="9" x="0" y="0" width="0" height="0" xoffset="0" yoffset="0" xadvance="160" /><!-- 	 -->
+	</chars>
+	<kernings count="0">
+	</kernings>
+</font>
