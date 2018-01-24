@@ -6,8 +6,6 @@ import { ReactiveObject } from '../utils'
 const defaultData = {
 
     sid: null,
-    mode: '',
-    next: '',
     lines: null,
     symbols: null,
     screen: null,

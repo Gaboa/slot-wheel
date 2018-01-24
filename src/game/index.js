@@ -60,6 +60,7 @@ class Game extends Application {
 
         this.state.lang = this.search.get('lang') || null
         this.state.home = this.search.get('homeURL') || this.search.get('home') || null
+        this.state.settings.isLowQuality = JSON.parse(this.search.get('low'))
     }
 
     start(fps) {

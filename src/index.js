@@ -1,5 +1,5 @@
 import './index.css'
-import * as PIXI from 'pixi.js'
+import 'pixi.js'
 import 'pixi-spine'
 
 import buildConfig from '../config/config'

@@ -137,6 +137,11 @@ class Numbers extends Container {
         this.items.filter(item => item.name != num).forEach(item => item.hide())
     }
 
+    shine() {
+        this.left.items.forEach((item, index) => setTimeout(() => { item.show(); setTimeout(() => item.hide(), 150) }, 20 * index))
+        this.right.items.forEach((item, index) => setTimeout(() => { item.show(); setTimeout(() => item.hide(), 150) }, 20 * index))
+    }
+
     enable() {
         this.$ = new Subject()
 
