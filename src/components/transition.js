@@ -1,83 +1,83 @@
 import defaultsDeep from 'lodash.defaultsdeep'
-import { Container, Sprite, Light, Darkness, JumpingButton } from '../utils'
+import { Container, Sprite, Light, Darkness, JumpingButton, BitmapText, Emitter, Spine } from '../utils'
 import { Subject } from 'rxjs'
+import { TweenMax } from 'gsap';
 
-export class BitmapText extends PIXI.Container {
-    constructor({
-        container,
-        x = 0,
-        y = 0,
-        text,
-        scale = 1,
-        tweenTime = 0.5,
-        font = 'bitmap'
-    }) {
-        super();
-        this.container = container;
-        this.x = x;
-        this.y = y;
-        this.textScale = scale;
-        this.text = text;
-        this.font = font;
-        this.tweenTime = tweenTime;
-
-        this.writeText(this.text);
-
-        this.container.addChild(this);
-    }
-    writeText(text) {
-        this.removeChildren();
-        this.textArray = String(text).split('');
-        this.textArray.forEach(char => {
-            let sprite = new Sprite({
-                container: this,
-                texture: `${this.font}_${char}`,
-                x: this.width,
-                anchor: 0
-            });
-            sprite.scale.x = this.textScale;
-            sprite.scale.y = this.textScale;
-        });
-        this.pivot.x = this.width * 0.5;
-        this.pivot.y = this.height * 0.5;
-    }
-    tweenText(newText) {
-        this.text = parseInt(this.text, 10);
-        this.tween = TweenMax.to(this, this.tweenTime, {
-            text: newText,
-            roundProps: 'text',
-            onUpdate: () => this.writeText(this.text),
-            callbackScope: this
-        });
-    }
-}
 
 const defaultConfig = {
     fs:{
         in: {
+            darkness: {
+                active: true,
+                Constructor: Darkness,
+                general:{
+                    autoShow: true,
+                    autoHide: false,
+                },
+                desktop: {
+                    x: 0,
+                    y: 0,
+                },
+                mobile: {
+                    x: 0,
+                    y: -0,
+                }
+                                      
+            },
+            emitter: {
+                active: false,
+                Constructor: Emitter,
+                general:{
+                    name: 'emitter',
+                    textures: ['cheese'],
+                    data: {
+                        scale:
+                            {start: 1, end:1, minimumScaleMultiplier:0.5},
+                        color:
+                            {start:'ffffff',end:'ffffff'},
+                        speed:
+                            {start:200, end:250},
+                        startRotation:
+                            {min:80,max:100},
+                        rotationSpeed:
+                            {min:-200,max:200},
+                        lifetime:
+                            {min:5.5,max:6},
+                        blendMode:'normal',           
+                        frequency: 0.08,
+                        maxParticles: 100,
+                        pos:
+                            {x:0,y:0},
+                        addAtBack:true,
+                        spawnType:'rect',
+                    }
+                },
+                desktop:{
+                    x:0,
+                    y:0,
+                },
+                mobile:{
+                    x:0,
+                    y:0
+                }
+
+            },
             bg:{
                 active: true,
                 Constructor: Sprite,
                 general:{
                     name: 'bg',
-                    texture: 'bg',
-                    scale: 2.2,
-                    true: 0,
-                    alpha: 0
+                    texture: 'popup',
+                    alpha: 1
                 },
                 desktop: {
                     x: 0,
-                    y: 0
+                    y: 0.046
                 },
                 mobile: {
                     x: 0,
-                    y: 0
-                },
-                tween:{
-                    time: 0.5,
-                    options: {
-                        alpha: 1
-                    }
+                    y:0.046
+                
                 }
             },
             light: {
@@ -98,41 +98,46 @@ const defaultConfig = {
                 }
                                
             },
-            darkness: {
-                active: false,
-                Constructor: Darkness,
-                general:{
-                    autoShow: false,
-                    autoHide: false,
-                },
-                desktop: {
-                    x: 0,
-                    y: 0,
-                },
-                mobile: {
-                    x: 0,
-                    y: -0.1,
+            characters:[
+                {
+                    animal:{
+                        active: true,
+                            Constructor: Sprite,
+                            general:{
+                                name: 'animal',
+                                texture: 'static_owl',
+                                alpha: 1,
+                                scale: 2
+                            },
+                            desktop: {
+                                x: 0,
+                                y: 0
+                            },
+                            mobile: {
+                                x: 0,
+                                y: -0
+                            }
+                    }
                 }
-                                      
-            },
+            ],
             topTitle: {
                 active: true,
                 Constructor: Sprite,
                 general:{
-                    texture: 'you_win',
+                    texture: 'bonus_game',
                     name: 'topTitle',
                 },
                 desktop: {
                     x: 0,
-                    y: -0.197,
+                    y: -0.2981,
                 },
                 mobile: {
                     x: 0,
-                    y: -0.197,
+                    y: -0.2981,
                 }              
             },
             bottomTitle: {
-                active: true,
+                active: false,
                 Constructor: Sprite,
                 general:{
                     texture: 'big_win',
@@ -151,113 +156,138 @@ const defaultConfig = {
                 active: true,
                 Constructor: JumpingButton,
                 general:{
-                    texture: 'continue',
+                    texture: "preload_button",
                     name: 'button',
-                    tweenY: 0.35,
+                    tweenY: 0.4037,
                     startScale: 0.85,
                     endScale: 1.15,
                 },
                 desktop: {
                     x: 0,
-                    y: 0.350,
+                    y: 0.4,
                 },
                 mobile: {
                     x: 0,
-                    y: 0.350,
+                    y:0.4,
                 }
             },
             count: {
                 active: true,
                 Constructor: BitmapText,
                 general:{
-                    font: 'ts',
+                    fontName: 'Transition',
+                    fontSize:45,
                     name: 'count',
                     scale: 1,
                     tweenTime: 0.5,
-                    text: 0
+                    text: '20'
                 },
                 desktop: {
-                    x: 0,
-                    y: -0.05555 * 1080,
+                    x: -0.1859,
+                    y: 0.012,
+                   
                 },
                 mobile: {
-                    x: 0,
-                    y: -0.1,
+                    x: -0.1859,
+                    y: 0.012,
+                    fontSize:85,
                 }
             },
-            characters:[
-                {
-                    krampus: {
-                        active: true,
-                        Constructor: Sprite,
-                        general:{
-                            name: 'krampus',
-                            texture: 'gifted_krampus',
-                            alpha: 0
-                        },
-                        desktop: {
-                            x: 0.289,
-                            y: -0.113
-                        },
-                        mobile: {
-                            x: 0.289,
-                            y: -0.113
-                        },
-                        tween:{
-                            time: 0.2,
-                            options: {
-                                alpha: 1,
-                                onStart:() => {
-                                    
-                                }
-                            }
-                        }
-                    }
+            multi: {
+                active: true,
+                Constructor: BitmapText,
+                general:{
+                    fontName: 'Transition',
+                    fontSize: 45,
+                    name: 'multi',
+                    scale: 1,
+                    tweenTime: 0.5,
+                    text: 'X2'
                 },
-                {
-                    tree: {
-                        active: true,
-                        Constructor: Sprite,
-                        general:{
-                            name: 'tree',
-                            texture: 'half-naked_tree',
-                        },
-                        desktop: {
-                            x: -0.288,
-                            y: -0.113
-                        },
-                        mobile: {
-                            x: -0.288,
-                            y: -0.113
-                        }
-                    }    
+                desktop: {
+                    x: 0.175,
+                    y: 0.012,
+                },
+                mobile: {
+                    x: 0.175,
+                    y: 0.012,
+                    fontSize:85,
                 }
-            ]
+            },
+            
         },
-        out:{
-            bg:{
+        out: {
+            darkness: {
                 active: true,
-                Constructor: Sprite,
+                Constructor: Darkness,
                 general:{
-                    name: 'bg',
-                    texture: 'bg',
-                    scale: 2.2,
-                    true: 0,
-                    alpha: 0
+                    autoShow: true,
+                    autoHide: false,
                 },
                 desktop: {
                     x: 0,
-                    y: 0
+                    y: 0,
                 },
                 mobile: {
                     x: 0,
-                    y: 0
-                },
-                tween:{
-                    time: 2,
-                    options: {
-                        alpha: 1
+                    y: -0.1,
+                }
+                                      
+            },
+            emitter: {
+                active: true,
+                Constructor: Emitter,
+                general:{
+                    name: 'emitter',
+                    textures: ['cheese'],
+                    data: {
+                        scale:
+                            {start: 1, end:1, minimumScaleMultiplier:0.5},
+                        color:
+                            {start:'ffffff',end:'ffffff'},
+                        speed:
+                            {start:200, end:250},
+                        startRotation:
+                            {min:80,max:100},
+                        rotationSpeed:
+                            {min:-200,max:200},
+                        lifetime:
+                            {min:5.5,max:6},
+                        blendMode:'normal',           
+                        frequency: 0.08,
+                        maxParticles: 100,
+                        pos:
+                            {x:0,y:0},
+                        addAtBack:true,
+                        spawnType:'rect',
                     }
+                },
+                desktop:{
+                    x:0,
+                    y:0,
+                },
+                mobile:{
+                    x:0,
+                    y:0
+                }
+
+            },
+            bg:{
+                active: false,
+                Constructor: Sprite,
+                general:{
+                    name: 'bg',
+                    texture: 'popup',
+                    alpha: 1
+                },
+                desktop: {
+                    x: 0,
+                    y: 0.046
+                },
+                mobile: {
+                    x: 0.289,
+                    y: -0.113
+                
                 }
             },
             light: {
@@ -278,33 +308,40 @@ const defaultConfig = {
                 }
                                
             },
-            darkness: {
-                active: false,
-                Constructor: Darkness,
-                general:{
-                    autoShow: false,
-                    autoHide: false,
-                },
-                desktop: {
-                    x: 0,
-                    y: 0,
-                },
-                mobile: {
-                    x: 0,
-                    y: -0.1,
+            characters:[
+                {
+                    animal:{
+                        active: true,
+                            Constructor: Spine,
+                            general:{
+                                name: 'pig',
+                                anim: {
+                                    track:0,
+                                    name:'win2',
+                                    repeat: true
+                                },
+                            },
+                            desktop: {
+                                x: 0,
+                                y: 0
+                            },
+                            mobile: {
+                                x: 0,
+                                y: 0
+                            }
+                    }
                 }
-                                      
-            },
+            ],
             topTitle: {
                 active: true,
                 Constructor: Sprite,
                 general:{
-                    texture: 'you_won',
+                    texture: 'big_win',
                     name: 'topTitle',
                 },
                 desktop: {
                     x: 0,
-                    y: -0.197,
+                    y: -0.2981,
                 },
                 mobile: {
                     x: 0,
@@ -312,7 +349,7 @@ const defaultConfig = {
                 }              
             },
             bottomTitle: {
-                active: true,
+                active: false,
                 Constructor: Sprite,
                 general:{
                     texture: 'big_win',
@@ -331,93 +368,47 @@ const defaultConfig = {
                 active: true,
                 Constructor: JumpingButton,
                 general:{
-                    texture: 'continue',
+                    texture: "preload_button",
                     name: 'button',
-                    tweenY: 0.35,
+                    tweenY: 0.4037,
                     startScale: 0.85,
                     endScale: 1.15,
                 },
                 desktop: {
                     x: 0,
-                    y: 0.350,
+                    y: 0.4,
                 },
                 mobile: {
                     x: 0,
                     y: 0.350,
                 }
             },
-            count: {
+            win: {
                 active: true,
                 Constructor: BitmapText,
                 general:{
-                    font: 'ts',
+                    fontName: 'Transition',
+                    fontSize: 100,
                     name: 'count',
                     scale: 1,
                     tweenTime: 0.5,
-                    text: 0
+                    text: '0'
                 },
                 desktop: {
                     x: 0,
-                    y: -0.05555 * 1080,
+                    y: 0,
                 },
                 mobile: {
                     x: 0,
-                    y: -0.1,
+                    y: 0.04861,
                 }
             },
-            characters:[
-                {
-                    krampus: {
-                        active: true,
-                        Constructor: Sprite,
-                        general:{
-                            name: 'krampus',
-                            texture: 'gifted_krampus',
-                            alpha: 0
-                        },
-                        desktop: {
-                            x: 0.289,
-                            y: -0.113
-                        },
-                        mobile: {
-                            x: 0.289,
-                            y: -0.113
-                        },
-                        tween:{
-                            time: 0.2,
-                            options: {
-                                alpha: 1,
-                                onStart:() => {
-                                    console.log(1)
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    tree: {
-                        active: true,
-                        Constructor: Sprite,
-                        general:{
-                            name: 'tree',
-                            texture: 'half-naked_tree',
-                        },
-                        desktop: {
-                            x: -0.288,
-                            y: -0.113
-                        },
-                        mobile: {
-                            x: -0.288,
-                            y: -0.113
-                        }
-                    }    
-                }
-            ]
-        }
+            
+        },
     }
 }
 
-export class Transition extends Container{
+export class Transition extends Container {
     constructor({
         container,
         x = 0.5,
@@ -426,25 +417,28 @@ export class Transition extends Container{
     }){
         super({ container, x, y })
 
+        
         this.timeline = new TimelineMax()
         this.$ = new Subject()
-        this.config = defaultsDeep(defaultConfig, config)
+        this.config = defaultsDeep(config, defaultConfig)
+        this.map = {
+            multi : []
+        }
 
     }
 
-
-
     // mode, amount, next will be taken from data arg
     render(data){
-        
-        let { mode, next, count } = {mode: 'root', next: 'fs', count: 20}
+        let { mode, next, config} = data
+        console.log(config)
         let conf;
 
         if(mode === 'root' && next !== 'root'){
-            conf = this.config[next].in
+            conf = defaultsDeep(config[next].in, this.config[next].in) 
         }
         if(mode !== 'root' && next === 'root'){
-            conf = this.config[next].out
+            conf = defaultsDeep(config[mode].out, this.config[mode].out) 
+            //conf = this.config[next].out
         }
 
         for(let item in conf){
@@ -453,7 +447,7 @@ export class Transition extends Container{
         
         this.turnOnStreams()
 
-        this.startTweens(conf, count)
+        this.startTweens(conf, data.win)
 
     }
 
@@ -487,24 +481,29 @@ export class Transition extends Container{
         return this[item.general.name]
     }
 
-    startTweens(conf, amount){
+    startTweens(conf, win){
         for(let item in conf){
-            if(Array.isArray(conf[item])){
-                conf[item].forEach(child => {
-                    for(let item in child){
-                        this.addSingleTween(child[item])
-                    }
-                })
-            } else {
-                this.addSingleTween(conf[item])
+            if(conf[item].active){
+                if(Array.isArray(conf[item])){
+                    conf[item].forEach(child => {
+                        for(let item in child){
+                            this.addSingleTween(child[item])
+                        }
+                    })
+                } else {
+                    this.addSingleTween(conf[item])
+                }
             }
+            
         }
-        this.timeline.add(() => this.tweenCounter(amount))
-        this.timeline.add(() => { this.$.next({ type: 'SHOWED' })})
+        this.additionalTweens(win)
     }
 
-    tweenCounter(amount){
-        this.count.tweenText(amount)
+    additionalTweens(win = 0){
+        if(win){
+            this.timeline.addCallback(this.tweenCounter, '+=0.2' , [win+''], this)
+        }
+        this.timeline.addCallback( () => { this.$.next({ type: 'SHOWED' })}, '+=0.1' )
     }
 
     addSingleTween(item){
@@ -513,6 +512,10 @@ export class Transition extends Container{
                 TweenMax.to(this[item.general.name], item.tween.time, item.tween.options)
             )
         }
+    }
+
+    tweenCounter(amount){
+        this.win.tweenText(amount)
     }
 
     remove(){
