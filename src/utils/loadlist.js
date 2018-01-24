@@ -32,9 +32,10 @@ const common = [
     { name: 'win_circle', url: 'machine/win_circle.png' },
 
     //transition
-    { name: 'bg', url:'transition/iced.png'},
     { name: 'transition', url:'transition/transition.json'},
-    { name: 'bitmap', url:'transition/ts.json'},
+    { name: 'bitmap', url:'transition/bitmap-export.xml'},
+    { name: 'food', url:'transition/logo.json'},
+    { url: 'preload/preload.json' }
 ]
 
 const mobile = [
