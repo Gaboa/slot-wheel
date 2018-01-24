@@ -1,125 +1,34 @@
 
 wild.png
-size: 2048,256
+size: 1024,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-img/E_0007_Layer-1
+Wild
   rotate: false
-  xy: 1212, 174
-  size: 80, 80
-  orig: 80, 80
+  xy: 668, 139
+  size: 167, 83
+  orig: 167, 83
   offset: 0, 0
   index: -1
-img/FF_0000_Layer-5
+john_1
   rotate: false
-  xy: 1471, 176
-  size: 80, 78
-  orig: 80, 78
+  xy: 2, 2
+  size: 220, 220
+  orig: 220, 220
   offset: 0, 0
   index: -1
-img/K_0000_Group-3
+john_2
   rotate: false
-  xy: 571, 99
-  size: 238, 155
-  orig: 238, 155
+  xy: 224, 2
+  size: 220, 220
+  orig: 220, 220
   offset: 0, 0
   index: -1
-img/K_0002_P-LL
+john_3
   rotate: false
-  xy: 1072, 147
-  size: 60, 107
-  orig: 60, 107
-  offset: 0, 0
-  index: -1
-img/K_0003_P
-  rotate: true
-  xy: 2, 15
-  size: 92, 306
-  orig: 92, 306
-  offset: 0, 0
-  index: -1
-img/K_0004_Light
-  rotate: false
-  xy: 1134, 166
-  size: 76, 88
-  orig: 76, 88
-  offset: 0, 0
-  index: -1
-img/K_0005_Fires
-  rotate: true
-  xy: 1383, 183
-  size: 71, 86
-  orig: 71, 86
-  offset: 0, 0
-  index: -1
-img/K_0006_Lines
-  rotate: true
-  xy: 310, 2
-  size: 44, 146
-  orig: 44, 146
-  offset: 0, 0
-  index: -1
-img/K_0007_Group-1-copy-4
-  rotate: false
-  xy: 571, 56
-  size: 105, 41
-  orig: 105, 41
-  offset: 0, 0
-  index: -1
-img/K_0008_Group-1-copy-3
-  rotate: false
-  xy: 458, 7
-  size: 83, 39
-  orig: 83, 39
-  offset: 0, 0
-  index: -1
-img/K_0009_Group-1-copy-2
-  rotate: false
-  xy: 811, 99
-  size: 157, 155
-  orig: 157, 155
-  offset: 0, 0
-  index: -1
-img/K_0010_Group-1-copy-7
-  rotate: true
-  xy: 1294, 181
-  size: 73, 87
-  orig: 73, 87
-  offset: 0, 0
-  index: -1
-img/K_0011_Group-1-copy-6
-  rotate: false
-  xy: 678, 65
-  size: 63, 32
-  orig: 63, 32
-  offset: 0, 0
-  index: -1
-img/K_0012_Group-1-copy-5
-  rotate: false
-  xy: 970, 128
-  size: 100, 126
-  orig: 100, 126
-  offset: 0, 0
-  index: -1
-img/K_0013_Group-1-copy-9
-  rotate: true
-  xy: 325, 48
-  size: 206, 244
-  orig: 206, 244
-  offset: 0, 0
-  index: -1
-img/K_0014_Group-1-copy-8
-  rotate: false
-  xy: 1553, 197
-  size: 70, 57
-  orig: 70, 57
-  offset: 0, 0
-  index: -1
-img/K_0015_Group-1-copy
-  rotate: true
-  xy: 2, 109
-  size: 145, 321
-  orig: 145, 321
+  xy: 446, 2
+  size: 220, 220
+  orig: 220, 220
   offset: 0, 0
   index: -1

@@ -1,20 +1,13 @@
 
 queen.png
-size: 512,256
+size: 256,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-E_0007_Layer-1
-  rotate: false
-  xy: 228, 26
-  size: 200, 200
-  orig: 200, 200
-  offset: 0, 0
-  index: -1
-L_0002_Group-10-copy
+q
   rotate: false
   xy: 2, 2
-  size: 224, 224
-  orig: 224, 224
+  size: 194, 193
+  orig: 194, 193
   offset: 0, 0
   index: -1
