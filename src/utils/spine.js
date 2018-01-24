@@ -8,7 +8,7 @@ class Spine extends PIXI.spine.Spine {
         x = 0,
         y = 0,
         name,
-        animation,
+        anim,
         index,
         visible = true,
         mixes = [
@@ -34,11 +34,10 @@ class Spine extends PIXI.spine.Spine {
         this.createMixes()
         this.addListeners()
 
-        if (typeof(animation) === 'string') {
-            let {track, name, repeat} = animation
+        if (anim) {
+            let {track, name, repeat} = anim
             this.state.setAnimation(track, name, repeat)
         }
-
     }
 
     createMixes() {
