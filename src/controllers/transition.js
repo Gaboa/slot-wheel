@@ -38,7 +38,64 @@ export class TransitionController{
 
 
     draw(){
-        this.transition.render(this.data)
+        let state = {
+            count: 15, //free spins
+            multi: 4,
+            level: 4, //after fs ends
+            //win: 10000, // after fs ends
+            maxMulti: 10,
+            maxCount: 20,
+            map:{
+                3: 'cheese',
+                4: 'coffee',
+                5: 'carrot'
+            }
+        }
+        this.transition.render({
+            mode: 'root', 
+            next: 'fs',
+            win: state.win, 
+            config: {
+                fs:{
+                    in:{
+                        darkness:{},
+                        bg:{},
+                        count:{
+                            general:{
+                                text: `X${state.count}` 
+                            }
+                        },
+                        multi:{
+                            general:{
+                                text: `X${state.multi}` 
+                            }
+                        },
+                        characters:[
+                            {
+                                animal:{
+                                    general:{
+                                        texture: state.multi < state.maxMulti ? 'static_cat' : 'static_rabbit'
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    out:{
+                        darkness:{},
+                        emitter:{
+                            general:{
+                                textures:[state.map[state.multi]]
+                            }
+                        },
+                        topTitle:{
+                            general:{
+                                texture: state.multi === state.maxMulti ? 'big_win' : 'total_win'
+                            }
+                        },
+                    }
+                }
+            }
+        })
     }
 
     disable() {

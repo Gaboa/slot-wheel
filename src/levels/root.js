@@ -108,7 +108,11 @@ class MobileRoot extends Container {
                 footer: {
                     enable: false,
                     disable: false
-                }
+                },
+            },
+            transition:{
+                in: true,
+                out: true
             }
         }})
         this.winCtrl  = new WinController({ game: this.game })
