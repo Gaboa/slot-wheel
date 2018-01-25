@@ -6,29 +6,36 @@ filter: Linear,Linear
 repeat: none
 bp_1
   rotate: false
-  xy: 386, 139
+  xy: 386, 142
   size: 123, 103
   orig: 123, 103
   offset: 0, 0
   index: -1
 bp_2
   rotate: false
-  xy: 206, 77
+  xy: 206, 80
   size: 178, 165
   orig: 178, 165
   offset: 0, 0
   index: -1
 bp_3
   rotate: false
-  xy: 2, 56
+  xy: 2, 59
   size: 202, 186
   orig: 202, 186
   offset: 0, 0
   index: -1
 bp_4
   rotate: false
-  xy: 2, 2
+  xy: 386, 88
   size: 60, 52
   orig: 60, 52
+  offset: 0, 0
+  index: -1
+red_g
+  rotate: false
+  xy: 2, 2
+  size: 59, 55
+  orig: 59, 55
   offset: 0, 0
   index: -1

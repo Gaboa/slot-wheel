@@ -1,13 +1,13 @@
 
 top.png
-size: 128,128
+size: 64,64
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 images/Magic_splash_01
   rotate: false
   xy: 2, 2
-  size: 78, 78
-  orig: 78, 78
+  size: 60, 60
+  orig: 60, 60
   offset: 0, 0
   index: -1

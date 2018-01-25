@@ -1,0 +1,20 @@
+
+coin.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+mon_1
+  rotate: false
+  xy: 2, 54
+  size: 154, 168
+  orig: 154, 168
+  offset: 0, 0
+  index: -1
+red_g
+  rotate: false
+  xy: 2, 2
+  size: 54, 50
+  orig: 54, 50
+  offset: 0, 0
+  index: -1

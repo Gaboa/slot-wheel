@@ -6,8 +6,15 @@ filter: Linear,Linear
 repeat: none
 a
   rotate: false
+  xy: 2, 45
+  size: 150, 142
+  orig: 150, 142
+  offset: 0, 0
+  index: -1
+red_g
+  rotate: false
   xy: 2, 2
-  size: 185, 176
-  orig: 185, 176
+  size: 44, 41
+  orig: 44, 41
   offset: 0, 0
   index: -1

@@ -20,22 +20,29 @@ bag_4
   index: -1
 bag_6
   rotate: false
-  xy: 135, 212
+  xy: 43, 51
   size: 37, 42
   orig: 37, 42
   offset: 0, 0
   index: -1
 bag_7
   rotate: false
-  xy: 43, 52
+  xy: 135, 161
   size: 29, 41
   orig: 29, 41
   offset: 0, 0
   index: -1
 bag_8
-  rotate: true
-  xy: 135, 171
+  rotate: false
+  xy: 191, 234
   size: 39, 20
   orig: 39, 20
+  offset: 0, 0
+  index: -1
+red_g
+  rotate: false
+  xy: 135, 204
+  size: 54, 50
+  orig: 54, 50
   offset: 0, 0
   index: -1

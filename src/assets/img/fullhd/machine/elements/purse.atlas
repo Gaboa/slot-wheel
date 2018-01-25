@@ -1,69 +1,76 @@
 
 purse.png
-size: 512,256
+size: 1024,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 Kos_1
   rotate: false
-  xy: 275, 12
-  size: 43, 100
-  orig: 43, 100
+  xy: 655, 141
+  size: 46, 108
+  orig: 46, 108
   offset: 0, 0
   index: -1
 Kos_2
   rotate: false
-  xy: 180, 114
-  size: 162, 140
-  orig: 162, 140
+  xy: 193, 98
+  size: 175, 151
+  orig: 175, 151
   offset: 0, 0
   index: -1
 Kos_3
   rotate: false
-  xy: 344, 112
-  size: 149, 142
-  orig: 149, 142
+  xy: 370, 96
+  size: 160, 153
+  orig: 160, 153
   offset: 0, 0
   index: -1
 Kos_4
-  rotate: true
-  xy: 2, 2
-  size: 113, 140
-  orig: 113, 140
+  rotate: false
+  xy: 532, 98
+  size: 121, 151
+  orig: 121, 151
   offset: 0, 0
   index: -1
 Kos_5
   rotate: false
-  xy: 320, 31
-  size: 43, 79
-  orig: 43, 79
+  xy: 143, 14
+  size: 46, 85
+  orig: 46, 85
   offset: 0, 0
   index: -1
 Kos_6
   rotate: false
-  xy: 2, 117
-  size: 176, 137
-  orig: 176, 137
+  xy: 2, 101
+  size: 189, 148
+  orig: 189, 148
   offset: 0, 0
   index: -1
 Kos_7
   rotate: false
-  xy: 144, 22
-  size: 129, 90
-  orig: 129, 90
+  xy: 2, 2
+  size: 139, 97
+  orig: 139, 97
   offset: 0, 0
   index: -1
 Kos_8
-  rotate: false
-  xy: 365, 31
-  size: 43, 79
-  orig: 43, 79
+  rotate: true
+  xy: 777, 203
+  size: 46, 85
+  orig: 46, 85
   offset: 0, 0
   index: -1
 Kos_9
+  rotate: true
+  xy: 864, 202
+  size: 47, 49
+  orig: 47, 49
+  offset: 0, 0
+  index: -1
+red_g
   rotate: false
-  xy: 410, 65
-  size: 44, 45
-  orig: 44, 45
+  xy: 703, 182
+  size: 72, 67
+  orig: 72, 67
   offset: 0, 0
   index: -1

@@ -1,0 +1,13 @@
+
+dollar.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+dollar
+  rotate: false
+  xy: 2, 2
+  size: 128, 197
+  orig: 128, 197
+  offset: 0, 0
+  index: -1

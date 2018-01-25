@@ -6,22 +6,29 @@ filter: Linear,Linear
 repeat: none
 images/E_0007_Layer-1
   rotate: false
-  xy: 203, 44
-  size: 39, 39
-  orig: 39, 39
+  xy: 292, 47
+  size: 42, 42
+  orig: 42, 42
   offset: 0, 0
   index: -1
 images/FS
   rotate: false
-  xy: 203, 85
-  size: 240, 151
-  orig: 240, 151
+  xy: 218, 91
+  size: 258, 163
+  orig: 258, 163
   offset: 0, 0
   index: -1
 images/key
   rotate: false
   xy: 2, 2
-  size: 199, 234
-  orig: 199, 234
+  size: 214, 252
+  orig: 214, 252
+  offset: 0, 0
+  index: -1
+images/red_g
+  rotate: false
+  xy: 218, 22
+  size: 72, 67
+  orig: 72, 67
   offset: 0, 0
   index: -1
