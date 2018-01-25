@@ -38,8 +38,11 @@ class RequestManager {
         timeout = 5000
     }) {
         axios.get(url, { timeout })
-            .then(response => this.$.next({ type, data: response.data }))
-            .catch(error => error)
+            .then(response => {
+                if (response.data.ErrorCode)
+                    this.$.next({ type: 'ERROR', data: response.data })
+                else this.$.next({ type, data: response.data })
+            })
     }
 
     sendDebug() {
