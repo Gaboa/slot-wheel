@@ -25,7 +25,18 @@ const game = new Game({
     }
 })
 
-game.ctrl = new GameController({ game })
+game.ctrl = new GameController({ game, config: {
+    load: {
+        sound: {
+            desktop: {
+                color: 0x9a0025
+            },
+            mobile: {
+                color: 0x9a0025
+            }
+        }
+    }
+} })
 game.ctrl.preload()
 
 // Remove it in Prod mode
