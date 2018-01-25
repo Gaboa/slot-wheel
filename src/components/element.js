@@ -62,22 +62,25 @@ class Element extends Container {
 
         this.index = index
         this.symbols = symbols
-        this.scale.set(0.85)
+        // this.scale.set(0.85)
 
         // this.createSprite('bg')
         // this.createSprite('blur')
         // this.createSprite('static')
-        // this.bottom = new Spine({
-        //     container: this,
-        //     name: 'bottom',
-        //     visible: false
-        // })
+        this.top = new Spine({
+            container: this,
+            name: 'top',
+            // visible: false
+        })
         this.createSpines()
-        // this.top = new Spine({
-        //     container: this,
-        //     name: 'top',
-        //     visible: false
-        // })
+        this.bottom = new Spine({
+            container: this,
+            name: 'bottom',
+
+            // visible: false
+        })
+        this.top.alpha = 0
+        this.bottom.alpha = 0
         // this.top.scale.set(0.8)
         this.win = new WinCircle({ container: this, x: this.w * 0.3, y: this.h * -0.3 })
 
@@ -169,13 +172,16 @@ class Element extends Container {
     }
 
     playWin() {
-        if (this.active)
+        if (this.active && !this.active.isWin)
             this.active.state.setAnimation(0, 'win', true)
 
-        // this.bottom.visible = true
-        // this.top.visible = true
-        // this.bottom.state.setAnimation(0, 'win', true)
-        // this.top.state.setAnimation(0, 'win', true)
+        this.active.isNormal = false
+        this.active.isWin = true
+
+        this.bottom.alpha = 1
+        this.top.alpha = 1
+        this.bottom.state.setAnimation(0, 'win', false)
+        this.top.state.setAnimation(0, 'win', false)
         
         // this.tween = TweenMax.to(this.scale, 0.2, {
         //     x: 1.1,
@@ -186,11 +192,14 @@ class Element extends Container {
     }
     
     playNormal() {
-        if (this.active)
+        if (this.active && !this.active.isNormal)
             this.active.state.setAnimation(0, 'idle', true)
 
-        // this.bottom.visible = false
-        // this.top.visible = false
+        this.active.isNormal = true
+        this.active.isWin = false
+
+        this.bottom.alpha = 0
+        this.top.alpha = 0
 
         // this.tween = TweenMax.to(this.scale, 0.2, {
         //     x: 1,
