@@ -131,9 +131,8 @@ class GameController {
         if (this.config.error.request)
         this.subs.push(
         this.errorRequestSub = this.game.request.$
-            .subscribe({
-                error: (e) => this.game.state.error = e
-            }))
+            .filter(e => e.type === 'ERROR')
+            .subscribe(e => this.game.state.error = e.data))
         
     }
 
