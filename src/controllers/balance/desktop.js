@@ -10,6 +10,10 @@ const defaultConfig = {
     },
     level: true,
     value: true,
+    progress: {
+        level: true,
+        value: true
+    },
     lines: true
 }
 
@@ -54,6 +58,18 @@ class DesktopBalanceController {
         this.subs.push(
         this.valueSub = this.balance.value.current$
             .subscribe(e => this.panel.value.set(e / 100)))
+
+        // Progress bar - Level
+        if (this.config.progress.level)
+        this.subs.push(
+        this.progressLevelSub = this.balance.level.index$
+            .subscribe(e => this.machine.panel.buttons.level.progress.set((e + 1) / this.balance.level.arr.length)))                
+
+        // Progress bar - Value
+        if (this.config.progress.value)
+        this.subs.push(
+        this.progressValueSub = this.balance.value.index$
+            .subscribe(e => this.machine.panel.buttons.value.progress.set((e + 1) / this.balance.value.arr.length)))                
         
         // Coin Bet
         if (this.config.coin.bet)
