@@ -182,4 +182,33 @@ class RootController {
 
 }
 
-export { RootController }
+class MobileFRRootController extends RootController{
+    enable() {
+        super.enable()
+
+        this.subs.push(
+        this.idleButtonsEnableSub = this.state.isIdle$
+            .filter(e => e)
+            .subscribe(e => {
+                this.buttons.enableAll()
+                this.buttons.bet.disable()
+            }))
+    }
+}
+
+class DesktopFRRootController extends RootController{
+    enable() {
+        super.enable()
+
+        this.subs.push(
+        this.idleButtonsEnableSub = this.state.isIdle$
+            .filter(e => e)
+            .subscribe(e => {
+                this.buttons.enableAll()
+                this.buttons.disableBalance()
+            }))
+    }
+}
+
+
+export { RootController, MobileFRRootController, DesktopFRRootController }

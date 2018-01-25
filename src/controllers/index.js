@@ -10,6 +10,6 @@ export { MobileButtonsController }  from './buttons/mobile'
 export { MobileMenuController }     from './buttons/menu'
 // Root
 export { MachineController }   from './machine'
-export { RootController }      from './root'
+export { RootController, MobileFRRootController, DesktopFRRootController }      from './root'
 export { AutoplayController }  from './autoplay'
 export { WinController }       from './win'
