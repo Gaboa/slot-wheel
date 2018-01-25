@@ -120,4 +120,98 @@ class FooterBalanceController {
 
 }
 
-export { FooterBalanceController }
+const defaultFRConfig = {
+    changeAffixes: true,
+    win: {
+        cash: true,
+        coin: true
+    },
+    count: true
+}
+
+class FRFooterBalanceController extends FooterBalanceController {
+    constructor({
+        game,
+        frConfig,
+        config = {},
+        autoEnable = true
+    }) {
+        super({
+            game,
+            config: Object.assign(config, {
+                coin: {
+                    sum: {
+                        idle: false,
+                        end: false
+                    }
+                },
+                cash: {
+                    sum: {
+                        idle: false,
+                        end: false
+                    },
+                    win: {
+                        idle: false,
+                        end: false
+                    }
+                }
+            }),
+            autoEnable: false
+        })
+
+        this.frConfig = defaultsDeep(frConfig, defaultFRConfig)
+
+        if (autoEnable) this.enable()
+    }
+
+    enable() {
+        super.enable()
+
+        if (this.frConfig.changeAffixes)
+        this.changeAffixesToFR()
+
+        if (this.frConfig.win.coin)
+        this.subs.push(
+        this.winCoinSub = this.data.fr.win.coin$
+            .sample(this.state.isRolling$)
+            .subscribe(e => this.top.left.set(e)))
+
+        if (this.frConfig.win.cash)
+        this.subs.push(
+        this.winCashSub = this.data.fr.win.cash$
+            .sample(this.state.isRolling$)
+            .subscribe(e => this.bottom.right.set(e)))
+
+        if (this.frConfig.count)
+        this.subs.push(
+        this.countSub = this.data.fr.count$
+            .sample(this.state.isRolling$)
+            .subscribe(e => this.bottom.left.set(e)))
+    }
+
+    changeAffixesToFR() {
+        this.bottom.left.prefix = 'Free Rounds: '
+        this.bottom.left.suffix = ''
+        this.bottom.left.fixed = 0
+
+        this.bottom.right.prefix = 'Total Win: '
+    }
+
+    changeAffixesToDefault() {
+        this.bottom.left.prefix = 'Cash: '
+        this.footer.balance.setCurrency(this.balance.currency)
+        this.bottom.left.fixed = 2
+
+        this.bottom.right.prefix = 'Win: '
+    }
+
+    disable() {
+        super.disable()
+
+        if (this.frConfig.changeAffixes)
+        this.changeAffixesToDefault()
+    }
+
+}
+
+export { FooterBalanceController, FRFooterBalanceController }

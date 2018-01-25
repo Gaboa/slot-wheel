@@ -1,8 +1,8 @@
 export { GameController } from './game'
 // Balance
 export { BalanceController }        from './balance/common'
-export { FooterBalanceController }  from './balance/footer'
 export { DesktopBalanceController, FRDesktopBalanceController } from './balance/desktop'
+export { FooterBalanceController, FRFooterBalanceController }  from './balance/footer'
 // Buttons
 export { FooterButtonsController }  from './buttons/footer'
 export { PanelButtonsController }   from './buttons/panel'
