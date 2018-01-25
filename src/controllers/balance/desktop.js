@@ -42,7 +42,7 @@ class DesktopBalanceController {
         this.subs.push(
         this.linesSub = this.data.lines$
             .subscribe(e => this.panel.lines.set(e.length)))
-        
+
         // Level
         if (this.config.level)
         this.subs.push(
@@ -83,4 +83,59 @@ class DesktopBalanceController {
 
 }
 
-export { DesktopBalanceController }
+const defaultFRConfig = {
+	changeHeader: true,
+	coin: {
+		sum: {
+		    idle: true,
+            end: true
+        }
+	}
+}
+
+class FRDesktopBalanceController extends DesktopBalanceController {
+	constructor({
+        game,
+        frConfig,
+        config = {},
+        autoEnable = true
+    }) {
+		super({
+			game,
+			config: Object.assign(config, {
+				coin: {
+					sum: {
+						idle: false,
+						end: false
+					}
+				}
+			}),
+			autoEnable: false
+		})
+
+		this.frConfig = defaultsDeep(frConfig, defaultFRConfig)
+
+		if (autoEnable) this.enable()
+	}
+
+	enable() {
+	    super.enable()
+
+		// Coin Sum in Idle
+		if (this.frConfig.coin.sum.idle)
+			this.subs.push(
+				this.coinSumIdleSub = this.data.fr.win.coin$
+					.filter(e => !this.state.isRolling)
+					.subscribe(e => this.panel.sum.set(e)))
+
+		// Coin Sum at Roll End
+		if (this.frConfig.coin.sum.end)
+			this.subs.push(
+				this.coinSumEndSub = this.data.fr.win.coin$
+					.filter(e => this.state.isRolling)
+					.sample(this.state.isRolling$)
+					.subscribe(e => this.panel.sum.set(e)))
+    }
+}
+
+export { DesktopBalanceController, FRDesktopBalanceController }
