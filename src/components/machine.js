@@ -155,10 +155,6 @@ class Machine extends Container {
         //     y: -0.343
         // })
 
-        // Oswald Medium 36
-        // ffec82
-        // fff946 25 % 10px 
-
         // Panel with Buttons and Balance
         if (this.config.panel)        
         this.panel = new Panel({
@@ -170,12 +166,7 @@ class Machine extends Container {
                         fontFamily: 'Oswald, Arial, Helvetica',
                         fill: '#ffec82',
                         fontSize: 36,
-                        fontWeight: 600,
-                        dropShadow: true,
-                        dropShadowAlpha: 0.8,
-                        dropShadowColor: '#fff946',
-                        dropShadowBlur: 5,
-                        dropShadowDistance: 0
+                        fontWeight: 600
                     },
                     sum: {
                         x: 0.28
@@ -205,12 +196,22 @@ class Machine extends Container {
                     level: {
                         x: -0.1635,
                         y: 0.015,
-                        delta: 0.051
+                        delta: 0.051,
+                        progress: {
+                            x: -0.1795,
+                            y: 0.033,
+                            w: 0.032552
+                        }
                     },
                     value: {
                         x: 0.175,
                         y: 0.015,
-                        delta: 0.074
+                        delta: 0.074,
+                        progress: {
+                            x: 0.1475,
+                            y: 0.033,
+                            w: 0.0546875
+                        }
                     },
                 }
             }
@@ -239,7 +240,10 @@ class Machine extends Container {
 
         // Win Table
         if (this.config.table)        
-        this.table = new WinTable({ container: this })
+        this.table = new WinTable({
+            container: this,
+            y: 0.0213
+        })
 
     }
 
