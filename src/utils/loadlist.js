@@ -28,6 +28,7 @@ const common = [
     { name: 'logo',       url: 'machine/logo.json' },
     { name: 'splash',     url: 'machine/splash.json' },
 
+    { name: 'progress',   url: 'machine/progress.png' },
     { name: 'tile',       url: 'machine/tile.png' },
     { name: 'machine_bg', url: 'machine/bg.png' },
     { name: 'number_off', url: 'machine/number_off.png' },
