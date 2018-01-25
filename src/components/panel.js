@@ -4,14 +4,14 @@ import { Container, Spine, Button, Sprite, BalanceText } from "../utils"
 
 const defaultButtonsConfig = {
     level: {
-        x: -0.128,
+        x: -0.133,
         y: 0,
-        delta: 0.075
+        delta: 0.075,
     },
     value: {
         x: 0.132,
         y: 0,
-        delta: 0.075
+        delta: 0.075,
     },
     auto: {
         x: -0.065,
@@ -325,6 +325,14 @@ class Buttons extends Container {
         })
         this[name].minus.name = `${name}_minus`
         this.items.push(this[name].minus, this[name].plus)
+        this[name].progress = new ProgressBar({
+            container: this,
+            texture: 'progress',
+            x: this.config[name].progress.x,
+            y: this.config[name].progress.y,
+            w: this.config[name].progress.w
+        })
+        this[name].progress.set(1)
     }
 
     enableAll() {
@@ -352,6 +360,25 @@ class Buttons extends Container {
         this.level.plus.enable()
         this.value.minus.enable()
         this.value.plus.enable()
+    }
+
+}
+
+class ProgressBar extends Sprite {
+
+    constructor({
+        container,
+        texture,
+        x,
+        y,
+        w
+    }) {
+        super({ container, anchor: 0, x, y, texture })
+        this.w = w
+    }
+
+    set(value) {
+        this.width = value * this.w * GAME_WIDTH
     }
 
 }
@@ -386,4 +413,4 @@ class Balance extends Container {
 
 }
 
-export { Panel, Balance, Buttons, AutoCounter, AutoPanel }
+export { Panel, Balance, Buttons, AutoCounter, AutoPanel, ProgressBar }
