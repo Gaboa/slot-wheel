@@ -8,66 +8,60 @@ import { Container, Sprite, JumpingButton, Darkness, Bar, Light, SoundTrigger } 
 
 const defaultConfig = {
 
-    // Lists for loading
     preload: [],
-
     common: [],
+    mobile: [],
+    desktop: [],
     fullhd: [],
     hd: [],
 
-    mobile: [],
-    desktop: [],
-
     music: 'init',
 
-    /*-----------------------*/
-    /* -------- View ------- */
-    /*-----------------------*/
+    view: [
+        'bg',
+        'bar',
+        'light',
+        'logo',
+        'copy',
+        'button',
+        'sound',
+        'darkness'
+    ],
 
-    // BG
     bg: {
-        active: true,
+        Constructor: Sprite,
         texture: 'preload_bg',
         name: 'bg',
         x: 0,
-        y: 0,
-        Constructor: Sprite
+        y: 0
     },
 
-    // Bar
     bar: {
-        active: true,
+        Constructor: Bar,
         texture: 'preload_bar',
         name: 'bar',
         x: 0,
-        y: 0.335,
-        Constructor: Bar
+        y: 0.335
     },
 
-    // Light
     light: {
-        active: true,
+        Constructor: Light,
         texture: 'preload_light',
         name: 'light',
         x: 0,
         y: -0.1,
-        alpha: 0.4,
-        Constructor: Light                
+        alpha: 0.4
     },
 
-    // Logo
     logo: {
-        active: true,
+        Constructor: Sprite,
         texture: 'preload_logo',
         name: 'logo',
         x: 0,
-        y: -0.1,
-        Constructor: Sprite
+        y: -0.1
     },
 
-    // Copyright
     copy: {
-        active: true,
         Constructor: Sprite,
         desktop: {
             texture: 'preload_copy',
@@ -85,22 +79,18 @@ const defaultConfig = {
         }
     },
 
-    // Button
     button: {
-        active: true,
+        Constructor: JumpingButton,
         texture: 'preload_button',
         name: 'button',
         x: 0,
         y: 0.6,
         tweenY: 0.35,
         startScale: 0.85,
-        endScale: 1.15,
-        Constructor: JumpingButton
+        endScale: 1.15
     },
 
-    // Sound
     sound: {
-        active: true,
         Constructor: SoundTrigger,            
         desktop: {
             x: 0.395,
@@ -118,14 +108,12 @@ const defaultConfig = {
         }
     },
 
-    // Darkness
     darkness: {
-        active: true,
+        Constructor: Darkness,
         x: 0,
         y: 0,
         autoShow: false,
         autoHide: true,
-        Constructor: Darkness        
     }
 
 }
@@ -140,8 +128,8 @@ class Preload extends Container {
         super({ container: game.stage, x: 0.5, y: 0.5 })
         this.game = game
         this.base = base
-        
-        this.config = defaultsDeep(defaultConfig, config)
+
+        this.config = defaultsDeep(config, defaultConfig)
         this.createLoaders()
 
         this.enablePreload()
@@ -292,16 +280,15 @@ class Preload extends Container {
     }
 
     create() {
-        for (let item in this.config)
+        for (let item of this.config.view)
             this.addView(item)
         this.$.next('CREATED')
     }
 
     addView(name) {
-        if (this.config[name].active)
-            this[name] = new this.config[name].Constructor(Object.assign({
-                container: this
-            }, this.config[name][GAME_DEVICE] || this.config[name]))
+        this[name] = new this.config[name].Constructor(Object.assign({
+            container: this
+        }, this.config[name][GAME_DEVICE] || this.config[name]))
     }
 
     remove() {
