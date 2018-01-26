@@ -1,0 +1,20 @@
+
+queen.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+q
+  rotate: false
+  xy: 2, 2
+  size: 102, 101
+  orig: 102, 101
+  offset: 0, 0
+  index: -1
+red_g
+  rotate: false
+  xy: 106, 77
+  size: 28, 26
+  orig: 28, 26
+  offset: 0, 0
+  index: -1

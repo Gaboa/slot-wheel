@@ -1,0 +1,20 @@
+
+jack.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+j
+  rotate: false
+  xy: 2, 30
+  size: 99, 93
+  orig: 99, 93
+  offset: 0, 0
+  index: -1
+red_g
+  rotate: false
+  xy: 2, 2
+  size: 28, 26
+  orig: 28, 26
+  offset: 0, 0
+  index: -1

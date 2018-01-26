@@ -1,34 +1,34 @@
 
 wild.png
-size: 1024,256
+size: 512,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 Wild
   rotate: false
-  xy: 668, 139
-  size: 167, 83
-  orig: 167, 83
+  xy: 2, 2
+  size: 107, 53
+  orig: 107, 53
   offset: 0, 0
   index: -1
 john_1
   rotate: false
-  xy: 2, 2
-  size: 220, 220
-  orig: 220, 220
+  xy: 2, 57
+  size: 140, 140
+  orig: 140, 140
   offset: 0, 0
   index: -1
 john_2
   rotate: false
-  xy: 224, 2
-  size: 220, 220
-  orig: 220, 220
+  xy: 144, 57
+  size: 140, 140
+  orig: 140, 140
   offset: 0, 0
   index: -1
 john_3
   rotate: false
-  xy: 446, 2
-  size: 220, 220
-  orig: 220, 220
+  xy: 286, 57
+  size: 140, 140
+  orig: 140, 140
   offset: 0, 0
   index: -1
