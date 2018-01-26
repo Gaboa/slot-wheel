@@ -234,7 +234,7 @@ class Buttons extends Container {
 
         this.anim = new Spine(Object.assign({
             container: this,
-            name: 'spin'
+            name: 'jack'
         }, this.config.spin))
         this.panel = new AutoPanel(Object.assign({
             container: this

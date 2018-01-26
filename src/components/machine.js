@@ -186,11 +186,11 @@ class Machine extends Container {
                 },
                 buttons: {
                     max: {
-                        x: 141,
+                        x: 0.0734,
                         y: -1
                     },
                     auto: {
-                        x: -141,
+                        x: -0.0734,
                         y: -1
                     },
                     level: {
