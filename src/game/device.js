@@ -51,7 +51,7 @@ class DeviceManager {
         this.search = new URLSearchParams(this.searchString)
 
         this.search.device = this.search.get('device')
-        this.search.res    = this.search.get('res')
+        this.search.res = this.search.get('res') || this.search.get('resolution')
 
         if (this.search.device === 'mobile') {
             this.isMobile = () => true
