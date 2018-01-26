@@ -1,6 +1,7 @@
 import defaultsDeep from 'lodash.defaultsdeep'
 import { Preload, DesktopRoot, MobileRoot } from '../levels'
 import { preload, common, desktop, mobile } from '../utils'
+import { Observable } from 'rxjs/Observable';
 
 const defaultGameConfig = {
     init: true,
@@ -74,6 +75,11 @@ class GameController {
         this.leaveSub = this.game.device.$
             .filter(e => e.type === 'LEAVE')
             .subscribe(e => this.game.request.sendLogout()))
+
+        if (this.config.fullscreen)
+        this.subs.push(
+        this.fullscreenMobileSub = Observable.fromEvent(document, 'touchend')
+            .subscribe(e => this.settings.isFullscreen = true))
 
         if (this.config.fullscreen)
         this.subs.push(
