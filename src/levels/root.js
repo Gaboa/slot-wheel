@@ -42,9 +42,9 @@ class MobileRoot extends Container {
 
         this.machine = new Machine({
             container: this,
-            x: -0.1,
-            y: -0.01,
-            scale: 1.07,
+            x: -0.064,
+            y: -0.0333,
+            scale: 1.05,
             config: {
                 symbols: game.data.symbols,
                 lines:   game.data.lines,
@@ -54,7 +54,7 @@ class MobileRoot extends Container {
 
         this.buttons = new MobileButtons({
             container: this,
-            x: 0.375,
+            x: 0.4,
             y: -0.02
         })
 
