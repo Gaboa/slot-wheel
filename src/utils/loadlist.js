@@ -23,13 +23,13 @@ const common = [
     { name: 'bottom', url: 'machine/elements/bottom.json' },
 
     { url: 'footer/buttons.json' },
-    { url: 'machine/numbers.json' },
+    // { url: 'machine/numbers.json' },
     
-    { name: 'logo',       url: 'machine/logo.json' },
+    // { name: 'logo',       url: 'machine/logo.json' },
     { name: 'splash',     url: 'machine/splash.json' },
 
     { name: 'progress',   url: 'machine/progress.png' },
-    { name: 'tile',       url: 'machine/tile.png' },
+    // { name: 'tile',       url: 'machine/tile.png' },
     { name: 'machine_bg', url: 'machine/bg.png' },
     { name: 'number_off', url: 'machine/number_off.png' },
     { name: 'number_on',  url: 'machine/number_on.png' },
@@ -45,10 +45,10 @@ const mobile = [
 
 const desktop = [
     { url: 'machine/buttons.json' },
-    { name: 'panel',      url: 'machine/panel.json' },
-    { name: 'spin',       url: 'machine/button.json' },
+    // { name: 'panel',      url: 'machine/panel.json' },
+    // { name: 'spin',       url: 'machine/button.json' },
     { name: 'panel_root', url: 'machine/panel_root.png' },
-    { name: 'panel_fs',   url: 'machine/panel_fs.png' }
+    // { name: 'panel_fs',   url: 'machine/panel_fs.png' }
 ]
 
 const sprites = [
