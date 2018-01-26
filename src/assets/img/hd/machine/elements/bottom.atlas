@@ -1,0 +1,34 @@
+
+bottom.png
+size: 64,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+images/E_0007_Layer-1
+  rotate: false
+  xy: 24, 7
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
+images/FF_0000_Layer-5
+  rotate: false
+  xy: 2, 2
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+images/FF_0003_Layer-2
+  rotate: false
+  xy: 34, 34
+  size: 20, 19
+  orig: 20, 19
+  offset: 0, 0
+  index: -1
+images/misc_light_element_png_by_dbszabo1-d54jfun
+  rotate: false
+  xy: 2, 24
+  size: 30, 29
+  orig: 30, 29
+  offset: 0, 0
+  index: -1

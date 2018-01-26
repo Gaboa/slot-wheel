@@ -1,0 +1,76 @@
+
+purse.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Kos_1
+  rotate: true
+  xy: 2, 19
+  size: 30, 69
+  orig: 30, 69
+  offset: 0, 0
+  index: -1
+Kos_2
+  rotate: false
+  xy: 126, 150
+  size: 112, 97
+  orig: 112, 97
+  offset: 0, 0
+  index: -1
+Kos_3
+  rotate: false
+  xy: 2, 51
+  size: 103, 99
+  orig: 103, 99
+  offset: 0, 0
+  index: -1
+Kos_4
+  rotate: false
+  xy: 107, 51
+  size: 78, 97
+  orig: 78, 97
+  offset: 0, 0
+  index: -1
+Kos_5
+  rotate: false
+  xy: 187, 2
+  size: 30, 55
+  orig: 30, 55
+  offset: 0, 0
+  index: -1
+Kos_6
+  rotate: false
+  xy: 2, 152
+  size: 122, 95
+  orig: 122, 95
+  offset: 0, 0
+  index: -1
+Kos_7
+  rotate: true
+  xy: 187, 59
+  size: 89, 63
+  orig: 89, 63
+  offset: 0, 0
+  index: -1
+Kos_8
+  rotate: false
+  xy: 219, 2
+  size: 30, 55
+  orig: 30, 55
+  offset: 0, 0
+  index: -1
+Kos_9
+  rotate: false
+  xy: 118, 18
+  size: 30, 31
+  orig: 30, 31
+  offset: 0, 0
+  index: -1
+red_g
+  rotate: true
+  xy: 73, 3
+  size: 46, 43
+  orig: 46, 43
+  offset: 0, 0
+  index: -1

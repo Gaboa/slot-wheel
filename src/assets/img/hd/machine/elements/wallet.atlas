@@ -1,0 +1,41 @@
+
+wallet.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bp_1
+  rotate: false
+  xy: 2, 2
+  size: 96, 81
+  orig: 96, 81
+  offset: 0, 0
+  index: -1
+bp_2
+  rotate: false
+  xy: 162, 101
+  size: 139, 129
+  orig: 139, 129
+  offset: 0, 0
+  index: -1
+bp_3
+  rotate: false
+  xy: 2, 85
+  size: 158, 145
+  orig: 158, 145
+  offset: 0, 0
+  index: -1
+bp_4
+  rotate: false
+  xy: 100, 42
+  size: 47, 41
+  orig: 47, 41
+  offset: 0, 0
+  index: -1
+red_g
+  rotate: false
+  xy: 303, 187
+  size: 46, 43
+  orig: 46, 43
+  offset: 0, 0
+  index: -1

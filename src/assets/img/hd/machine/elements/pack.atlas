@@ -1,0 +1,48 @@
+
+pack.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+money_1
+  rotate: false
+  xy: 140, 36
+  size: 28, 43
+  orig: 28, 43
+  offset: 0, 0
+  index: -1
+money_2
+  rotate: false
+  xy: 2, 26
+  size: 136, 98
+  orig: 136, 98
+  offset: 0, 0
+  index: -1
+money_3
+  rotate: true
+  xy: 2, 2
+  size: 22, 31
+  orig: 22, 31
+  offset: 0, 0
+  index: -1
+money_4
+  rotate: false
+  xy: 170, 48
+  size: 28, 31
+  orig: 28, 31
+  offset: 0, 0
+  index: -1
+money_5
+  rotate: true
+  xy: 188, 94
+  size: 30, 55
+  orig: 30, 55
+  offset: 0, 0
+  index: -1
+red_g
+  rotate: false
+  xy: 140, 81
+  size: 46, 43
+  orig: 46, 43
+  offset: 0, 0
+  index: -1

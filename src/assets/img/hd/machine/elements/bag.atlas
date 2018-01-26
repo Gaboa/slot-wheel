@@ -1,0 +1,48 @@
+
+bag.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bag_3
+  rotate: false
+  xy: 2, 17
+  size: 87, 106
+  orig: 87, 106
+  offset: 0, 0
+  index: -1
+bag_4
+  rotate: false
+  xy: 91, 62
+  size: 26, 61
+  orig: 26, 61
+  offset: 0, 0
+  index: -1
+bag_6
+  rotate: false
+  xy: 91, 32
+  size: 25, 28
+  orig: 25, 28
+  offset: 0, 0
+  index: -1
+bag_7
+  rotate: true
+  xy: 119, 68
+  size: 19, 28
+  orig: 19, 28
+  offset: 0, 0
+  index: -1
+bag_8
+  rotate: false
+  xy: 2, 2
+  size: 26, 13
+  orig: 26, 13
+  offset: 0, 0
+  index: -1
+red_g
+  rotate: false
+  xy: 119, 89
+  size: 36, 34
+  orig: 36, 34
+  offset: 0, 0
+  index: -1
