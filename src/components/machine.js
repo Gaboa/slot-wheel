@@ -68,10 +68,14 @@ export class Logo extends Spine{
             y 
         })
         this.$
-        .filter(n => n.type === 'END' && n.anim === 'idle')
+        .filter(n => n.type === 'COMPLETE' && n.anim === 'open')
         .subscribe(n => {
+            console.log(n)
             this.setAnimation({track:0, animation: 'idle_fs', loop: true })
         })
+        this.$
+        .filter(n => n.type === 'COMPLETE' && n.anim === 'close')
+        .subscribe(n => this.setAnimation({track:0, animation: 'idle', loop: true }))
     }
 
     setAnimation({track, animation, loop}){
