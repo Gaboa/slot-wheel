@@ -1,7 +1,7 @@
 import defaultsDeep from 'lodash.defaultsdeep'
 import { Subject, Observable } from 'rxjs'
 import { Container, Sprite, Darkness } from '../utils'
-import { Machine, Footer, MobileButtons, MobileMenu } from '../components'
+import { Machine, Footer, MobileButtons, MobileMenu, Transition } from '../components'
 import {
     BalanceController,
     FooterBalanceController,
@@ -13,7 +13,8 @@ import {
     MobileMenuController,
     RootController,
     WinController,
-    AutoplayController
+    AutoplayController,
+    TransitionController
 } from '../controllers'
 
 import { Info } from '../components/info'
@@ -71,6 +72,7 @@ class MobileRoot extends Container {
             autoHide:  true
         })
 
+        this.transition =  new Transition({ container: this.game.stage })
         document.querySelectorAll('.darkness__hidden').forEach(el => el.remove())
         this.info = new Info({})
         this.settings = new Settings({})
@@ -106,11 +108,16 @@ class MobileRoot extends Container {
                 footer: {
                     enable: false,
                     disable: false
-                }
+                },
+            },
+            transition:{
+                in: true,
+                out: true
             }
         }})
         this.winCtrl  = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
+        this.transitionController =  new TransitionController({ game: this.game })
     }
 
     disable() {
@@ -121,7 +128,8 @@ class MobileRoot extends Container {
         this.machineCtrl.disable()        
         this.ctrl.disable()
         this.winCtrl.disable()
-        this.autoCtrl.disable()
+        this.autoCtrl.disable() 
+        this.transitionController.disable() 
     }
 
     remove() {
@@ -169,6 +177,7 @@ class DesktopRoot extends Container {
             autoHide:  true
         })
 
+        this.transition =  new Transition({container: this.game.stage})
         document.querySelectorAll('.darkness__hidden').forEach(el => el.remove())
         this.info = new Info({})
         this.settings = new Settings({})
@@ -189,10 +198,17 @@ class DesktopRoot extends Container {
         this.footerCtrl = new FooterButtonsController({ game: this.game })
         this.panelCtrl  = new PanelButtonsController({ game: this.game })
         // Logic
+        this.ctrl     = new RootController({ game: this.game, config: {
+            transition: {
+                in: true,
+                out: true
+            }
+        } })
+        this.winCtrl  = new WinController({ game: this.game })
         this.machineCtrl = new MachineController({ game: this.game })
-        this.ctrl = new RootController({ game: this.game })
         this.winCtrl = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
+        this.transitionController =  new TransitionController({ game: this.game })
     }
 
     disable() {
@@ -205,6 +221,7 @@ class DesktopRoot extends Container {
         this.ctrl.disable()
         this.winCtrl.disable()
         this.autoCtrl.disable()
+        this.transitionController.disable() 
     }
 
     remove() {

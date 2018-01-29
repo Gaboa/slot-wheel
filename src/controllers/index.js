@@ -13,3 +13,5 @@ export { MachineController }   from './machine'
 export { RootController }      from './root'
 export { AutoplayController }  from './autoplay'
 export { WinController }       from './win'
+
+export { TransitionController } from './transition' 

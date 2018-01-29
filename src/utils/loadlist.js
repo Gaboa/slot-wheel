@@ -31,6 +31,12 @@ const common = [
     { name: 'win_table',  url: 'machine/win_table.png' },
     { name: 'win_circle', url: 'machine/win_circle.png' },
 
+    //transition
+    { name: 'transition', url:'transition/transition.json'},
+    { name: 'bitmap', url:'transition/bitmap-export.xml'},
+    { name: 'food', url:'transition/logo.json'},
+    { url: 'preload/preload.json' }
+
     { name: 'count_fs', url: 'fs/count_fs.png' },
     { name: 'multi_fs', url: 'fs/multi_fs.png' },
     { name: 'bitmap', url:'transition/bitmap-export.xml'},

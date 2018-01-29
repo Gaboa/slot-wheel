@@ -1,5 +1,8 @@
 import defaultsDeep from 'lodash.defaultsdeep'
 import { FSController } from './fs'
+import { TransitionController } from './transition'
+import { Transition } from '../components/transition'
+import { Container, Sprite, Light, Darkness, JumpingButton } from '../utils'
 
 const defaultConfig = {
 
@@ -38,6 +41,7 @@ class RootController {
         this.balance = this.data.balance
         this.footer  = this.level.footer
         this.machine = this.level.machine
+        this.transition = this.level.transition
         this.buttons = this.level.machine.panel
             ? this.level.machine.panel.buttons
             : this.level.buttons
@@ -173,19 +177,14 @@ class RootController {
         this.rollingTransitionSub = this.state.isRolling$
             .filter(e => !e) // End of roll
             .filter(e => this.state.next !== 'root') // Next is not Root
+            .subscribe(e => this.state.isTransition = true))
+        if(this.config.transition){
+            this.transitionInSub = this.state.isTransition$
+            .filter(e => e)
             .subscribe(e => {
-                this.state.isTransition = true
-                
-                this.game.root.fs = new FSController({
-                    game: this.game,
-                    //data: this.data,
-                    state: this.state
-                })
-
-                // в контроллере вырубить существующие баланс контроллеры 
-                // и подключить новые
-
-            }))
+                this.game.root.transitionController.draw()
+            })
+        }
         
     }
 
