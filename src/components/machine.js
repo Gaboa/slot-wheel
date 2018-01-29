@@ -54,6 +54,32 @@ const defaultMachineConfig = {
     table: true
 }
 
+export class Logo extends Spine{
+    constructor({
+        container,
+        name,
+        anim,
+        y
+    }){
+        super({
+            container,
+            name,
+            anim,
+            y 
+        })
+        this.$
+        .filter(n => n.type === 'END' && n.anim === 'idle')
+        .subscribe(n => {
+            this.setAnimation({track:0, animation: 'idle_fs', loop: true })
+        })
+    }
+
+    setAnimation({track, animation, loop}){
+        this.state.setAnimation(track, animation, loop)
+    }
+
+}
+
 class Machine extends Container {
 
     constructor({
@@ -140,7 +166,7 @@ class Machine extends Container {
 
         // Machine Logo
         if (this.config.logo)        
-        this.logo = new Spine({
+        this.logo = new Logo({
             container: this,
             name: 'logo',
             anim: { track: 0, name: 'idle', repeat: true },
@@ -160,8 +186,9 @@ class Machine extends Container {
         this.table = new WinTable({ container: this })
 
     }
-
 }
+
+
 
 export {
     Machine,
