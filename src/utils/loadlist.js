@@ -33,6 +33,8 @@ const common = [
 
     { name: 'count_fs', url: 'fs/count_fs.png' },
     { name: 'multi_fs', url: 'fs/multi_fs.png' },
+    { name: 'bitmap', url:'transition/bitmap-export.xml'},
+    { name: 'fs_collector', url:'transition/logo.json'},
 ]
 
 const mobile = [

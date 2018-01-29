@@ -1,0 +1,44 @@
+{"frames": {
+
+"big_win":
+{
+	"frame": {"x":1027,"y":484,"w":723,"h":211},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":76,"y":66,"w":723,"h":211},
+	"sourceSize": {"w":873,"h":341}
+},
+"bonus_game":
+{
+	"frame": {"x":1027,"y":1,"w":897,"h":243},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":29,"w":897,"h":243},
+	"sourceSize": {"w":900,"h":300}
+},
+"popup":
+{
+	"frame": {"x":1,"y":1,"w":1024,"h":700},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1024,"h":700},
+	"sourceSize": {"w":1024,"h":700}
+},
+"total_win":
+{
+	"frame": {"x":1027,"y":246,"w":841,"h":236},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":17,"y":53,"w":841,"h":236},
+	"sourceSize": {"w":873,"h":341}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "transition.png",
+	"format": "RGBA8888",
+	"size": {"w":1925,"h":702},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:c18bd63b3c6823fbe7f1f53c7b0bc92a:4dcfa319603ccb45dc70a43d9327f8cd:83734d10d2f54c9f9ce0dc2dfe154c69$"
+}
+}
