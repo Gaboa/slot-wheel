@@ -33,10 +33,9 @@ const common = [
 
     //transition
     { name: 'transition', url:'transition/transition.json'},
-    { name: 'bitmap', url:'transition/bitmap-export.xml'},
-    { name: 'food', url:'transition/logo.json'},
-    { url: 'preload/preload.json' }
+    { url: 'preload/preload.json' },
 
+    // fs
     { name: 'count_fs', url: 'fs/count_fs.png' },
     { name: 'multi_fs', url: 'fs/multi_fs.png' },
     { name: 'bitmap', url:'transition/bitmap-export.xml'},
