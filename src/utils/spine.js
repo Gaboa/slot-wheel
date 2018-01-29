@@ -10,6 +10,7 @@ class Spine extends PIXI.spine.Spine {
         anim,
         index,
         visible = true,
+        scale = 1,
         mixes = [
             ['idle', 'win', 0.15],
             ['win', 'idle', 0.15]
@@ -21,6 +22,8 @@ class Spine extends PIXI.spine.Spine {
         this.visible = visible
         this.mixes = mixes
         this.name = name
+
+        this.scale.set(scale)
 
         // Index of child
         this.container = container
