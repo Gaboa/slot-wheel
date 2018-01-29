@@ -414,7 +414,8 @@ class Panel extends Container {
     createSingleViewItem(item){
         this[item.name] = new item.Constructor(Object.assign(
             {container: this},
-            item.general
+            item.general,
+            item[GAME_DEVICE] || {}
         ))
         
     }
