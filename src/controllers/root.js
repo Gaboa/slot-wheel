@@ -1,5 +1,5 @@
 import defaultsDeep from 'lodash.defaultsdeep'
-import { FSView } from '../components/fsView'
+import { FSController } from './fs'
 
 const defaultConfig = {
 
@@ -176,11 +176,10 @@ class RootController {
             .subscribe(e => {
                 this.state.isTransition = true
                 
-                this.game.root.fs = new FSView({
-                    container: this.game.stage,
-                    x: 0.5,
-                    y: 0.5,
-                    game: this.game
+                this.game.root.fs = new FSController({
+                    game: this.game,
+                    //data: this.data,
+                    state: this.state
                 })
 
                 // в контроллере вырубить существующие баланс контроллеры 
