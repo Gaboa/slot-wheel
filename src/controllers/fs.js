@@ -11,6 +11,12 @@ const defaultConfig = {
         4: 'owl',
         5: 'cat'
     },
+    itemsMap:{
+        2: 'cheese',
+        3: 'coffee',
+        4: 'cheese',
+        5: 'coin'
+    }
 }
 
 export class FSController{
@@ -19,14 +25,16 @@ export class FSController{
         data = {
             fs:{
                 bonus:{},
-                count: 15,
+                count: {
+                    current: 10,
+                    win: null
+                },
                 level: 0,
                 multi: 4,
                 win:{
                     cash:0,
                     coin:0
                 },
-                maxLevel: 15
             }
             
         },
@@ -65,7 +73,7 @@ export class FSController{
                     multi: {},
                     counterBitmap:{
                         general:{
-                            text: `${this.data.fs.count}`
+                            text: `${this.data.fs.count.current}`
                         }
                     },
                     multiBitmap:{
@@ -82,7 +90,14 @@ export class FSController{
                             }
                         }
                     }
-                ]
+                ],
+                collector:{
+                    settings:{
+                        item:{
+                            texture: `${this.config.itemsMap[this.data.fs.multi]}`
+                        }
+                    }
+                }
             }
         })
     }
@@ -92,7 +107,6 @@ export class FSController{
             this.pigSub = this.game.root.pig$
             // some filter on pig events
             .subscribe( n => {
-                this.data.fs.level++
                 this.$.next(this.data.fs) 
             }),
             
@@ -105,6 +119,12 @@ export class FSController{
                     this.fsView.collector.showItem()
                 }
             }),
+
+            // this.animalSub = this.data.win.lines$
+            //     .sample(this.state.isRolling$)
+            //     .subscribe(n => {
+            //         this.fsView.doItWhenWin()
+            //     })
 
         )    
         this.fsView.$.next({})
