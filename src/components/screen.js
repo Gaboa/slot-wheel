@@ -17,6 +17,7 @@ const defaultConfig = {
 
     el: {
         Element,
+        noLine: { el: '10', type: 'spine' },
         symbols: [],
         amount:  5,
         aside:   1,
@@ -277,11 +278,13 @@ class Screen extends Container {
     // Getters for Elements
     getElementsFromLine({ number, amount }) {
         // TODO: Add parsing this type of lines
-        if (number < 0) return null
         const result = []
-        this.config.lines[number - 1]
-            .filter((el, i) => i < amount)
-            .forEach(el => result.push(this.element(el.x, el.y)))
+        if (number < 0)
+            result.push(...this.getElementsWithAnim(this.config.el.noLine))
+        else 
+            this.config.lines[number - 1]
+                .filter((el, i) => i < amount)
+                .forEach(el => result.push(this.element(el.x, el.y)))
         return result
     }
     getElementsFromLines(config) {
