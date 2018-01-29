@@ -1,14 +1,21 @@
 import defaultsDeep from 'lodash.defaultsdeep'
-import { Container, Sprite, Light, Darkness, JumpingButton, BitmapText, Emitter, Spine } from '../utils'
 import { Subject } from 'rxjs'
-import { TweenMax } from 'gsap';
-
+import { TweenMax } from 'gsap'
+import { Container, Sprite, Light, Darkness, JumpingButton, BitmapText, Emitter, Spine } from '../utils'
 
 const defaultConfig = {
     fs:{
         in: {
+            views: [
+                'darkness',
+                'bg',
+                'animal',
+                'title',
+                'count',
+                'multi',
+                'button'
+            ],
             darkness: {
-                active: true,
                 Constructor: Darkness,
                 general:{
                     autoShow: true,
@@ -24,46 +31,7 @@ const defaultConfig = {
                 }
                                       
             },
-            emitter: {
-                active: false,
-                Constructor: Emitter,
-                general:{
-                    name: 'emitter',
-                    textures: ['cheese'],
-                    data: {
-                        scale:
-                            {start: 1, end:1, minimumScaleMultiplier:0.5},
-                        color:
-                            {start:'ffffff',end:'ffffff'},
-                        speed:
-                            {start:200, end:250},
-                        startRotation:
-                            {min:80,max:100},
-                        rotationSpeed:
-                            {min:-200,max:200},
-                        lifetime:
-                            {min:5.5,max:6},
-                        blendMode:'normal',           
-                        frequency: 0.08,
-                        maxParticles: 100,
-                        pos:
-                            {x:0,y:0},
-                        addAtBack:true,
-                        spawnType:'rect',
-                    }
-                },
-                desktop:{
-                    x:0,
-                    y:0,
-                },
-                mobile:{
-                    x:0,
-                    y:0
-                }
-
-            },
-            bg:{
-                active: true,
+            bg: {
                 Constructor: Sprite,
                 general:{
                     name: 'bg',
@@ -80,52 +48,28 @@ const defaultConfig = {
                 
                 }
             },
-            light: {
-                active: false,
-                Constructor: Light,
+            animal: {
+                Constructor: Sprite,
                 general:{
-                    texture: 'preload_light',
-                    name: 'light',
-                    alpha: 0.4,
+                    name: 'animal',
+                    texture: 'static_owl',
+                    alpha: 1,
+                    scale: 2
                 },
                 desktop: {
                     x: 0,
-                    y: -0.1,
+                    y: 0
                 },
                 mobile: {
                     x: 0,
-                    y: -0.1,
+                    y: -0
                 }
-                               
             },
-            characters:[
-                {
-                    animal:{
-                        active: true,
-                            Constructor: Sprite,
-                            general:{
-                                name: 'animal',
-                                texture: 'static_owl',
-                                alpha: 1,
-                                scale: 2
-                            },
-                            desktop: {
-                                x: 0,
-                                y: 0
-                            },
-                            mobile: {
-                                x: 0,
-                                y: -0
-                            }
-                    }
-                }
-            ],
-            topTitle: {
-                active: true,
+            title: {
                 Constructor: Sprite,
                 general:{
                     texture: 'bonus_game',
-                    name: 'topTitle',
+                    name: 'title',
                 },
                 desktop: {
                     x: 0,
@@ -136,24 +80,7 @@ const defaultConfig = {
                     y: -0.2981,
                 }              
             },
-            bottomTitle: {
-                active: false,
-                Constructor: Sprite,
-                general:{
-                    texture: 'big_win',
-                    name: 'bottomTitle',
-                },
-                desktop: {
-                    x: 0,
-                    y: 0.087,
-                },
-                mobile: {
-                    x: 0,
-                    y: 0.087,
-                }
-            },
-            button:{
-                active: true,
+            button: {
                 Constructor: JumpingButton,
                 general:{
                     texture: "preload_button",
@@ -172,7 +99,6 @@ const defaultConfig = {
                 }
             },
             count: {
-                active: true,
                 Constructor: BitmapText,
                 general:{
                     fontName: 'Transition',
@@ -194,7 +120,6 @@ const defaultConfig = {
                 }
             },
             multi: {
-                active: true,
                 Constructor: BitmapText,
                 general:{
                     fontName: 'Transition',
@@ -212,13 +137,26 @@ const defaultConfig = {
                     x: 0.175,
                     y: 0.012,
                     fontSize:85,
+                },
+                tween: {
+                    time: 0.2,
+                    options: {
+                        alpha: 0.8
+                    }
                 }
             },
             
         },
         out: {
+            views: [
+                'darkness',
+                'emitter',
+                'title',
+                'pig',
+                'win',
+                'button'
+            ],
             darkness: {
-                active: true,
                 Constructor: Darkness,
                 general:{
                     autoShow: true,
@@ -235,29 +173,21 @@ const defaultConfig = {
                                       
             },
             emitter: {
-                active: true,
                 Constructor: Emitter,
                 general:{
                     name: 'emitter',
                     textures: ['cheese'],
                     data: {
-                        scale:
-                            {start: 1, end:1, minimumScaleMultiplier:0.5},
-                        color:
-                            {start:'ffffff',end:'ffffff'},
-                        speed:
-                            {start:200, end:250},
-                        startRotation:
-                            {min:80,max:100},
-                        rotationSpeed:
-                            {min:-200,max:200},
-                        lifetime:
-                            {min:5.5,max:6},
+                        scale: { start: 1, end:1, minimumScaleMultiplier:0.5 },
+                        color: { start:'ffffff', end:'ffffff' },
+                        speed: { start:200, end:250 },
+                        startRotation: { min:80, max:100 },
+                        rotationSpeed: { min:-200, max:200 },
+                        lifetime: { min:5.5, max:6 },
                         blendMode:'normal',           
                         frequency: 0.08,
                         maxParticles: 100,
-                        pos:
-                            {x:0,y:0},
+                        pos: { x:0, y:0 },
                         addAtBack:true,
                         spawnType:'rect',
                     }
@@ -270,70 +200,27 @@ const defaultConfig = {
                     x:0,
                     y:0
                 }
-
             },
-            bg:{
-                active: false,
-                Constructor: Sprite,
+            pig: {
+                Constructor: Spine,
                 general:{
-                    name: 'bg',
-                    texture: 'popup',
-                    alpha: 1
+                    name: 'pig',
+                    anim: {
+                        track:0,
+                        name:'win2',
+                        repeat: true
+                    },
                 },
                 desktop: {
                     x: 0,
-                    y: 0.046
-                },
-                mobile: {
-                    x: 0.289,
-                    y: -0.113
-                
-                }
-            },
-            light: {
-                active: false,
-                Constructor: Light,
-                general:{
-                    texture: 'preload_light',
-                    name: 'light',
-                    alpha: 0.4,
-                },
-                desktop: {
-                    x: 0,
-                    y: -0.1,
+                    y: 0
                 },
                 mobile: {
                     x: 0,
-                    y: -0.1,
+                    y: 0
                 }
-                               
             },
-            characters:[
-                {
-                    animal:{
-                        active: true,
-                            Constructor: Spine,
-                            general:{
-                                name: 'pig',
-                                anim: {
-                                    track:0,
-                                    name:'win2',
-                                    repeat: true
-                                },
-                            },
-                            desktop: {
-                                x: 0,
-                                y: 0
-                            },
-                            mobile: {
-                                x: 0,
-                                y: 0
-                            }
-                    }
-                }
-            ],
-            topTitle: {
-                active: true,
+            title: {
                 Constructor: Sprite,
                 general:{
                     texture: 'big_win',
@@ -348,24 +235,7 @@ const defaultConfig = {
                     y: -0.197,
                 }              
             },
-            bottomTitle: {
-                active: false,
-                Constructor: Sprite,
-                general:{
-                    texture: 'big_win',
-                    name: 'bottomTitle',
-                },
-                desktop: {
-                    x: 0,
-                    y: 0.087,
-                },
-                mobile: {
-                    x: 0,
-                    y: 0.087,
-                }
-            },
             button:{
-                active: true,
                 Constructor: JumpingButton,
                 general:{
                     texture: "preload_button",
@@ -384,15 +254,16 @@ const defaultConfig = {
                 }
             },
             win: {
-                active: true,
                 Constructor: BitmapText,
                 general:{
                     fontName: 'Transition',
                     fontSize: 100,
-                    name: 'count',
+                    name: 'win',
                     scale: 1,
                     tweenTime: 0.5,
-                    text: '0'
+                    text: '0',
+                    start: 0,
+                    end: 0
                 },
                 desktop: {
                     x: 0,
@@ -409,6 +280,7 @@ const defaultConfig = {
 }
 
 export class Transition extends Container {
+    
     constructor({
         container,
         x = 0.5,
@@ -416,106 +288,55 @@ export class Transition extends Container {
         config
     }){
         super({ container, x, y })
-
+        this.config = defaultsDeep(config, defaultConfig)
         
         this.timeline = new TimelineMax()
         this.$ = new Subject()
-        this.config = defaultsDeep(config, defaultConfig)
-        this.map = {
-            multi : []
-        }
 
     }
 
-    // mode, amount, next will be taken from data arg
-    render(data){
-        let { mode, next, config} = data
-        console.log(config)
-        let conf;
+    render(config, mode = 'fs', state = 'in') {
 
-        if(mode === 'root' && next !== 'root'){
-            conf = defaultsDeep(config[next].in, this.config[next].in) 
-        }
-        if(mode !== 'root' && next === 'root'){
-            conf = defaultsDeep(config[mode].out, this.config[mode].out) 
-            //conf = this.config[next].out
-        }
+        this.config = defaultsDeep(config, this.config)
+        this.part = this.config[mode][state]
 
-        for(let item in conf){
-            this.addView(conf[item])
-        }
+        this.part.views
+            .forEach(view => this.addView(this.part[view]))
+        this.part.views
+            .forEach(view => this.addTween(this.part[view]))
         
-        this.turnOnStreams()
-
-        this.startTweens(conf, data.win)
-
+        this.enable()
     }
 
-    turnOnStreams(){
+    enable() {
         this.$.next({ type: 'CREATED' })
-        if(this.button){
-            this.button.$.subscribe(next => {
-                this.$.next({type: 'CONTINUE_CLICKED', val: next})
-            })
-        }
+        if (this.button)
+            this.button.$.subscribe(next => this.$.next({ type: 'CONTINUE_CLICKED', val: next }))
     }
 
-    addView(item){
-        if(Array.isArray(item)){
-            item.forEach(child => {
-                for(let item in child){
-                    this.addView(child[item])
-                }
-            })
-        }
-        if(item.active){
-            this.addSingleItem(item)
-        }
+    addView(item) {
+        if (Array.isArray(item)) 
+            item.forEach(child => this.addView(child))
+        else this.addItem(item)
     }
 
-    addSingleItem(item){
+    addItem(item) {
         this[item.general.name] = new item.Constructor(Object.assign( 
             {container: this}, 
             item.general, 
-            item[GAME_DEVICE]) );
+            item[GAME_DEVICE]))
         return this[item.general.name]
     }
 
-    startTweens(conf, win){
-        for(let item in conf){
-            if(conf[item].active){
-                if(Array.isArray(conf[item])){
-                    conf[item].forEach(child => {
-                        for(let item in child){
-                            this.addSingleTween(child[item])
-                        }
-                    })
-                } else {
-                    this.addSingleTween(conf[item])
-                }
-            }
-            
-        }
-        this.additionalTweens(win)
+    addTween(item) {
+        if (Array.isArray(item)) 
+            item.forEach(child => this.addTween(child))
+        else this.addSingleTween(item)
     }
 
-    additionalTweens(win = 0){
-        if(win){
-            this.timeline.addCallback(this.tweenCounter, '+=0.2' , [win+''], this)
-        }
-        this.timeline.addCallback( () => { this.$.next({ type: 'SHOWED' })}, '+=0.1' )
-    }
-
-    addSingleTween(item){
-        if(item.tween){
-            this.timeline.add(
-                TweenMax.to(this[item.general.name], item.tween.time, item.tween.options)
-            )
-        }
-    }
-
-    tweenCounter(amount){
-        this.win.tweenText(amount)
+    addSingleTween(item) {
+        if(item.tween)
+            this.timeline.add(TweenMax.to(this[item.general.name], item.tween.time, item.tween.options))
     }
 
     remove(){
