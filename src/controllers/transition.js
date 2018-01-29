@@ -1,3 +1,36 @@
+import defaultsDeep from 'lodash.defaultsdeep'
+
+const defaultConfig = {
+
+    map: {
+        2: {
+            food: 'carrot',
+            char: 'static_rabbit'
+        },
+        3: {
+            food: 'cheese',
+            char: 'static_rat'
+        },
+        4: {
+            food: 'coffee',
+            char: 'static_owl'
+        },
+        5: {
+            food: 'money',
+            char: 'static_cat'
+        }
+    },
+
+    fs: {
+        in: true,
+        out: true,
+        win: true
+    },
+
+    mode: true
+
+}
+
 export class TransitionController{
     
     constructor({
@@ -5,97 +38,74 @@ export class TransitionController{
         config,
         autoEnable = true
     }){
-        this.game = game;
-        this.transition = this.game.root.transition;
-        this.config = config;
-        this.autoEnable = autoEnable;
+        this.config = defaultsDeep(config, defaultConfig)
+        
+        this.game = game
+        this.level = this.game.root
+        this.transition = this.level.transition
 
         this.data  = game.data
         this.state = game.state
-        this.subs = []
         
-        if(this.autoEnable){
+        if (autoEnable)
             this.enable()
-        }
     }
-
+    
     enable(){
+        this.subs = []
+
+        // FS in transition
+        if (this.config.fs.in)
         this.subs.push(
-            this.transitionSub = this.transition.$
-                .subscribe( n => {
-                    console.log(n)
-                }),
+        this.fsInSub = this.state.isTransition$
+            .filter(e => e)
+            .filter(e => this.state.mode === 'root')
+            .filter(e => this.state.next !== 'root')
+            .subscribe(e => this.transition.render({
+                fs: { in: {
+                    count: { general: { text: String(this.data.fs.count.current) } },
+                    multi: { general: { text: `X${this.data.fs.multi}` } },
+                    characters: [
+                        { general: { texture: this.config.map[this.data.fs.multi].char } }
+                    ],
+                }}
+            }, 'fs', 'in')))
+            
+        // FS out transition
+        if (this.config.fs.out)
+        this.subs.push(
+        this.fsOutSub = this.state.isTransition$
+            .filter(e => e)
+            .filter(e => this.state.mode !== 'root')
+            .filter(e => this.state.next === 'root')
+            .subscribe(e => this.transition.render({
+                fs: { out: {
+                    win: { general: { start: 0, end: this.data.fs.win.coin } },
+                    topTitle: { general: { texture: this.data.fs.level.current >= this.data.fs.level.max ? 'big_win' : 'total_win' } },
+                    emitter: { general: { textures: [this.config.map[this.data.fs.multi].food] } },
+                }}
+            }, 'fs', 'out')))
 
-            this.transitionBtnSub = this.transition.$
-                .filter(n => n.type === 'CONTINUE_CLICKED')
-                .subscribe(n => {
-                    this.state.isTransition = false
-                    this.data.mode = this.data.next
-                    this.transition.remove()
-                })
-        )  
-    }
-
-
-    draw(){
-        let state = {
-            count: 15, //free spins
-            multi: 4,
-            level: 4, //after fs ends
-            //win: 10000, // after fs ends
-            maxMulti: 10,
-            maxCount: 20,
-            map:{
-                3: 'cheese',
-                4: 'coffee',
-                5: 'carrot'
-            }
-        }
-        this.transition.render({
-            mode: 'root', 
-            next: 'fs',
-            win: state.win, 
-            config: {
-                fs:{
-                    in:{
-                        darkness:{},
-                        bg:{},
-                        count:{
-                            general:{
-                                text: `X${state.count}` 
-                            }
-                        },
-                        multi:{
-                            general:{
-                                text: `X${state.multi}` 
-                            }
-                        },
-                        characters:[
-                            {
-                                animal:{
-                                    general:{
-                                        texture: state.multi < state.maxMulti ? 'static_cat' : 'static_rabbit'
-                                    }
-                                }
-                            }
-                        ]
-                    },
-                    out:{
-                        darkness:{},
-                        emitter:{
-                            general:{
-                                textures:[state.map[state.multi]]
-                            }
-                        },
-                        topTitle:{
-                            general:{
-                                texture: state.multi === state.maxMulti ? 'big_win' : 'total_win'
-                            }
-                        },
-                    }
-                }
-            }
-        })
+        // Win Tween on end
+        if (this.config.fs.win)
+        this.subs.push(
+        this.fsOutSub = this.transition.$
+            .filter(e => this.state.mode !== 'root')
+            .filter(e => this.state.next === 'root')
+            .filter(e => e.type === 'CREATED')
+            .subscribe(e => this.transition.win.tweenText(this.data.fs.win.coin)))
+            
+        // Remove Transition => change mode to FS
+        if (this.config.mode)        
+        this.subs.push(
+        this.transitionBtnSub = this.transition.$
+            .filter(e => e.type === 'CONTINUE_CLICKED')
+            .subscribe(e => {
+                this.state.isTransition = false
+                this.data.mode = this.data.next
+                this.transition.remove()
+            })) 
+        
     }
 
     disable() {

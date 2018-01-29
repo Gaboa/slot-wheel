@@ -178,13 +178,7 @@ class RootController {
             .filter(e => !e) // End of roll
             .filter(e => this.state.next !== 'root') // Next is not Root
             .subscribe(e => this.state.isTransition = true))
-        if(this.config.transition){
-            this.transitionInSub = this.state.isTransition$
-            .filter(e => e)
-            .subscribe(e => {
-                this.game.root.transitionController.draw()
-            })
-        }
+        
         
     }
 

@@ -36,7 +36,10 @@ const defaultData = {
             cash: null
         },
         multi: null,
-        level: null
+        level: {
+            current: null,
+            max: null
+        }
     },
 
     fr: {
