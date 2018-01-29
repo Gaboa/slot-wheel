@@ -14,11 +14,12 @@ import {
     RootController,
     WinController,
     AutoplayController,
-    TransitionController
+    TransitionController,
 } from '../controllers'
 
 import { Info } from '../components/info'
 import { Settings } from '../components/settings'
+import { FSController } from '../controllers/fs';
 
 // TODO: Create balance bindings for different modes ( FS FR Bonus )
 // TODO: Check index switching bug in Screen
@@ -117,7 +118,8 @@ class MobileRoot extends Container {
         }})
         this.winCtrl  = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
-        this.transitionController =  new TransitionController({ game: this.game })
+        this.transitionCtrl = new TransitionController({ game: this.game })
+
     }
 
     disable() {
