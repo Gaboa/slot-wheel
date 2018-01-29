@@ -31,6 +31,7 @@ class WinCircle extends Container {
     }
 
     show(num) {
+        if (num <= 0) return null
         this.count.set(num)
         this.tween = TweenMax.to(this.scale, 0.3, { x: 1, y: 1 })
     }
