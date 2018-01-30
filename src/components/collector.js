@@ -1,85 +1,114 @@
-import { Container, Sprite, Spine, BitmapText, BalanceText } from '../utils'
 import defaultsDeep from 'lodash.defaultsdeep'
+import { Container, Sprite, Spine, BitmapText, BalanceText, ReactiveObject, ReactiveProperty } from '../utils'
 import { Subject } from 'rxjs'
 
-const collectorDefaultConfig = {
-    settings:{
-        amountOfItemsToCollect: 5,
-        maxLevel: 20,
-        item:{
-            name: 'item',
-            Constructor: Sprite,
-            texture: 'carrot',
-        },
-        startX: -157,
-        startY: null,
-        delta: 75,
-        horizontal: true,
-        vertical: false,
-        afterEveryItem: false,
-        afterSetOfItems: true
-    },
-    view:{
-        bg: {
-            name: 'bg',
-            Constructor: Sprite,
-            general:{
-                texture: 'middle'
-            },
-            desktop:{
-                x:0,
-                y:0,
-            },
-            mobile:{
-                x:0,
-                y:0,
-            }
-        },
-        middleWin:{
-            name:'middleWin',
-            Constructor: Sprite,
-            general:{
-                texture: 'middle_win',
-            },
-            desktop:{
-                x:0,
-                y:0.0027,
-                alpha: 0
-            },
-            mobile:{
-                x:0,
-                y:0,
-            }
-        },
-        winSum:{
-            name:'winSum',
-            Constructor: BalanceText,
-            general:{
-                fixed: 0,
-                fontSize: 30,
-                visible: false,
-                prefix: '+'
-            },
-            desktop:{
-                x:0,
-                y:0.0027,
-                alpha: 0
-            },
-            mobile:{
-                x:0,
-                y:0,
-            }
-        }
-        
+export class WinField extends Container {
+    
+    constructor({
+        container,
+        x,
+        y
+    }){
+        super({
+            container,
+            x,
+            y
+        })
+        this.alpha = 0
+
+        this.bg = new Sprite({
+            container: this,
+            texture: 'middle_win',
+        })
+
+        this.amount = new BalanceText({
+            container: this,
+            fixed: 0,
+            fontSize: 30,
+            prefix: '+',
+            alpha: 0,
+            y: 0.0027,
+        })
+    }
+
+    show(amount) {
+        this.tl = new TimelineMax()
+        this.tl
+            .to(this, 0.5, { alpha:1 }, 0)
+            .call(() => this.amount.set(amount), [], null, 0.3)
+            .to(this, 0.5, { alpha: 0 }, 1.3)
+            .call(() => this.amount.set(0), [], null, 1.3)
     }
 }
 
-export class Collector extends Container{
+const defaultConfig = {
+
+    amountOfItems: 5,
+    sum: 0,
+
+    done: true,
+    remain: true,
+    win: true,
+    reset: {
+        reset: true,
+        prev: true
+    },
+
+    views: [
+        'bg',
+        'items',
+        'closed',
+        'win'
+    ],
+
+    bg: {
+        Constructor: Sprite,
+        general:{
+            name: 'bg',
+            texture: 'middle'
+        }
+    },
+
+    closed: {
+        Constructor: Sprite,
+        amount: 5,
+        arr: 'closed',
+        delta: 0.02,
+        pos: [{ x: -0.06, y: 0 }, { x: -0.03, y: 0 }, { x: 0, y: 0 }, { x: 0.03, y: 0 }, { x: 0.06, y: 0 }],
+        general: {
+            name: 'closed',
+            texture: 'closed'
+        }
+    },
+    
+    items: {
+        Constructor: Sprite,
+        amount: 5,
+        arr: 'items',
+        delta: 0.06,
+        pos: [{ x: -0.06, y: 0 }, { x: -0.03, y: 0 }, { x: 0, y: 0 }, { x: 0.03, y: 0 }, { x: 0.06, y: 0 }],
+        general: {
+            name: 'item',
+            texture: 'carrot'
+        }
+    },
+
+    win: {
+        Constructor: WinField,
+        general: {
+            name: 'win',
+
+        }
+    }
+
+}
+
+export class Collector extends Container {
+    
     constructor({
         container,
         x,
         y,
-        game,
         config = {}
     }){
         super({
@@ -87,142 +116,170 @@ export class Collector extends Container{
             x,
             y,
         })
-        this.config = defaultsDeep(config, collectorDefaultConfig)
-        debugger
-        this.game = game
-        this.$ = new Subject()
-        this.items = []
-        this.tl = new TimelineMax()
+        this.config = defaultsDeep(config, defaultConfig)
 
-        this.coordsMap = {}
-        this.fillInCoordsMap()
-
-        this.currentLevel = 0
-        this.index = 0
-
-        this.addView(this.config.view)
-
-        this.startX = -157
-        this.show()
-       
-    }
-
-    show(){
-        this.game.root.machine.logo.setAnimation({track: 0, animation: 'open', loop: false})
-        this.game.root.machine.swapChildren(this, this.game.root.machine.logo)
-    }
-
-    fillInCoordsMap(){
-        for (let i = 0; i < this.config.settings.amountOfItemsToCollect; i++ ){
-            if(this.config.settings.horizontal){
-                this.coordsMap[i] = {
-                    x: this.config.settings.startX ? this.config.settings.startX + i * this.config.settings.delta : 0 ,
-                    y: 0
-                }
-            } 
-            if(this.config.settings.vertical){
-                this.coordsMap[i] = {
-                    x: 0,
-                    y: this.config.settings.startY ? this.config.settings.startY + i * this.config.settings.delta : 0 
-                }
-            }
-        }
-    }
-
-    addView(conf){
-        for(let i in conf){
-            this.addSingleView(conf[i])
-        }
-    }
-
-    addSingleView(conf){
-        this[conf.name] = new conf.Constructor(Object.assign(
-            {container:this},
-            conf.general,
-            conf[GAME_DEVICE]
-        ))
-    }
-
-    showItem(){
-        this.createItem(this.index)
-        this.updateItemIndex()
-        setTimeout(() => {
-            if(this.index === 0){
-                this.reset()
-                this.showAfterReset()
-            } else {
-                this.sendEvent()
-            }
-        }, 300)
-    }
-
-    createItem(index){
-        this.item = new Sprite({
-            container: this,
-            x: this.coordsMap[index].x,
-            y: this.coordsMap[index].y,
-            texture: this.config.settings.item.texture
+        new ReactiveObject({ context: this.prev = {}, object: {
+            level: 0,
+            index: 0,
+            loops: 0
+        }})
+        new ReactiveObject({ context: this.curr = {}, object: {
+            level: 0,
+            index: 0,
+            loops: 0
+        }})
+        new ReactiveProperty({
+            context: this,
+            prop: 'remain',
+            value: null
+        })
+        new ReactiveProperty({
+            context: this,
+            prop: 'saved',
+            value: null
         })
 
-        this.items.push(this.item)
+        this.config.views
+            .forEach(view => this.addView(this.config[view]))
+
+        this.$  = new Subject()
+        this.tl = new TimelineMax()
+        this.enable()
     }
 
-    updateItemIndex(){
-        this.index = (this.index === this.config.settings.amountOfItemsToCollect - 1) ? 0 : ++this.index
+    addView(item) {
+        if (item.amount) this.addCollection(item)
+        else this[item.general.name] = new item.Constructor(Object.assign( 
+            { container: this }, 
+            item.general, 
+            item[GAME_DEVICE]))
+        return this[item.general.name]
     }
 
-    reset(){
-        this.items.forEach(item => this.removeChild(item))
-        this.items = []
+    addCollection(item) {
+        this[item.arr] = []
+        for (let i = 0; i < item.amount; i++) {
+            this[item.arr].push(
+            this.addView(defaultsDeep({
+                amount: null,
+                general: {
+                    name: `${item.general.name}_${i}`,
+                    x: item.pos[i].x,
+                    y: item.pos[i].y
+                }
+            }, item)))
+        }
+    }
+
+    enable() {
+        this.subs = []
+
+        if (this.config.done)
+        this.subs.push(
+        this.doneSub = this.$
+            .filter(e => e.type === 'OPENED')
+            .filter(e => e.index === this.config.amountOfItems - 1)
+            .subscribe(e => this.$.next({ type: 'DONE' })))
+        
+        if (this.config.reset)
+        this.subs.push(
+        this.resetSub = this.$
+            .filter(e => e.type === 'DONE')
+            .subscribe(e => this.reset()))
+
+        if (this.config.reset.prev)
+        this.subs.push(
+        this.resetPrevSub = this.$
+            .filter(e => e.type === 'RESET')
+            .subscribe(e => this.prev.index = 0))
+        
+        if (this.config.reset.saved)
+        this.subs.push(
+        this.resetSavedSub = this.$
+            .filter(e => e.type === 'RESET')
+            .filter(e => this.saved)
+            .subscribe(e => this.play(this.saved)))
+
+        if (this.config.remain)
+        this.subs.push(
+        this.remainSub = this.remain$
+            .filter(e => e)
+            .subscribe(e => this.play(e)))
+
+        if (this.config.win)
+        this.subs.push(
+        this.winSub = this.$
+            .filter(e => e.type === 'RESET')
+            .subscribe(e => this.win.show(this.config.sum || 1000)))
+
+    }
+
+    play(amount) {
+        for (let i = this.prev.index; i < this.prev.index + amount; i++)
+            this.open(i)
+    }
+
+
+    level(val) {
+        this.curr.level = val
+        this.curr.index = val % this.config.amountOfItems
+        this.curr.loops = Math.floor(val / this.config.amountOfItems)
+
+        this.calc()
+    }
+
+    calc() {
+        if (this.curr.loops > this.prev.loops) {
+            this.remain = this.config.amountOfItems - this.prev.index
+            this.saved = this.curr.index
+        } else {
+            this.remain = null
+            this.saved = null
+            this.play(this.curr.index - this.prev.index)
+        }
+
+        this.prev.index = this.curr.index 
+        this.prev.loops = this.curr.loops 
+        this.prev.level = this.curr.level 
+    }
+
+    changeItems(name) {
+        this.items.forEach(item.texture = name)
+    }
+
+    open(i) {
+        TweenMax.to(this.items[i],  0.3, { alpha: 1 })
+        TweenMax.to(this.closed[i], 0.3, { alpha: 0, onComplete: () => this.$.next({ index: i, type: 'OPENED' }) })
+    }
+
+    // openItem() {
+    //     // TweenMax.fromTo(this.items[this.index % this.config.amountOfItems].scale, 0.2, { x: 0, y: 0 }, { x: 1, y: 1 })
+    //     // TweenMax.to(this.items[this.index % this.config.amountOfItems], { alpha: 1 })
+    // }
+
+    // openClosed() {
+    //     this.closed[this.index].alpha = 0
+        
+    //     // TweenMax.to(this.closed[this.index % this.config.amountOfItems], 0.2, { y: '-=75', alpha: 0 })
+    // }
+    
+    reset() {
+        this.closed.forEach(door => {
+            door.alpha = 1
+            door.y = 0
+        })
+        this.$.next({ type: 'RESET' })
     }
 
     sendEvent() {
         this.$.next({source: 'COLLECTOR', message: 'i am carrot'})
     }
 
-    showAfterReset(){
-        this.showMiddleWin()
+    showAfterReset() {
+        this.win.show('1000', this.sendEvent, this)
     }
 
-    showMiddleWin(sum = '1000'){
-        this.tl
-        .to(this.middleWin, 0.5, {
-            alpha:1,
-        })
-        .to(this.winSum, 0.5, {
-            visible: true,
-            onComplete: ()=> {
-                this.winSum.set(sum)
-                this.winSum.tween.eventCallback('onComplete', this.hideMiddleWin, [], this)
-            }
-        })
-    }
-
-    hideMiddleWin(){
-        this.tl
-        .to(this, 1, {})
-        .to(this.winSum, 0.1, {
-                visible: false,
-                onComplete:() =>{
-                    this.winSum.set(0)
-                }
-            }
-        )
-        .to(this.middleWin, 0.3, {
-                alpha: 0,
-                onComplete:() => {
-                    this.sendEvent()
-                }
-            }
-        )
-    }
-
-    hide(){
-        this.game.root.machine.logo.setAnimation({track: 0, animation: 'close', loop: false})
-        //this.remove()
-    }
-
-    remove(){
+    remove() {
         this.destroy()
     }
 }
