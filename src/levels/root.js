@@ -5,13 +5,17 @@ import { Machine, Footer, MobileButtons, MobileMenu } from '../components'
 import {
     BalanceController,
     FooterBalanceController,
+    FRFooterBalanceController,
     DesktopBalanceController,
+    FRDesktopBalanceController,
     FooterButtonsController,
     PanelButtonsController,
     MachineController,
     MobileButtonsController,
     MobileMenuController,
     RootController,
+    MobileFRRootController,
+    DesktopFRRootController,
     WinController,
     AutoplayController
 } from '../controllers'
@@ -113,6 +117,50 @@ class MobileRoot extends Container {
         this.autoCtrl = new AutoplayController({ game: this.game })
     }
 
+    enableFR() {
+        this.balanceCtrl     = new BalanceController({ game: this.game })
+        this.balanceRootCtrl = new FRFooterBalanceController({ game: this.game })
+        this.footerCtrl  = new FooterButtonsController({ game: this.game, config: {
+            fullscreen: false,
+            settings:   false,
+            sound: false,
+            info:  false,
+            fast:  false,
+        }})
+        this.buttonsCtrl = new MobileButtonsController({ game: this.game })
+        this.menuCtrl    = new MobileMenuController({ game: this.game })
+        // Logic
+        this.machineCtrl = new MachineController({ game: this.game, config: {
+            screen: {
+                start: {
+                    balance: false
+                }
+            },
+            lines: {
+                show: false,
+                hide: false
+            }
+        }})
+
+        this.ctrl = new MobileFRRootController({ game: this.game,
+            config: {
+                idle: {
+                    buttons: {
+                        enable: false
+                    },
+                    footer: {
+                        enable: false,
+                        disable: false
+                    }
+                }
+            }
+        })
+        // this.ctrl = new MobileFRRootController({ game: this.game})
+
+        this.winCtrl  = new WinController({ game: this.game })
+        this.autoCtrl = new AutoplayController({ game: this.game })
+    }
+
     disable() {
         this.balanceCtrl.disable()
         this.balanceRootCtrl.disable()
@@ -191,6 +239,39 @@ class DesktopRoot extends Container {
         // Logic
         this.machineCtrl = new MachineController({ game: this.game })
         this.ctrl = new RootController({ game: this.game })
+        this.winCtrl = new WinController({ game: this.game })
+        this.autoCtrl = new AutoplayController({ game: this.game })
+    }
+
+    enableFR () {
+        // Balance
+        this.commonBalanceCtrl  = new BalanceController({ game: this.game })
+        this.desktopBalanceCtrl = new FRDesktopBalanceController({ game: this.game })
+        this.footerBalanceCtrl  = new FRFooterBalanceController({ game: this.game,
+            config: {coin: { bet: false, sum: { idle: false, end: false }},
+            frConfig: { win: { coin: false } }
+        }})
+        // Buttons
+        this.footerCtrl = new FooterButtonsController({ game: this.game })
+        this.panelCtrl  = new PanelButtonsController({ game: this.game,
+            config: {
+                level: {
+                    min: false,
+                    max: false,
+                    plus: false,
+                    minus: false
+                },
+                value: {
+                    min: false,
+                    max: false,
+                    plus: false,
+                    minus: false
+                },
+                max: false
+            }})
+        // Logic
+        this.machineCtrl = new MachineController({ game: this.game, config: { screen: { start: { balance: false }}} })
+        this.ctrl = new DesktopFRRootController({ game: this.game, config: {idle: {buttons: {enable: false}}} })
         this.winCtrl = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
     }

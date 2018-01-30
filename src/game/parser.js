@@ -30,8 +30,8 @@ class ParserManager {
         this.data.balance.cash.bet = this.data.balance.coin.bet * this.data.balance.value.current / 100
         this.data.balance.cash.win = 0
 
-        this.fr(res.FreeRounds)
-        this.roll(res.LastResult)
+		this.roll(res.LastResult)
+		this.fr(res.FreeRounds)
     }
 
     fr(data) {
