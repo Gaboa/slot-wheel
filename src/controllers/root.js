@@ -21,7 +21,9 @@ const defaultConfig = {
         start: true,
         end: true,
         transition: true
-    }
+    },
+
+    fs: true
 
 }
 
@@ -178,7 +180,23 @@ class RootController {
             .filter(e => !e) // End of roll
             .filter(e => this.state.next !== 'root') // Next is not Root
             .subscribe(e => this.state.isTransition = true))
-        
+
+        if (this.config.rolling.transition)
+        this.subs.push(
+        this.rollingTransitionSub = this.state.isRolling$
+            .filter(e => !e) // End of roll
+            .filter(e => this.state.next == 'root') // Next is Root
+            .filter(e => this.state.mode !== 'root') // Mode is not Root
+            .subscribe(e => this.state.isTransition = true))
+
+        if(this.config.fs)
+        this.subs.push(
+            this.fsSub = this.game.state.isTransition$
+            .filter(e => e === false)
+            .subscribe( e => this.fsCtrl = new FSController({game: this.game}))
+        )
+            
+
         
     }
 

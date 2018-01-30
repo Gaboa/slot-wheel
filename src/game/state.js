@@ -10,7 +10,7 @@ const defaultState = {
     isRolling: false,
     isAutoplay: false,
     isFR: false,
-    isTransition: false,
+    isTransition: null,
     
     menu: null,
     mode: 'root',

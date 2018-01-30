@@ -102,7 +102,7 @@ export class TransitionController{
             .filter(e => e.type === 'CONTINUE_CLICKED')
             .subscribe(e => {
                 this.state.isTransition = false
-                this.data.mode = this.data.next
+                this.state.mode = this.state.next
                 this.transition.remove()
             })) 
         
