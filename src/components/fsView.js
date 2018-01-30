@@ -6,8 +6,14 @@ import { Panel } from '../components'
 import { Collector } from './collector'
 
 const defaultConfig = {
+    views:[
+        'panel',
+        'counter',
+        'animal'
+    ],
     panel:{
         rendered: true,
+        item: 'panel',
         panel: {
             active: true,
             name: 'panel',
@@ -83,7 +89,6 @@ const defaultConfig = {
     },
     counter:{
         counter:{
-            active: true,
             name: 'counter',
             Constructor: Sprite,
             general:{
@@ -99,7 +104,6 @@ const defaultConfig = {
             }
         },
         multi:{
-            active: true,
             name: 'multi',
             Constructor: Sprite,
             general:{
@@ -115,7 +119,6 @@ const defaultConfig = {
             }
         },
         counterBitmap:{
-            active: true,
             name: 'countAmount',
             Constructor: BitmapText,
             general:{
@@ -135,7 +138,6 @@ const defaultConfig = {
             }
         },
         multiBitmap:{
-            active: true,
             name: 'multiAmount',
             Constructor: BitmapText,
             general:{
@@ -155,36 +157,35 @@ const defaultConfig = {
             }
         }
     },
-    characters: [
-        {
-            animal:{
-                name: 'animal',
-                active: true,
-                Constructor: Spine,
-                general:{
-                    name: 'rabbit',
-                    anim:{
-                        track: 0,
-                        name: 'idle',
-                        repeat: true
-                    },
-                    scale: 2.5
+    animal:{
+        animal: {
+            name: 'animal',
+            active: true,
+            Constructor: Spine,
+            general:{
+                name: 'rabbit',
+                anim:{
+                    track: 0,
+                    name: 'idle',
+                    repeat: true
                 },
-                desktop:{
-                    x: -0.418,
-                    y: 0.217
-                },
-                mobile: {
-                    x: 0,
-                    y: 0
-                }
+                scale: 2.5
+            },
+            desktop:{
+                x: -0.418,
+                y: 0.217
+            },
+            mobile: {
+                x: 0,
+                y: 0
             }
-        }
-    ],
+    },
+    }
     
 }
 
-export class FSView extends Container{
+export class FSView extends Container {
+    
     constructor({
         game,
         container,
@@ -198,20 +199,20 @@ export class FSView extends Container{
             y
         })
 
+        this.config = defaultsDeep(config, defaultConfig) 
+
         this.$ = new Subject()
         this.tl = new TimelineMax()
 
-        this.subs = []
-        this.game = game
-        this.config = defaultsDeep(config, defaultConfig) 
 
         this.alreadyRendered = {
             panel: this.game.root.machine.panel
         }
 
         this.addCollector(this.config.collector)
-        this.addView(this.config)
-        this.setStreams()
+        this.config.views
+            .forEach(item => this.addView(this.config[item]))
+        this.enable()
     }
 
     addCollector(config){
@@ -226,22 +227,18 @@ export class FSView extends Container{
     }
 
     addView(config){
-        for(let item in config){
-            if(Array.isArray(config[item])){
-                config[item].forEach( child => {
-                    this.createView(child)
-                })
-            } 
-            else if (config[item].rendered){
-                this.rerenderExistingElement(this.alreadyRendered[item],config[item] )
-            }
-            else {
-                this.createView(config[item])
-            }
+        if(Array.isArray(config)){
+            this.createView(config)
+        } 
+        else if (config.rendered){
+            this.renderExistingElement(this.alreadyRendered[config.item],config)
+        }
+        else {
+            this.createView(config)
         }
     }
 
-    rerenderExistingElement(el, config){
+    renderExistingElement(el, config){
         if(el){
             el.rerender(config)
         }
@@ -249,13 +246,11 @@ export class FSView extends Container{
 
     createView(config){
         for(let item in config){
-            if(config[item].active){
-                this.createSingleViewItem(config[item])
-            }
+            this.createViewItem(config[item])
         }
     }
 
-    createSingleViewItem(item){
+    createViewItem(item){
         this[item.name] = new item.Constructor(Object.assign(
             {container: this},
             item.general,
@@ -263,7 +258,8 @@ export class FSView extends Container{
         ))
     }
 
-    setStreams(){
+    enable(){
+        this.subs = []
         this.subs.push(
             this.collector.$.subscribe(n => {
                 this.$.next(n)
