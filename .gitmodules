@@ -1,0 +1,3 @@
+[submodule "COREv3"]
+	path = COREv3
+	url = git@agdev.bossgs.org:anothergames-frontside/CoreV3.git
