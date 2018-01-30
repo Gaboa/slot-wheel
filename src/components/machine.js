@@ -2,7 +2,7 @@ import defaultsDeep from 'lodash.defaultsdeep'
 import { TweenMax } from 'gsap'
 import { Observable, Subject } from 'rxjs'
 import { Container, Sprite, Spine, BalanceText } from "../utils"
-import { Screen, Numbers, Lines, Element, Panel } from "./index"
+import { Screen, Numbers, Lines, Element, Panel, Logo } from "./index"
 
 class WinTable extends Container {
 
@@ -54,35 +54,9 @@ const defaultMachineConfig = {
     table: true
 }
 
-export class Logo extends Spine{
-    constructor({
-        container,
-        name,
-        anim,
-        y
-    }){
-        super({
-            container,
-            name,
-            anim,
-            y 
-        })
-        this.$
-        .filter(n => n.type === 'COMPLETE' && n.anim === 'open')
-        .subscribe(n => {
-            console.log(n)
-            this.setAnimation({track:0, animation: 'idle_fs', loop: true })
-        })
-        this.$
-        .filter(n => n.type === 'COMPLETE' && n.anim === 'close')
-        .subscribe(n => this.setAnimation({track:0, animation: 'idle', loop: true }))
-    }
 
-    setAnimation({track, animation, loop}){
-        this.state.setAnimation(track, animation, loop)
-    }
 
-}
+
 
 class Machine extends Container {
 
