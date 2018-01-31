@@ -20,7 +20,7 @@ const defaultConfig = {
         Constructor: Collector,
         general: {
             name: 'collector',
-            y: 0.1
+            y: -0.042
         }
     },
 
