@@ -23,12 +23,12 @@ import {
     MobileMenuController,
     RootController,
     WinController,
-    AutoplayController
+    AutoplayController,
 
-    // FRDesktopBalanceController,
-    // FRFooterBalanceController,
-    // MobileFRRootController,
-    // DesktopFRRootController,
+    FRDesktopBalanceController,
+    FRFooterBalanceController,
+    MobileFRRootController,
+    DesktopFRRootController
 } from '../COREv3'
 
 // TODO: Create balance bindings for different modes ( FS FR Bonus )
@@ -90,6 +90,7 @@ class MobileRoot extends Container {
         this.game.audio.play('main')
 
         setTimeout(() => this.enable(), 0)
+        // setTimeout(() => this.enableFR(), 0)
     }
 
     enable() {
@@ -163,7 +164,6 @@ class MobileRoot extends Container {
                 }
             }
         })
-        // this.ctrl = new MobileFRRootController({ game: this.game})
 
         this.winCtrl  = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
@@ -232,6 +232,7 @@ class DesktopRoot extends Container {
         this.game.audio.play('main')
 
         setTimeout(() => this.enable(), 0)
+        // setTimeout(() => this.enableFR(), 0)
     }
     
     enable() {
