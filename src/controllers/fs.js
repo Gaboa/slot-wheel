@@ -59,24 +59,17 @@ export class FSController{
         this.config = defaultsDeep(config, defaultConfig)
 
         this.$ = new Subject()
-        
-        // delete
-        this.pigSimulator()
 
         if(autoEnable){
             this.render()
-            this.enable()
+            //this.enable()
         }
         
         
     }
     
-    pigSimulator(){
-        this.game.root.pig$ = new Subject()
-    }
-    
     render(){
-        this.fsView = new FSView({
+        this.game.root.fs = new FSView({
             container: this.game.stage,
             game: this.game,
             stream: this.$,
@@ -111,6 +104,8 @@ export class FSController{
                 }
             }
         })
+
+        this.game.root.machine.logo.showCollector()
     }
     
     enable(){
