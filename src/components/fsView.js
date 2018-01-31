@@ -2,8 +2,107 @@ import { Container, Sprite, Spine, BitmapText, BalanceText } from '../utils'
 import defaultsDeep from 'lodash.defaultsdeep'
 import { Subject } from 'rxjs'
 import { Balance, Buttons } from './panel'
-import { Panel } from '../components'
-import { Collector } from './collector'
+
+const counterDefaultConfig = {
+    views: [
+        'counterBg',
+        'multiBg',
+        'counter',
+        'multi'
+    ],
+    counterBg:{
+        Constructor: Sprite,
+        general:{
+            name: 'counterBg',
+            texture: 'count_fs',
+        },
+        desktop:{
+            y: 0.335,
+            x:-0.034
+        },
+        mobile:{
+            y: -0.409,
+            x:-0.454
+        }
+    },
+    multiBg:{
+        Constructor: Sprite,
+        general:{
+            name: 'multiBg',
+            texture:'multi_fs',
+        },
+        desktop:{
+            y: 0.327,
+            x: 0.0458
+        },
+        mobile:{
+            y: -0.409,
+            x: 0.264
+        }
+    },
+    counter:{
+        Constructor: BitmapText,
+        general:{
+            name: 'count',
+            fontName: 'Transition',
+            fontSize: 35,
+            text: '15',
+        },
+        desktop:{
+            y: 0.342,
+            x: -0.0328,
+        },
+        mobile:{
+            y: -0.404,
+            x: -0.452,
+            fontSize: 50
+        }
+    },
+    multi:{
+        Constructor: BitmapText,
+        general:{
+            name: 'multiA',
+                fontName: 'Transition',
+                fontSize: 35,
+                text: 'X2',
+                name: 'multi'
+            },
+            desktop:{
+                y: 0.339,
+                x: 0.040,
+            },
+            mobile:{
+                y: -0.404,
+                x: 0.257,
+                fontSize: 50,
+            }
+    }
+}
+
+export class FSCounter extends Container{
+    constructor({
+        container,
+        x,
+        y,
+        config
+    }){
+        super({
+            container,
+            x,
+            y
+        })
+        this.config = defaultsDeep(config, counterDefaultConfig)
+        this.config.views.forEach(item => this.addView(this.config[item]))
+    }
+
+    addView(item){
+        this[item.general.name] = new item.Constructor(Object.assign( 
+            {container: this}, 
+            item.general, 
+            item[GAME_DEVICE]))
+        return this[item.general.name]
+    }
+}
 
 const defaultConfig = {
     views:[
@@ -98,77 +197,18 @@ const defaultConfig = {
     },
     counter:{
         counter:{
-            name: 'counter',
-            Constructor: Sprite,
+            Constructor: FSCounter,
             general:{
-                texture: 'count_fs',
+                name: 'counter',
             },
             desktop:{
-                y: 0.335,
-                x:-0.034
-            },
-            mobile:{
-                y: -0.409,
-                x:-0.454
-            }
-        },
-        multi:{
-            name: 'multi',
-            Constructor: Sprite,
-            general:{
-                texture:'multi_fs',
-            },
-            desktop:{
-                y: 0.327,
-                x: 0.0458
-            },
-            mobile:{
-                y: -0.409,
-                x: 0.264
-            }
-        },
-        counterBitmap:{
-            name: 'countAmount',
-            Constructor: BitmapText,
-            general:{
-                fontName: 'Transition',
-                fontSize: 35,
-                text: 'X15',
-                name: 'counter'
-            },
-            desktop:{
-                y: 0.342,
-                x: -0.0328,
-            },
-            mobile:{
-                y: -0.404,
-                x: -0.452,
-                fontSize: 50
-            }
-        },
-        multiBitmap:{
-            name: 'multiAmount',
-            Constructor: BitmapText,
-            general:{
-                fontName: 'Transition',
-                fontSize: 35,
-                text: 'X2',
-                name: 'multi'
-            },
-            desktop:{
-                y: 0.339,
-                x: 0.040,
-            },
-            mobile:{
-                y: -0.404,
-                x: 0.257,
-                fontSize: 50,
+                x: 0,
+                y: 0
             }
         }
     },
     animal:{
         animal: {
-            name: 'animal',
             active: true,
             Constructor: Spine,
             general:{
@@ -188,9 +228,8 @@ const defaultConfig = {
                 x: 0,
                 y: 0
             }
-    },
+        },
     }
-    
 }
 
 export class FSView extends Container {
@@ -226,6 +265,7 @@ export class FSView extends Container {
         this.config.views
             .forEach(item => this.addView(this.config[item]))
         this.enable()
+
     }
 
     addView(config){
@@ -253,7 +293,7 @@ export class FSView extends Container {
     }
 
     createViewItem(item){
-        this[item.name] = new item.Constructor(Object.assign(
+        this[item.general.name] = new item.Constructor(Object.assign(
             {container: this},
             item.general,
             item[GAME_DEVICE] || {},
