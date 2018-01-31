@@ -47,40 +47,49 @@ const defaultConfig = {
                 y: 0.061,
                 config: {
                     bet:{
+                        active: true,
                         x: -0.255,
                         y: 0,
                         text: 0,
                         fixed: 0
                     },
                     level:{
-                        x: -0.255,
+                        active: true,
+                        x: -0.189,
                         y: 0,
                         text: 0,
                         fixed: 0
                     },
                    value:{
-                        x: -0.255,
+                    active: true,
+                        x: -0.119,
                         y: 0,
                         text: 0,
-                        fixed: 0
+                        fixed: 2
                     },
                     win:{
-                        x: -0.255,
+                        active: true,
+                        x: 0.1130,
                         y: 0,
                         text: 0,
                         fixed: 0
                     },
                     total:{
-                        x: -0.255,
+                        active: true,
+                        x: 0.170,
                         y: 0,
                         text: 0,
                         fixed: 0
                     },
                     sum: {
-                        x: -0.255,
+                        active: true,
+                        x: 0.250,
                         y: 0,
                         text: 0,
                         fixed: 0
+                    },
+                    lines:{
+                        active: false
                     }
                 }
             }
@@ -99,8 +108,8 @@ const defaultConfig = {
                 x:-0.034
             },
             mobile:{
-                y: -0.376,
-                x:-0.034
+                y: -0.409,
+                x:-0.454
             }
         },
         multi:{
@@ -114,8 +123,8 @@ const defaultConfig = {
                 x: 0.0458
             },
             mobile:{
-                y: -0.386,
-                x: 0.046875
+                y: -0.409,
+                x: 0.264
             }
         },
         counterBitmap:{
@@ -132,8 +141,8 @@ const defaultConfig = {
                 x: -0.0328,
             },
             mobile:{
-                y: -0.372,
-                x: -0.034,
+                y: -0.404,
+                x: -0.452,
                 fontSize: 50
             }
         },
@@ -151,8 +160,8 @@ const defaultConfig = {
                 x: 0.040,
             },
             mobile:{
-                y: -0.379,
-                x: 0.040,
+                y: -0.404,
+                x: 0.257,
                 fontSize: 50,
             }
         }
