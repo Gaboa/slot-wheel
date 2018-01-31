@@ -17,6 +17,7 @@ import {
     TransitionController,
     FSDesktopBalanceController,
     FSMobileBalanceController,
+    FSCounterController
 } from '../controllers'
 
 import { Info } from '../components/info'
@@ -314,7 +315,5 @@ class DesktopRoot extends Container {
     }
 
 }
-
-
 
 export { DesktopRoot, MobileRoot }

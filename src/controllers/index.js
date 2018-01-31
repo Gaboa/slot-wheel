@@ -17,3 +17,4 @@ export { WinController }       from './win'
 
 export { TransitionController } from './transition' 
 export { FSController } from './fs' 
+export { FSCounterController } from './fsCounter' 
