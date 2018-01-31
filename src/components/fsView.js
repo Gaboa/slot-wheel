@@ -204,26 +204,19 @@ export class FSView extends Container {
         this.$ = new Subject()
         this.tl = new TimelineMax()
 
-
+        // ?????
+        this.game = game
         this.alreadyRendered = {
             panel: this.game.root.machine.panel
         }
-
-        this.addCollector(this.config.collector)
+        if(GAME_DEVICE === 'mobile'){
+            this.game.root.footer.balance.changeModeTo('fs', true)
+        }
+        // ????
+        
         this.config.views
             .forEach(item => this.addView(this.config[item]))
         this.enable()
-    }
-
-    addCollector(config){
-        this.collector = new Collector({
-            container: this.game.root.machine,
-            x: 0.00781,
-            y: -0.3833,
-            stream: this.$,
-            game: this.game,
-            config
-        })
     }
 
     addView(config){
@@ -260,17 +253,6 @@ export class FSView extends Container {
 
     enable(){
         this.subs = []
-        this.subs.push(
-            this.collector.$.subscribe(n => {
-                this.$.next(n)
-            }),
-
-            this.animal.$
-            .filter(n => n.type === 'COMPLETE' && n.anim === 'win')
-            .subscribe(n => {
-                this.animal.state.setAnimation(0, 'idle', true)
-            })
-        )
     }
 
     doItWhenWin(){
