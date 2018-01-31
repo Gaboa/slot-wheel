@@ -1,27 +1,35 @@
 import defaultsDeep from 'lodash.defaultsdeep'
 import { Subject, Observable } from 'rxjs'
-import { Container, Sprite, Darkness } from '../utils'
-import { Machine, Footer, MobileButtons, MobileMenu } from '../components'
 import {
+
+    Container,
+    Sprite,
+    Darkness,
+
+    Machine,
+    Footer,
+    MobileButtons,
+    MobileMenu,
+    Info,
+    Settings,
+
     BalanceController,
     FooterBalanceController,
-    FRFooterBalanceController,
     DesktopBalanceController,
-    FRDesktopBalanceController,
     FooterButtonsController,
     PanelButtonsController,
     MachineController,
     MobileButtonsController,
     MobileMenuController,
     RootController,
-    MobileFRRootController,
-    DesktopFRRootController,
     WinController,
     AutoplayController
-} from '../controllers'
 
-import { Info } from '../components/info'
-import { Settings } from '../components/settings'
+    // FRDesktopBalanceController,
+    // FRFooterBalanceController,
+    // MobileFRRootController,
+    // DesktopFRRootController,
+} from '../COREv3'
 
 // TODO: Create balance bindings for different modes ( FS FR Bonus )
 // TODO: Check index switching bug in Screen

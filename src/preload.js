@@ -1,7 +1,15 @@
 import defaultsDeep from 'lodash.defaultsdeep'
 import { loaders } from 'pixi.js'
 import { Subject, Observable } from 'rxjs'
-import { Container, Sprite, JumpingButton, Darkness, Bar, Light, SoundTrigger } from '../utils'
+import {
+    Container,
+    Sprite,
+    JumpingButton,
+    Darkness,
+    Bar,
+    Light,
+    SoundTrigger
+} from '../COREv3'
 
 // TODO: Add error handling. 
 // Error can be in INIT request, and with loading assets
