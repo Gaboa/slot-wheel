@@ -74,7 +74,8 @@ const defaultConfig = {
         amount: 5,
         arr: 'closed',
         delta: 0.02,
-        pos: [{ x: -0.06, y: 0 }, { x: -0.03, y: 0 }, { x: 0, y: 0 }, { x: 0.03, y: 0 }, { x: 0.06, y: 0 }],
+        pos: [{ x: -0.081, y: 0.0046 }, { x: -0.042, y: 0.0046 },
+             { x: -0.0015, y: 0.0046 }, { x: 0.0375, y: 0.0046 }, { x: 0.077, y: 0.0046 }],
         general: {
             name: 'closed',
             texture: 'closed'
@@ -86,7 +87,7 @@ const defaultConfig = {
         amount: 5,
         arr: 'items',
         delta: 0.06,
-        pos: [{ x: -0.06, y: 0 }, { x: -0.03, y: 0 }, { x: 0, y: 0 }, { x: 0.03, y: 0 }, { x: 0.06, y: 0 }],
+        pos: [{ x: -0.081, y: 0 }, { x: -0.0416, y: 0 }, { x: -0.002, y: 0 }, { x: 0.037, y: 0 }, { x: 0.077, y: 0 }],
         general: {
             name: 'item',
             texture: 'carrot'
