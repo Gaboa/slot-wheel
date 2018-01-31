@@ -75,8 +75,10 @@ class ParserManager {
             this.data.fs.count.current = res.FsBonus.CountFS
             this.data.fs.count.win = res.FreeSpinsWin
             this.data.fs.level.current = res.FsBonus.Level
-            this.data.fs.win.coin = res.FsBonus.TotalFSWinCoins
-            this.data.fs.win.cash = res.FsBonus.TotalFSWinCents / 100
+            this.data.fs.total.coin = res.FsBonus.TotalFSWinCoins + res.Balance.TotalWinCoins
+            this.data.fs.total.cash = (res.FsBonus.TotalFSWinCents + res.Balance.TotalWinCents) / 100
+            this.data.fs.win.coin = res.Balance.TotalWinCoins
+            this.data.fs.win.cash = res.Balance.TotalWinCents / 100
             this.data.fs.bonus.coin = res.FsBonus.BonusWinCoins
             this.data.fs.bonus.cash = res.FsBonus.BonusWinCents / 100
         }

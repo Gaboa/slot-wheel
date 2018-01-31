@@ -31,6 +31,10 @@ const defaultData = {
             coin: null,
             cash: null
         },
+        total: {
+            coin: null,
+            cash: null
+        },
         bonus: {
             coin: null,
             cash: null
