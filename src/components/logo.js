@@ -20,7 +20,8 @@ const defaultConfig = {
         Constructor: Collector,
         general: {
             name: 'collector',
-            y: -0.042
+            y: -0.042,
+            x: 0.007
         }
     },
 
@@ -65,13 +66,13 @@ class Logo extends Container {
     }
 
     showCollector() {
-        this.spine.setAnimation({ track: 0, animation: 'open', loop: false })
-        this.spine.addAnimation({ track: 0, animation: 'idle_fs', loop: true })
+        this.logo.state.setAnimation( 0,  'open', false )
+        this.logo.state.addAnimation( 0,  'idle_fs', true )
     }
 
     closeCollector() {
-        this.spine.setAnimation({ track: 0, animation: 'close', loop: false })
-        this.spine.addAnimation({ track: 0, animation: 'idle', loop: true })
+        this.logo.state.setAnimation(0, 'close', false )
+        this.logo.state.addAnimation( 0, 'idle', true )
     }
 
 } 
