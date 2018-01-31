@@ -2,6 +2,7 @@ export { GameController } from './game'
 // Balance
 export { BalanceController }        from './balance/common'
 export { DesktopBalanceController } from './balance/desktop'
+export { FSDesktopBalanceController, FSMobileBalanceController} from './balance/fsBalanceController'
 export { FooterBalanceController }  from './balance/footer'
 // Buttons
 export { FooterButtonsController }  from './buttons/footer'

@@ -15,6 +15,8 @@ import {
     WinController,
     AutoplayController,
     TransitionController,
+    FSDesktopBalanceController,
+    FSMobileBalanceController,
 } from '../controllers'
 
 import { Info } from '../components/info'
@@ -121,7 +123,12 @@ class MobileRoot extends Container {
     }
 
     enableFS() {
-        this.disable()
+        //this.disable()
+
+        this.changePanel()
+
+        this.balanceCtrl.disable()
+        this.balanceCtrl = new FSMobileBalanceController({ game: this.game })
 
         // FS Ctrl + Ticker
         // Footer balance
@@ -129,6 +136,14 @@ class MobileRoot extends Container {
         // Panel balance + counters
         // Machine
         // Win + FS logic
+
+    
+    }
+
+    changePanel(config) {
+
+
+        this.machine.panel.render(config)
     }
 
     disable() {
@@ -196,6 +211,7 @@ class DesktopRoot extends Container {
         this.game.audio.play('main')
 
         setTimeout(() => this.enable(), 0)
+
     }
     
     enable() {
@@ -214,12 +230,12 @@ class DesktopRoot extends Container {
                 in: true,
                 out: true
             }
-        } })
+        }})
         this.winCtrl  = new WinController({ game: this.game })
         this.machineCtrl = new MachineController({ game: this.game })
         this.winCtrl = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
-        this.transitionController =  new TransitionController({ game: this.game })
+        this.transitionController = new TransitionController({ game: this.game })
     }
 
     disable() {
@@ -233,6 +249,63 @@ class DesktopRoot extends Container {
         this.winCtrl.disable()
         this.autoCtrl.disable()
         this.transitionController.disable() 
+    }
+
+    enableFS() {
+        // Kill everything
+        this.commonBalanceCtrl.disable()
+        this.desktopBalanceCtrl.disable()
+        this.footerBalanceCtrl.disable()
+        this.footerCtrl.disable()
+        this.panelCtrl.disable()
+        this.ctrl.disable()
+        this.machineCtrl.disable()
+        this.winCtrl.disable()
+        this.autoCtrl.disable()
+        
+        this.desktopBalanceCtrl = new FSDesktopBalanceController({ game: this.game })
+        this.counterCtrl = new FSCounterController({ game: this.game })
+
+        this.footerBalanceCtrl = new FooterBalanceController({ game: this.game, config: {
+            coin: {
+                sum: {
+                    idle: false,
+                    end: false
+                },
+                bet: false
+            },
+            cash: {
+                win: {
+                    idle: false,
+                    end: false
+                }
+            }
+        } })
+        this.footerCtrl = new FooterButtonsController({ game: this.game, config: {
+            info: false,
+            settings: false
+        } })
+        this.footerCtrl.buttons.info.disable()
+        this.footerCtrl.buttons.settings.disable()
+        this.machineCtrl = new MachineController({ game: this.game, config: {
+            screen: {
+                start: {
+                    balance: false
+                },
+                data: {
+                    start: false
+                }
+            }
+        } })
+        this.winCtrl = new WinController({ game: this.game })
+
+        
+        // FS Ctrl + Ticke r
+        // Footer balance
+        // Footer buttons
+        // Panel balance + counters
+        // Machine
+        // Win + FS logic
     }
 
     remove() {
