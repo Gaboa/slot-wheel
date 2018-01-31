@@ -33,7 +33,7 @@ const common = [
 
     //transition
     { name: 'transition', url:'transition/transition.json'},
-    { url: 'preload/preload.json' },
+    //{ url: 'preload/preload.json' },
 
     // fs
     { name: 'count_fs', url: 'fs/count_fs.png' },
