@@ -19,7 +19,6 @@ import {
 
 import { Info } from '../components/info'
 import { Settings } from '../components/settings'
-import { FSController } from '../controllers/fs';
 
 // TODO: Create balance bindings for different modes ( FS FR Bonus )
 // TODO: Check index switching bug in Screen
@@ -119,7 +118,17 @@ class MobileRoot extends Container {
         this.winCtrl  = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
         this.transitionCtrl = new TransitionController({ game: this.game })
+    }
 
+    enableFS() {
+        this.disable()
+
+        // FS Ctrl + Ticker
+        // Footer balance
+        // Footer buttons
+        // Panel balance + counters
+        // Machine
+        // Win + FS logic
     }
 
     disable() {
