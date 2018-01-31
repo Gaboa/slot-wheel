@@ -74,34 +74,7 @@ export class FSController{
             game: this.game,
             stream: this.$,
             config:{
-                counter:{
-                    counter:{},
-                    multi:{},
-                    counterBitmap:{
-                        general:{
-                            text: `${this.data.fs.count.current}`
-                        }
-                    },
-                    multiBitmap:{
-                        general:{
-                            text: `X${this.data.fs.multi}`
-                        }
-                    },
-                },
-                characters:[
-                    {
-                        general:{
-                            name:`${this.config.map[this.data.fs.multi].animal}`
-                        }
-                    }
-                ],
-                collector:{
-                    settings:{
-                        item:{
-                            texture: `${this.config.map[this.data.fs.multi].item}`
-                        }
-                    }
-                }
+                
             }
         })
 
