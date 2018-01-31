@@ -44,30 +44,35 @@ const defaultButtonsConfig = {
 const defaultBalanceConfig = {
     style: {},
     bet: {
+        active: true,
         x: -0.255,
         y: 0,
         text: 0,
         fixed: 0
     },
     lines: {
+        active: true,
         x: -0.199,
         y: 0,
         text: 0,
         fixed: 0
     },
     level: {
+        active: true,
         x: -0.127,
         y: 0,
         text: 0,
         fixed: 0
     },
     value: {
+        active: true,
         x: 0.134,
         y: 0,
         text: 0,
         fixed: 2
     },
     sum: {
+        active: true,
         x: 0.235,
         y: 0,
         text: 0,
@@ -332,15 +337,18 @@ class Balance extends Container {
         this.items = []
         
         for (const prop in this.config) {
-            if (this.config.hasOwnProperty(prop) && prop !== 'style') {
-                const field = this.config[prop]
-                this[prop] = new BalanceText(Object.assign({
-                    container: this,
-                    style: this.config.style
-                }, field))
-                this[prop].name = prop
-                this.items.push(this[prop])
+            if(this.config[prop].active){
+                if (this.config.hasOwnProperty(prop) && prop !== 'style') {
+                    const field = this.config[prop]
+                    this[prop] = new BalanceText(Object.assign({
+                        container: this,
+                        style: this.config.style
+                    }, field))
+                    this[prop].name = prop
+                    this.items.push(this[prop])
+                }
             }
+            
         }
 
     }
