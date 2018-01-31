@@ -3,9 +3,22 @@ import 'pixi.js'
 import 'pixi-spine'
 
 import buildConfig from '../config/config'
-import { Game } from './game'
-import { GameController } from './controllers'
-import { sprites } from './utils'
+
+import {
+    Game,
+    GameController
+} from '../COREv3'
+
+import { Preload } from './preload'
+import { MobileRoot, DesktopRoot } from './root'
+
+import {
+    sprites,
+    common,
+    desktop,
+    mobile,
+    preload
+} from './loadlist'
 
 const game = new Game({
     id: '#app',
@@ -25,7 +38,22 @@ const game = new Game({
     }
 })
 
-game.ctrl = new GameController({ game })
+game.ctrl = new GameController({
+    game,
+    config: {
+        constructors: {
+            Preload,
+            MobileRoot,
+            DesktopRoot
+        },
+        load: {
+            preload,
+            common,
+            desktop,
+            mobile
+        }
+    }
+})
 game.ctrl.preload()
 
 // Remove it in Prod mode
