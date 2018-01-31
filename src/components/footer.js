@@ -371,24 +371,6 @@ class Balance extends Container {
         this.bottom.right.suffix  = ` ${cur}`
     }
 
-    changeModeTo(newMode, tween = true) {
-        switch (newMode) {
-            case 'fs':
-                this.top.visible = true
-                this.changeModeToFS(tween)
-                break
-            case 'mobile':
-                this.top.visible = true
-                this.changeModeToMobile(tween)
-                break
-            case 'desktop':
-                this.top.visible = false
-                this.changeBottomMode()
-                break
-            default:
-        }
-    }
-
 }
 
 class Footer extends Container {
