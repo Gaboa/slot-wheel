@@ -188,16 +188,6 @@ class RootController {
             .filter(e => this.state.next == 'root') // Next is Root
             .filter(e => this.state.mode !== 'root') // Mode is not Root
             .subscribe(e => this.state.isTransition = true))
-
-        if(this.config.fs)
-        this.subs.push(
-            this.fsSub = this.game.state.isTransition$
-            .filter(e => e === false)
-            .subscribe( e => this.fsCtrl = new FSController({game: this.game}))
-        )
-            
-
-        
     }
 
     disable() {
