@@ -61,7 +61,8 @@ export class TransitionController{
             .filter(e => e)
             .filter(e => this.state.mode === 'root')
             .filter(e => this.state.next !== 'root')
-            .subscribe(e => this.transition.render({
+            .subscribe(e => {
+                this.transition.render({
                 fs: { in: {
                     count: { general: { text: String(this.data.fs.count.current) } },
                     multi: { general: { text: `X${this.data.fs.multi}` } },
@@ -69,7 +70,20 @@ export class TransitionController{
                         { general: { texture: this.config.map[this.data.fs.multi].char } }
                     ],
                 }}
-            }, 'fs', 'in')))
+            }, 'fs', 'in')}))
+              
+            this.subs.push(
+            this.transitionInBtnSub = this.transition.$
+            .filter(e => this.state.mode == 'root')
+                .filter(e => this.state.next !== 'root')
+                .filter(e => e.type === 'CONTINUE_CLICKED')
+                .subscribe(e => {
+                    this.state.mode = this.state.next
+                    this.state.isTransition = false
+                    this.transition.remove()
+                })
+            ) 
+        
             
         // FS out transition
         if (this.config.fs.out)
@@ -78,13 +92,27 @@ export class TransitionController{
             .filter(e => e)
             .filter(e => this.state.mode !== 'root')
             .filter(e => this.state.next === 'root')
-            .subscribe(e => this.transition.render({
+            .subscribe(e => {
+                this.transition.render({
                 fs: { out: {
-                    win: { general: { start: 0, end: this.data.fs.win.coin } },
+                    win: { general: { start: 0, end: this.data.fs.total.coin } },
                     topTitle: { general: { texture: this.data.fs.level.current >= this.data.fs.level.max ? 'big_win' : 'total_win' } },
                     emitter: { general: { textures: [this.config.map[this.data.fs.multi].food] } },
                 }}
-            }, 'fs', 'out')))
+            }, 'fs', 'out')}))
+
+        this.subs.push(
+            this.transitionOutBtnSub = this.transition.$
+                .filter(e => this.state.mode !== 'root')
+                .filter(e => this.state.next === 'root')
+                .filter(e => e.type === 'CONTINUE_CLICKED')
+                .subscribe(e => {
+                    this.state.mode = this.state.next
+                    this.state.isTransition = false
+                    this.game.root.enable()
+                    this.transition.remove()
+                })
+            ) 
 
         // Win Tween on end
         if (this.config.fs.win)
@@ -93,19 +121,7 @@ export class TransitionController{
             .filter(e => this.state.mode !== 'root')
             .filter(e => this.state.next === 'root')
             .filter(e => e.type === 'CREATED')
-            .subscribe(e => this.transition.win.tweenText(this.data.fs.win.coin)))
-            
-        // Remove Transition => change mode to FS
-        if (this.config.mode)        
-        this.subs.push(
-        this.transitionBtnSub = this.transition.$
-            .filter(e => e.type === 'CONTINUE_CLICKED')
-            .subscribe(e => {
-                this.state.isTransition = false
-                this.state.mode = this.state.next
-                this.transition.remove()
-            })) 
-        
+            .subscribe(e => this.transition.win.tweenText(this.data.fs.total.coin)))
     }
 
     disable() {
