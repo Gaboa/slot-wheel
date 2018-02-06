@@ -17,7 +17,8 @@ import {
     TransitionController,
     FSDesktopBalanceController,
     FSMobileBalanceController,
-    FSCounterController
+    FSCounterController,
+    FSController
 } from '../controllers'
 
 import { Info } from '../components/info'
@@ -237,6 +238,7 @@ class DesktopRoot extends Container {
         this.winCtrl = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
         this.transitionController = new TransitionController({ game: this.game })
+        this.fsCtrl = new FSController({ game: this.game })
     }
 
     disable() {
@@ -249,7 +251,7 @@ class DesktopRoot extends Container {
         this.ctrl.disable()
         this.winCtrl.disable()
         this.autoCtrl.disable()
-        this.transitionController.disable() 
+        this.fsCtrl.disable()
     }
 
     enableFS() {
@@ -307,6 +309,11 @@ class DesktopRoot extends Container {
         // Panel balance + counters
         // Machine
         // Win + FS logic
+    }
+
+    disableFS(){
+        this.counterCtrl.disable()
+        this.disable()
     }
 
     remove() {
