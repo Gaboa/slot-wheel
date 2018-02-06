@@ -75,6 +75,10 @@ export class FSDesktopBalanceController {
             .sample(this.state.isRolling$)
             .subscribe(e => this.panel.total.set(e)))
     }
+
+    disable(){
+        this.subs.forEach(sub => sub.unsubscribe())
+    }
 }
 
 const defaultMobileConfig = {
