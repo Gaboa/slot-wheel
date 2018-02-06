@@ -1,8 +1,10 @@
-import { Subject } from 'rxjs'
+import { Subject, Observable } from 'rxjs'
 import defaultsDeep from 'lodash.defaultsdeep'
 import { FSView }  from '../components'
 import { zip } from 'rxjs/observable/zip';
 import { defaultNumbersConfig } from '../components/numbers';
+import { Container, Sprite, Spine, BitmapText, BalanceText } from '../utils'
+import { Balance } from '../components'
 
 const defaultConfig = {
     map: {
@@ -26,46 +28,28 @@ const defaultConfig = {
     pigs: true,
     collector: true,
     afterEachPigWin: true,
-    transition: true
+    transition: true,
+    tick: true,
+    end: true,
+    start: true
 }
 
 export class FSController{
     constructor({
         game,
-        data = {
-            fs:{
-                bonus:{},
-                count: {
-                    current: 10,
-                    win: null
-                },
-                level: 0,
-                multi: 4,
-                win:{
-                    cash:0,
-                    coin:0
-                },
-            }
-            
-        },
-        state,
         config,
         autoEnable = true
     }){
         this.game = game
-        this.data = data
+        this.data = this.game.data
         this.state = this.game.state
 
         this.config = defaultsDeep(config, defaultConfig)
 
         this.$ = new Subject()
 
-        if(autoEnable){
-            this.render()
-            //this.enable()
-        }
-        
-        
+        if(autoEnable)
+            this.enable()
     }
     
     render(){
@@ -74,89 +58,164 @@ export class FSController{
             game: this.game,
             stream: this.$,
             config:{
-                
+                counter:{
+                    counter:{
+                        general:{
+                            config:{
+                                counter:{
+                                    general:{
+                                        text: String(this.data.fs.count.current)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         })
-
+        
         this.game.root.machine.logo.showCollector()
+        this.game.root.machine.panel.render({
+            panel: {
+                active: true,
+                name: 'panel',
+                Constructor: Spine,
+                general:{
+                    name:'panel',
+                    anim:{
+                        track: 0,
+                        name: 'idle',
+                        repeat: true 
+                    }
+                }
+                
+            },
+            labels: {
+                active: true,
+                name: 'labels',
+                Constructor: Sprite,
+                general:{
+                    texture: 'panel_fs',
+                }
+            },
+            buttons:{
+                active: false
+            },
+            balance: {
+                active: true,
+                Constructor: Balance,
+                name: 'balance',
+                general:{
+                    y: 0.061,
+                    config: {
+                        bet:{
+                            active: true,
+                            x: -0.255,
+                            y: 0,
+                            text: 0,
+                            fixed: 0
+                        },
+                        level:{
+                            active: true,
+                            x: -0.189,
+                            y: 0,
+                            text: 0,
+                            fixed: 0
+                        },
+                       value:{
+                        active: true,
+                            x: -0.119,
+                            y: 0,
+                            text: 0,
+                            fixed: 2
+                        },
+                        win:{
+                            active: true,
+                            x: 0.1130,
+                            y: 0,
+                            text: 0,
+                            fixed: 0
+                        },
+                        total:{
+                            active: true,
+                            x: 0.170,
+                            y: 0,
+                            text: 0,
+                            fixed: 0
+                        },
+                        sum: {
+                            active: true,
+                            x: 0.250,
+                            y: 0,
+                            text: 0,
+                            fixed: 0
+                        },
+                        lines:{
+                            active: false
+                        }
+                    }
+                }
+            },
+            
+        })
     }
     
     enable(){
         this.subs = []
 
-        // Start event
-        if (this.config.start)
+        if(this.config.start)  
         this.subs.push(
-        this.fsStartSub = this.state.mode$
-            .filter(e => e.indexOf('fsBonus'))
-            // TODO: Add start logic
-            .subscribe(e => {
-                // Change view to FS
-                // Add FS Controllers
-                // Start Ticker
-                // Disable Root Controllers (some)
-            }))
-
-        // End event
+        this.fsStartSub = this.state.isTransition$
+        .filter(e => !e)
+        .filter( e => this.state.mode.indexOf('fsBonus') > -1)
+        .subscribe(e => {
+            this.render()
+            this.game.root.enableFS()
+            this.enableTicker()
+        }))
+        
+        
         if (this.config.end)
         this.subs.push(
-        this.fsEndSub = this.state.next$
+            this.fsEndSub = this.state.next$
+            .filter(e => this.state.mode !== 'root')
             .filter(e => e === 'root')
-            // TODO: Add end logic
+            .sample(this.state.isRolling$.filter(e => !e))
+            .delay(200)
             .subscribe(e => {
+                this.disableTicker()
+                this.game.root.machine.logo.closeCollector()
+                this.game.root.machine.panel.render()
+                this.game.root.fs.remove()
+                this.state.isTransition = true
+                this.game.root.disableFS()
                 // Change view to Root ???
                 // Disable FS Controllers
                 // Stop Ticker
                 // Enable Root Controllers (some) ???
             }))
 
+        
+    }
 
-
-
-
-
-        this.fsStartIdleSub = this.state.mode$
-            .filter( e => e)
+    enableTicker(){
+        if (this.config.tick)
+        this.subs.push(
+        this.fsTickSub = this.data.fs.count.current$
+            .sample(this.state.isRolling$.filter(e => !e)) // At the end of roll
+            .switchMap(e => this.data.win.lines.length // If we have win lines
+                ? Observable.of(e).delay(1500) // Delay 2 seconds
+                : Observable.of(e).delay(200)) // If no win lines - delay 200ms
             .subscribe(e => {
                 this.game.root.machine.screen.roll()
-                this.state.isIdle = false })
-
-        if(this.config.pigs){
-            this.subs.push(
-                this.pigSub = this.game.root.pig$
-                // some filter on pig events
-                .subscribe( n => {
-                    this.$.next(this.data.fs) 
-                }),
-            )
-        }
-
-        if(this.config.collector){
-            this.zippedSub = zip(
-                this.game.root.pig$,
-                this.fsView.$
-            )
-            .subscribe(n => {
-                if(this.fsView.collector){
-                    this.fsView.collector.showItem()
-                }
-            })
-        }
-
-        if(this.config.afterEachPigWin){
-            this.subs.push(
-                // this.animalSub = this.data.win.lines$
-                //     .sample(this.state.isRolling$)
-                //     .subscribe(n => {
-                    //         this.fsView.doItWhenWin()
-                    //     })
-                    
-            ) 
-        }
-
-        this.fsView.$.next({})
+            }))
     }
-        
+
+    disableTicker(){
+        if(this.fsTickSub)
+            this.fsTickSub.unsubscribe()
+    }
+
     disable(){
          this.subs.forEach( sub => sub.unsubscribe())
     }
