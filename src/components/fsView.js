@@ -110,91 +110,7 @@ const defaultConfig = {
         'counter',
         'animal'
     ],
-    panel:{
-        rendered: true,
-        item: 'panel',
-        panel: {
-            active: true,
-            name: 'panel',
-            Constructor: Spine,
-            general:{
-                name:'panel',
-                anim:{
-                    track: 0,
-                    name: 'idle',
-                    repeat: true 
-                }
-            }
-            
-        },
-        labels: {
-            active: true,
-            name: 'labels',
-            Constructor: Sprite,
-            general:{
-                texture: 'panel_fs',
-            }
-        },
-        buttons:{
-            active: false
-        },
-        balance: {
-            active: true,
-            Constructor: Balance,
-            name: 'balance',
-            general:{
-                y: 0.061,
-                config: {
-                    bet:{
-                        active: true,
-                        x: -0.255,
-                        y: 0,
-                        text: 0,
-                        fixed: 0
-                    },
-                    level:{
-                        active: true,
-                        x: -0.189,
-                        y: 0,
-                        text: 0,
-                        fixed: 0
-                    },
-                   value:{
-                    active: true,
-                        x: -0.119,
-                        y: 0,
-                        text: 0,
-                        fixed: 2
-                    },
-                    win:{
-                        active: true,
-                        x: 0.1130,
-                        y: 0,
-                        text: 0,
-                        fixed: 0
-                    },
-                    total:{
-                        active: true,
-                        x: 0.170,
-                        y: 0,
-                        text: 0,
-                        fixed: 0
-                    },
-                    sum: {
-                        active: true,
-                        x: 0.250,
-                        y: 0,
-                        text: 0,
-                        fixed: 0
-                    },
-                    lines:{
-                        active: false
-                    }
-                }
-            }
-        },
-        
-    },
+    
     counter:{
         counter:{
             Constructor: FSCounter,
@@ -251,38 +167,17 @@ export class FSView extends Container {
 
         this.$ = new Subject()
         this.tl = new TimelineMax()
-
-        // ?????
-        this.game = game
-        this.alreadyRendered = {
-            panel: this.game.root.machine.panel
-        }
-        if(GAME_DEVICE === 'mobile'){
-            this.game.root.footer.balance.changeModeTo('fs', true)
-        }
-        // ????
         
         this.config.views
             .forEach(item => this.addView(this.config[item]))
-        this.enable()
-
     }
 
     addView(config){
         if(Array.isArray(config)){
             this.createView(config)
         } 
-        else if (config.rendered){
-            this.renderExistingElement(this.alreadyRendered[config.item],config)
-        }
         else {
             this.createView(config)
-        }
-    }
-
-    renderExistingElement(el, config){
-        if(el){
-            el.rerender(config)
         }
     }
 
@@ -300,12 +195,8 @@ export class FSView extends Container {
         ))
     }
 
-    enable(){
-        this.subs = []
-    }
-
-    doItWhenWin(){
-        this.animal.state.setAnimation(0, 'win', false)
+    remove(){
+        this.destroy()
     }
 
 }

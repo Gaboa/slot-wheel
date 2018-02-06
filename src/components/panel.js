@@ -428,9 +428,14 @@ class Panel extends Container {
         
     }
 
-    rerender(newConfig){
+    render(newConfig){
         this.clean()
-        this.addView(newConfig)
+        if(newConfig){
+            this.addView(newConfig)
+        } else {
+            this.addView(this.rootConfig)
+        }
+
     }
 
     clean(){
