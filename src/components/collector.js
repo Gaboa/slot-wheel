@@ -51,7 +51,8 @@ const defaultConfig = {
     win: true,
     reset: {
         reset: true,
-        prev: true
+        prev: true,
+        saved: true
     },
 
     views: [
@@ -204,6 +205,7 @@ export class Collector extends Container {
         this.subs.push(
         this.resetSavedSub = this.$
             .filter(e => e.type === 'RESET')
+            .sample(this.$.filter(e => e.type === 'SHOW_WIN_ENDS'))
             .filter(e => this.saved)
             .subscribe(e => this.play(this.saved)))
 
@@ -218,7 +220,8 @@ export class Collector extends Container {
         this.winSub = this.$
             .filter(e => e.type === 'RESET')
             .subscribe(e => {
-                this.$.next({type: 'SHOW_WIN'})}))
+                this.$.next({type: 'SHOW_WIN_STARTS'})}))
+            //}))
 
     }
 
@@ -270,6 +273,12 @@ export class Collector extends Container {
             door.alpha = 1
             door.y = 0.0046 * GAME_HEIGHT
         })
+    }
+
+    cleanPrevState(){
+        this.prev.index = 0 
+        this.prev.loops = 0 
+        this.prev.level = 0
     }
 
     remove() {
