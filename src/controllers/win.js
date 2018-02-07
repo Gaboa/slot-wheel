@@ -132,8 +132,11 @@ class WinController {
             .filter(data => data && data.length)
             .sample(this.state.isRolling$.filter(e => !e))
             .subscribe(data => this.machine.screen.elements
-                .filter(el => !this.machine.screen.getElementsFromLines(data).some(winEl => winEl === el))
-                .forEach(el => el.alpha = 0.6)))
+                .filter(el => !this.machine.screen.getElementsFromLines(data).some(winEl => winEl === el) && el.anim.el !== '11')
+                .forEach(el => el.alpha = 0.6)
+                //.forEach(el => console.log(el))
+                )
+            )
 
         // Return Elements alpha when rolling starts        
         if (this.config.els.alpha)
