@@ -87,10 +87,11 @@ const defaultConfig = {
         amount: 5,
         arr: 'items',
         delta: 0.06,
-        pos: [{ x: -0.081, y: 0 }, { x: -0.0416, y: 0 }, { x: -0.002, y: 0 }, { x: 0.037, y: 0 }, { x: 0.077, y: 0 }],
+        pos: [{ x: -0.081, y: 0.0027 }, { x: -0.0416, y: 0.0027 }, { x: -0.002, y: 0.0027 }, { x: 0.037, y: 0.0027 }, { x: 0.077, y: 0.0027 }],
         general: {
             name: 'item',
-            texture: 'carrot'
+            texture: 'carrot',
+            scale: 0.94
         }
     },
 
@@ -101,7 +102,6 @@ const defaultConfig = {
 
         }
     }
-
 }
 
 export class Collector extends Container {
@@ -146,6 +146,10 @@ export class Collector extends Container {
         this.$  = new Subject()
         this.tl = new TimelineMax()
         this.enable()
+    }
+
+    updateItemsTexture(newTexture){
+        this.items.forEach( item => item.texture = PIXI.utils.TextureCache[newTexture])
     }
 
     addView(item) {
@@ -252,32 +256,17 @@ export class Collector extends Container {
         TweenMax.to(this.items[i],  0.3, { alpha: 1 })
         TweenMax.to(this.closed[i], 0.3, { alpha: 0, onComplete: () => this.$.next({ index: i, type: 'OPENED' }) })
     }
-
-    // openItem() {
-    //     // TweenMax.fromTo(this.items[this.index % this.config.amountOfItems].scale, 0.2, { x: 0, y: 0 }, { x: 1, y: 1 })
-    //     // TweenMax.to(this.items[this.index % this.config.amountOfItems], { alpha: 1 })
-    // }
-
-    // openClosed() {
-    //     this.closed[this.index].alpha = 0
-        
-    //     // TweenMax.to(this.closed[this.index % this.config.amountOfItems], 0.2, { y: '-=75', alpha: 0 })
-    // }
     
     reset() {
-        this.closed.forEach(door => {
-            door.alpha = 1
-            door.y = 0
-        })
+        this.clean()
         this.$.next({ type: 'RESET' })
     }
 
-    sendEvent() {
-        this.$.next({source: 'COLLECTOR', message: 'i am carrot'})
-    }
-
-    showAfterReset() {
-        this.win.show('1000', this.sendEvent, this)
+    clean(){
+        this.closed.forEach(door => {
+            door.alpha = 1
+            door.y = 0.0046 * GAME_HEIGHT
+        })
     }
 
     remove() {
