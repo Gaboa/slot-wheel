@@ -10,6 +10,7 @@ const defaultConfigMod = {
         3: {x: 0.0364, y: -0.4166},
         4: {x: 0.072, y: -0.4166},
     },
+    
 }
 
 export class ElModifier{
@@ -54,11 +55,8 @@ export class ElModifier{
         this.updatedOldCoords.x = el[this.config.name].position.x
         this.updatedOldCoords.y = el[this.config.name].position.y
 
-        console.log('index: ', this.index)
-        console.log('coords: ', this.config.coordsMap[this.index].x)
-
         TweenMax.to(el[this.config.name], 0.5, {
-            x: this.config.coordsMap[this.index].x *  GAME_WIDTH - el.x,
+            x: this.config.coordsMap[this.index].x * GAME_WIDTH - el.x,
             y: this.config.coordsMap[this.index].y * GAME_HEIGHT - el.y,
             onComplete: () => {
                 this.config.collector.level(lv)
@@ -106,7 +104,8 @@ const defaultConfig = {
         4: 2,
         5: 3,
     },
-    anim: {type: 'spine', el: '11'}
+    anim: {type: 'spine', el: '11'},
+    win: true
 }
 
 export class FSCollectorController{
@@ -135,7 +134,7 @@ export class FSCollectorController{
 
         if(this.config.level)
         this.subs.push(
-            this.levelSub = this.game.data.fs.level.current$
+            this.levelSub = this.data.fs.level.current$
             .sample(this.state.isRolling$.filter(e => !e))
             .subscribe( e => {
                 if(e === this.current) return
@@ -143,6 +142,13 @@ export class FSCollectorController{
                 this.els = this.game.root.machine.screen.getElementsWithAnim(this.config.anim)
                 this.elsMod.start(this.els, e) 
             })
+        )
+
+        if(this.config.win)
+        this.subs.push(
+            this.showWinSub = this.game.root.machine.logo.collector.$
+            .filter(e => e.type === 'SHOW_WIN')
+            .subscribe(e => this.game.root.machine.logo.collector.win.show(this.data.fs.bonus.coin))
         )
     }
 
