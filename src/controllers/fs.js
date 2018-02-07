@@ -13,7 +13,7 @@ const defaultConfig = {
             item: 'carrot'
         },
         3: {
-            animal: 'rat',
+            animal: 'mouse',
             item: 'cheese'
         },
         4: {
@@ -59,18 +59,21 @@ export class FSController{
             stream: this.$,
             config:{
                 counter:{
-                    counter:{
-                        general:{
-                            config:{
-                                counter:{
-                                    general:{
-                                        text: String(this.data.fs.count.current)
-                                    }
+                    general:{
+                        config:{
+                            counter:{
+                                general:{
+                                    text: String(this.data.fs.count.current)
                                 }
                             }
                         }
                     }
-                }
+                },
+                animal:{
+                    general:{
+                        name: `${this.config.map[this.data.fs.multi].animal}`
+                    }
+                } 
             }
         })
         
@@ -156,8 +159,9 @@ export class FSController{
                     }
                 }
             },
-            
         })
+
+        this.game.root.machine.logo.collector.updateItemsTexture(this.config.map[this.data.fs.multi].item)
     }
     
     enable(){
@@ -184,15 +188,12 @@ export class FSController{
             .delay(200)
             .subscribe(e => {
                 this.disableTicker()
+                this.game.root.machine.logo.collector.clean()
                 this.game.root.machine.logo.closeCollector()
                 this.game.root.machine.panel.render()
                 this.game.root.fs.remove()
                 this.state.isTransition = true
                 this.game.root.disableFS()
-                // Change view to Root ???
-                // Disable FS Controllers
-                // Stop Ticker
-                // Enable Root Controllers (some) ???
             }))
 
         
@@ -204,7 +205,7 @@ export class FSController{
         this.fsTickSub = this.data.fs.count.current$
             .sample(this.state.isRolling$.filter(e => !e)) // At the end of roll
             .switchMap(e => this.data.win.lines.length // If we have win lines
-                ? Observable.of(e).delay(1500) // Delay 2 seconds
+                ? Observable.of(e).delay(2000) // Delay 2 seconds
                 : Observable.of(e).delay(200)) // If no win lines - delay 200ms
             .subscribe(e => {
                 this.game.root.machine.screen.roll()
