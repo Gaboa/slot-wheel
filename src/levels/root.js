@@ -210,10 +210,14 @@ class DesktopRoot extends Container {
         document.querySelectorAll('.darkness__hidden').forEach(el => el.remove())
         this.info = new Info({})
         this.settings = new Settings({})
-
+        
         this.game.audio.play('main')
-
-        setTimeout(() => this.enable(), 0)
+        
+        setTimeout(() => {
+            this.enable()
+            this.transitionController = new TransitionController({ game: this.game })
+        }, 0)
+        
 
     }
     
@@ -238,7 +242,6 @@ class DesktopRoot extends Container {
         this.machineCtrl = new MachineController({ game: this.game })
         this.winCtrl = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
-        this.transitionController = new TransitionController({ game: this.game })
         this.fsCtrl = new FSController({ game: this.game })
     }
 
