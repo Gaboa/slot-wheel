@@ -106,46 +106,43 @@ export class FSCounter extends Container{
 
 const defaultConfig = {
     views:[
-        'panel',
         'counter',
         'animal'
     ],
     
     counter:{
-        counter:{
-            Constructor: FSCounter,
-            general:{
-                name: 'counter',
-            },
-            desktop:{
-                x: 0,
-                y: 0
-            }
+        Constructor: FSCounter,
+        general:{
+            name: 'counter',
+        },
+        desktop:{
+            x: 0,
+            y: 0
         }
     },
-    animal:{
-        animal: {
-            active: true,
-            Constructor: Spine,
-            general:{
-                name: 'rabbit',
-                anim:{
-                    track: 0,
-                    name: 'idle',
-                    repeat: true
-                },
-                scale: 2.5
+
+    animal: {
+        active: true,
+        Constructor: Spine,
+        general:{
+            name: 'rabbit',
+            anim:{
+                track: 0,
+                name: 'idle',
+                repeat: true
             },
-            desktop:{
-                x: -0.418,
-                y: 0.217
-            },
-            mobile: {
-                x: 0,
-                y: 0
-            }
+            scale: 2.5
         },
-    }
+        desktop:{
+            x: -0.418,
+            y: 0.217
+        },
+        mobile: {
+            x: 0,
+            y: 0
+        }
+    },
+    
 }
 
 export class FSView extends Container {
@@ -174,16 +171,11 @@ export class FSView extends Container {
 
     addView(config){
         if(Array.isArray(config)){
-            this.createView(config)
+            config.forEach(c => this.createViewItem(c))
+            this.createViewItem(config)
         } 
         else {
-            this.createView(config)
-        }
-    }
-
-    createView(config){
-        for(let item in config){
-            this.createViewItem(config[item])
+            this.createViewItem(config)
         }
     }
 
