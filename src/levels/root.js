@@ -18,7 +18,8 @@ import {
     FSDesktopBalanceController,
     FSMobileBalanceController,
     FSCounterController,
-    FSController
+    FSController,
+    FSCollectorController
 } from '../controllers'
 
 import { Info } from '../components/info'
@@ -268,6 +269,7 @@ class DesktopRoot extends Container {
         
         this.desktopBalanceCtrl = new FSDesktopBalanceController({ game: this.game })
         this.counterCtrl = new FSCounterController({ game: this.game })
+        this.collectorCtrl = new FSCollectorController({ game: this.game })
 
         this.footerBalanceCtrl = new FooterBalanceController({ game: this.game, config: {
             coin: {
@@ -313,6 +315,7 @@ class DesktopRoot extends Container {
 
     disableFS(){
         this.counterCtrl.disable()
+        this.collectorCtrl.disable()
         this.disable()
     }
 
