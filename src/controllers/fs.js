@@ -189,6 +189,7 @@ export class FSController{
             .subscribe(e => {
                 this.disableTicker()
                 this.game.root.machine.logo.collector.clean()
+                this.game.root.machine.logo.collector.cleanPrevState()
                 this.game.root.machine.logo.closeCollector()
                 this.game.root.machine.panel.render()
                 this.game.root.fs.remove()
