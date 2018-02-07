@@ -65,7 +65,8 @@ const defaultConfig = {
         Constructor: Sprite,
         general:{
             name: 'bg',
-            texture: 'middle'
+            texture: 'middle',
+            
         }
     },
 
@@ -74,7 +75,7 @@ const defaultConfig = {
         amount: 5,
         arr: 'closed',
         delta: 0.02,
-        pos: [{ x: -0.081, y: 0.0046 }, { x: -0.042, y: 0.0046 },
+        pos: [{ x: -0.082, y: 0.0046 }, { x: -0.042, y: 0.0046 },
              { x: -0.0015, y: 0.0046 }, { x: 0.0375, y: 0.0046 }, { x: 0.077, y: 0.0046 }],
         general: {
             name: 'closed',
@@ -87,7 +88,7 @@ const defaultConfig = {
         amount: 5,
         arr: 'items',
         delta: 0.06,
-        pos: [{ x: -0.081, y: 0.0027 }, { x: -0.0416, y: 0.0027 }, { x: -0.002, y: 0.0027 }, { x: 0.037, y: 0.0027 }, { x: 0.077, y: 0.0027 }],
+        pos: [{ x: -0.082, y: 0.0027 }, { x: -0.042, y: 0.0027 }, { x: -0.002, y: 0.0027 }, { x: 0.037, y: 0.0027 }, { x: 0.077, y: 0.0027 }],
         general: {
             name: 'item',
             texture: 'carrot',
@@ -99,7 +100,8 @@ const defaultConfig = {
         Constructor: WinField,
         general: {
             name: 'win',
-
+            x: -0.00156,
+            y: 0.0046
         }
     }
 }
@@ -215,7 +217,8 @@ export class Collector extends Container {
         this.subs.push(
         this.winSub = this.$
             .filter(e => e.type === 'RESET')
-            .subscribe(e => this.win.show(this.config.sum || 1000)))
+            .subscribe(e => {
+                this.$.next({type: 'SHOW_WIN'})}))
 
     }
 
