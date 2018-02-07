@@ -101,13 +101,13 @@ class Element extends Container {
         this.spines = []
         this.symbols.forEach(s => {
             
-            this[name] = new Spine({
+            this[s.name] = new Spine({
                 container: this,
                 name: s.name,
                 visible: false
             })
             
-            this.spines.push(this[name])
+            this.spines.push(this[s.name])
         })
     }
 
