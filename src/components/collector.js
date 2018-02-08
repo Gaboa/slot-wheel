@@ -2,12 +2,47 @@ import defaultsDeep from 'lodash.defaultsdeep'
 import { Container, Sprite, Spine, BitmapText, BalanceText, ReactiveObject, ReactiveProperty } from '../utils'
 import { Subject } from 'rxjs'
 
+const defaultWinConfig = {
+    views: [
+        'bg',
+        'amount'
+    ],
+    bg: {
+        Constructor: Sprite,
+        general:{
+            name: 'bg',
+            texture: 'middle_win',
+            
+        }
+    },
+    amount:{
+        Constructor: BalanceText,
+        general:{
+            name: 'amount',
+            fixed: 0,
+            fontSize: 30,
+            prefix: '+',
+            alpha: 0,   
+        },
+        desktop:{
+            x: 0,
+            y: 0.0027
+        },
+        mobile:{
+            x: 0,
+            y: 0.0027
+        },
+    }
+
+}
+
 export class WinField extends Container {
     
     constructor({
         container,
         x,
-        y
+        y,
+        config
     }){
         super({
             container,
@@ -15,20 +50,15 @@ export class WinField extends Container {
             y
         })
         this.alpha = 0
-
-        this.bg = new Sprite({
-            container: this,
-            texture: 'middle_win',
-        })
-
-        this.amount = new BalanceText({
-            container: this,
-            fixed: 0,
-            fontSize: 30,
-            prefix: '+',
-            alpha: 0,
-            y: 0.0027,
-        })
+        this.config = defaultsDeep(config, defaultWinConfig)
+        this.config.views.forEach(item => this.addView(this.config[item]))
+    }
+    addView(item){
+        this[item.general.name] = new item.Constructor(Object.assign( 
+            {container: this}, 
+            item.general, 
+            item[GAME_DEVICE]))
+        return this[item.general.name]
     }
 
     show(amount) {
@@ -76,8 +106,11 @@ const defaultConfig = {
         amount: 5,
         arr: 'closed',
         delta: 0.02,
-        pos: [{ x: -0.082, y: 0.0046 }, { x: -0.042, y: 0.0046 },
-             { x: -0.0015, y: 0.0046 }, { x: 0.0375, y: 0.0046 }, { x: 0.077, y: 0.0046 }],
+        pos: [
+                { x: -0.082, y: 0.0046 }, { x: -0.042, y: 0.0046 },
+                { x: -0.0015, y: 0.0046 }, { x: 0.0375, y: 0.0046 }, 
+                { x: 0.077, y: 0.0046 }
+            ],
         general: {
             name: 'closed',
             texture: 'closed'
@@ -89,7 +122,11 @@ const defaultConfig = {
         amount: 5,
         arr: 'items',
         delta: 0.06,
-        pos: [{ x: -0.082, y: 0.0027 }, { x: -0.042, y: 0.0027 }, { x: -0.002, y: 0.0027 }, { x: 0.037, y: 0.0027 }, { x: 0.077, y: 0.0027 }],
+        pos: [
+                { x: -0.082, y: 0.0027 }, { x: -0.042, y: 0.0027 },
+                { x: -0.002, y: 0.0027 }, { x: 0.037, y: 0.0027 }, 
+                { x: 0.077, y: 0.0027 }
+            ],
         general: {
             name: 'item',
             texture: 'carrot',
@@ -101,8 +138,14 @@ const defaultConfig = {
         Constructor: WinField,
         general: {
             name: 'win',
+        },
+        desktop:{
             x: -0.00156,
             y: 0.0046
+        },
+        mobile:{
+            x: -0.00156,
+            y: 0.0046 
         }
     }
 }
@@ -149,10 +192,6 @@ export class Collector extends Container {
         this.$  = new Subject()
         this.tl = new TimelineMax()
         this.enable()
-    }
-
-    updateItemsTexture(newTexture){
-        this.items.forEach( item => item.texture = PIXI.utils.TextureCache[newTexture])
     }
 
     addView(item) {
@@ -220,14 +259,31 @@ export class Collector extends Container {
         this.winSub = this.$
             .filter(e => e.type === 'RESET')
             .subscribe(e => {
-                this.$.next({type: 'SHOW_WIN_STARTS'})}))
-            //}))
-
+                this.$.next({type: 'SHOW_WIN_STARTS'})
+            })
+        )
     }
 
     play(amount) {
         for (let i = this.prev.index; i < this.prev.index + amount; i++)
             this.open(i)
+    }
+
+    open(i) {
+        TweenMax.to(this.items[i],  0.3, { alpha: 1 })
+        TweenMax.to(this.closed[i], 0.3, { alpha: 0, onComplete: () => this.$.next({ index: i, type: 'OPENED' }) })
+    }
+
+    reset() {
+        this.cleanView()
+        this.$.next({ type: 'RESET' })
+    }
+
+    cleanView(){
+        this.closed.forEach(door => {
+            door.alpha = 1
+            door.y = 0.0046 * GAME_HEIGHT
+        })
     }
 
 
@@ -258,23 +314,6 @@ export class Collector extends Container {
         this.items.forEach(item.texture = name)
     }
 
-    open(i) {
-        TweenMax.to(this.items[i],  0.3, { alpha: 1 })
-        TweenMax.to(this.closed[i], 0.3, { alpha: 0, onComplete: () => this.$.next({ index: i, type: 'OPENED' }) })
-    }
-    
-    reset() {
-        this.clean()
-        this.$.next({ type: 'RESET' })
-    }
-
-    clean(){
-        this.closed.forEach(door => {
-            door.alpha = 1
-            door.y = 0.0046 * GAME_HEIGHT
-        })
-    }
-
     cleanPrevState(){
         this.prev.index = 0 
         this.prev.loops = 0 
@@ -284,4 +323,8 @@ export class Collector extends Container {
     remove() {
         this.destroy()
     }
+
+    updateItemsTexture(newTexture){
+        this.items.forEach( item => item.texture = PIXI.utils.TextureCache[newTexture])
+    } 
 }
