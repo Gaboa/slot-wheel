@@ -27,7 +27,7 @@ const defaultConfig = {
                 },
                 mobile: {
                     x: 0,
-                    y: -0,
+                    y: -0.01,
                 }
                                       
             },
@@ -168,7 +168,7 @@ const defaultConfig = {
                 },
                 mobile: {
                     x: 0,
-                    y: -0.1,
+                    y: -0.01,
                 }
                                       
             },
@@ -296,7 +296,7 @@ export class Transition extends Container {
     }
 
     render(config, mode = 'fs', state = 'in') {
-
+        
         this.config = defaultsDeep(config, this.config)
         this.part = this.config[mode][state]
 
