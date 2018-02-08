@@ -1,5 +1,6 @@
-import defaultsDeep from 'lodash.defaultsdeep'
+import defaultsDeep from 'lodash.defaultsdeep';
 import { TweenMax } from 'gsap';
+import { Subject } from 'rxjs';
 
 const defaultConfigMod = {
     name: 'pig', 
@@ -10,7 +11,6 @@ const defaultConfigMod = {
         3: {x: 0.0364, y: -0.4166},
         4: {x: 0.072, y: -0.4166},
     },
-    
 }
 
 export class ElModifier{
@@ -40,14 +40,13 @@ export class ElModifier{
     updateCoordsAndParent(el){
         let newPos = this.config.machine.toLocal(this.config.machine.position, el)
         el.setParent(this.config.machine)
-        el.x = newPos.x
-        el.y = newPos.y + 54
+        el.x = newPos.x - this.config.machine.x
+        el.y = newPos.y - this.config.machine.y 
     }
 
-    restoreOldCoords(el){
-        el.setParent(this.wm.get(el).parent)
-        el.x = this.wm.get(el).x
-        el.y = this.wm.get(el).y
+    changeSkin(el, skin){
+        el.skeleton.setSkinByName(`${skin}`);
+        el.skeleton.setSlotsToSetupPose();
     }
 
     flyTo(el, lv){
@@ -59,7 +58,7 @@ export class ElModifier{
             x: this.config.coordsMap[this.index].x * GAME_WIDTH - el.x,
             y: this.config.coordsMap[this.index].y * GAME_HEIGHT - el.y,
             onComplete: () => {
-                this.config.collector.level(lv)
+                this.config.stream.next({type: 'START_LEVEL'})
                 this.changeSkin(el[this.config.name], 0)
                 this.flyBack(el)
                 if(this.index === 4){
@@ -68,8 +67,13 @@ export class ElModifier{
                     this.index++
                 }
             }
-
         })
+    }
+
+    restoreOldCoords(el){
+        el.setParent(this.wm.get(el).parent)
+        el.x = this.wm.get(el).x
+        el.y = this.wm.get(el).y
     }
 
     flyBack(el){
@@ -82,15 +86,11 @@ export class ElModifier{
             }
         })
     }
-
-    changeSkin(el, skin){
-        el.skeleton.setSkinByName(`${skin}`);
-        el.skeleton.setSlotsToSetupPose();
-    }
 }
 
 const defaultConfig = {
     level: true,
+    win: true,
     skins:{
         empty : 0,
         carrot: 1,
@@ -105,7 +105,7 @@ const defaultConfig = {
         5: 3,
     },
     anim: {type: 'spine', el: '11'},
-    win: true
+    startLevel: true
 }
 
 export class FSCollectorController{
@@ -117,16 +117,17 @@ export class FSCollectorController{
         this.game = game
         this.state = this.game.state
         this.data = this.game.data
+        this.$ = new Subject()
 
         this.config = defaultsDeep(config, defaultConfig)
         this.elsMod = new ElModifier({
             machine: this.game.root.machine, 
             skin: this.config.map[this.game.data.fs.multi],
-            collector: this.game.root.machine.logo.collector
+            //collector: this.game.root.machine.logo.collector,
+            stream: this.$
         }) 
 
-        if(autoEnable)
-            this.enable()
+        if(autoEnable) this.enable()
     }
 
     enable(){
@@ -147,8 +148,21 @@ export class FSCollectorController{
         if(this.config.win)
         this.subs.push(
             this.showWinSub = this.game.root.machine.logo.collector.$
-            .filter(e => e.type === 'SHOW_WIN')
-            .subscribe(e => this.game.root.machine.logo.collector.win.show(this.data.fs.bonus.coin))
+            .filter(e => e.type === 'SHOW_WIN_STARTS')
+            .subscribe(e => {
+                this.game.root.machine.logo.collector.win.show(this.data.fs.bonus.coin)
+                this.game.root.machine.logo.collector.win.tl.eventCallback('onComplete', this.game.root.machine.logo.collector.$.next({type: 'SHOW_WIN_ENDS'}), [])
+            })
+        )
+
+        if(this.config.startLevel)
+        this.subs.push(
+            this.startLevSub = this.$
+            .filter(e => e.type === 'START_LEVEL')
+            .subscribe(e => {
+                this.game.root.machine.logo.collector.level(this.data.fs.level.current)
+            })
+
         )
     }
 
