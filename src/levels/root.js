@@ -15,10 +15,10 @@ import {
     WinController,
     AutoplayController,
     TransitionController,
+    FSController,
     FSDesktopBalanceController,
     FSMobileBalanceController,
     FSCounterController,
-    FSController,
     FSCollectorController
 } from '../controllers'
 
@@ -84,7 +84,10 @@ class MobileRoot extends Container {
 
         this.game.audio.play('main')
 
-        setTimeout(() => this.enable(), 0)
+        setTimeout(() => {
+            this.transitionController = new TransitionController({ game: this.game })
+            this.enable()
+        }, 0)
     }
 
     enable() {
@@ -122,31 +125,66 @@ class MobileRoot extends Container {
         }})
         this.winCtrl  = new WinController({ game: this.game })
         this.autoCtrl = new AutoplayController({ game: this.game })
-        this.transitionCtrl = new TransitionController({ game: this.game })
+        this.fsCtrl = new FSController({ game: this.game, 
+            config:{ 
+                in:{
+                    rendering:{
+                        container: true,
+                        panel: false,
+                        logo: true,
+                        machine: true,
+                        buttons: true,
+                        footer: true
+                    }
+                },
+                out:{
+                    rendering:{
+                        container: true,
+                        panel: false,
+                        logo: true,
+                        machine: true,
+                        buttons: true,
+                        footer: true
+                    }
+                }
+            } 
+        })
     }
 
-    enableFS() {
-        //this.disable()
-
-        this.changePanel()
-
+    enableFS(){
+        // Kill everything
         this.balanceCtrl.disable()
+        this.balanceRootCtrl.disable()
+        this.footerCtrl.disable()
+        this.buttonsCtrl.disable()
+        this.menuCtrl.disable()
+        this.ctrl.disable()
+        this.machineCtrl.disable()
+        this.winCtrl.disable()
+        this.autoCtrl.disable()
+        
+        this.counterCtrl = new FSCounterController({ game: this.game })
+        this.collectorCtrl = new FSCollectorController({ game: this.game })
+
         this.balanceCtrl = new FSMobileBalanceController({ game: this.game })
-
-        // FS Ctrl + Ticker
-        // Footer balance
-        // Footer buttons
-        // Panel balance + counters
-        // Machine
-        // Win + FS logic
-
-    
+        this.machineCtrl = new MachineController({ game: this.game, config: {
+            screen: {
+                start: {
+                    balance: false
+                },
+                data: {
+                    start: false
+                }
+            }
+        } })
+        this.winCtrl = new WinController({ game: this.game })
+        
     }
 
-    changePanel(config) {
-
-
-        this.machine.panel.render(config)
+    disableFS(){
+        this.counterCtrl.disable()
+        this.collectorCtrl.disable()
+        this.disable()
     }
 
     disable() {
@@ -158,7 +196,7 @@ class MobileRoot extends Container {
         this.ctrl.disable()
         this.winCtrl.disable()
         this.autoCtrl.disable() 
-        this.transitionController.disable() 
+        this.fsCtrl.disable()
     }
 
     remove() {
@@ -306,14 +344,6 @@ class DesktopRoot extends Container {
             }
         } })
         this.winCtrl = new WinController({ game: this.game })
-
-        
-        // FS Ctrl + Ticke r
-        // Footer balance
-        // Footer buttons
-        // Panel balance + counters
-        // Machine
-        // Win + FS logic
     }
 
     disableFS(){
