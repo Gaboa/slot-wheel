@@ -128,6 +128,6 @@ export class FSMobileBalanceController extends FooterBalanceController {
         this.subs.push(
         this.fsTotalCashSub = this.data.fs.total.cash$
             .sample(this.state.isRolling$)
-            .subscribe(e => this.bottom.left.set(e)))
+            .subscribe(e => this.bottom.right.set(e)))
     }
 }
