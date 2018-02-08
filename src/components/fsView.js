@@ -22,7 +22,7 @@ const counterDefaultConfig = {
         },
         mobile:{
             y: -0.409,
-            x:-0.454
+            x:-0.274
         }
     },
     multiBg:{
@@ -37,7 +37,7 @@ const counterDefaultConfig = {
         },
         mobile:{
             y: -0.409,
-            x: 0.264
+            x: 0.442
         }
     },
     counter:{
@@ -54,7 +54,7 @@ const counterDefaultConfig = {
         },
         mobile:{
             y: -0.404,
-            x: -0.452,
+            x: -0.271,
             fontSize: 50
         }
     },
@@ -73,7 +73,7 @@ const counterDefaultConfig = {
             },
             mobile:{
                 y: -0.404,
-                x: 0.257,
+                x: 0.435,
                 fontSize: 50,
             }
     }
@@ -104,6 +104,27 @@ export class FSCounter extends Container{
     }
 }
 
+export class Animal  extends Spine{
+    constructor({
+        container,
+        x,
+        y,
+        config
+        
+    }){
+        super(Object.assign({}, config, {container, x, y}))
+        this.addListeners()
+    }
+    
+    addListeners(){
+        this.state.addListener({
+            complete:(entry, ev) => {
+                if(entry.animation.name === 'win') this.state.setAnimation(0, 'idle', true)
+            }
+        })
+    }
+}
+
 const defaultConfig = {
     views:[
         'counter',
@@ -122,24 +143,27 @@ const defaultConfig = {
     },
 
     animal: {
-        active: true,
-        Constructor: Spine,
+        Constructor: Animal,
         general:{
-            name: 'rabbit',
-            anim:{
-                track: 0,
-                name: 'idle',
-                repeat: true
-            },
-            scale: 2.5
+            name: 'animal',
+            config:{
+                name: 'rabbit',
+                anim:{
+                    track: 0,
+                    name: 'idle',
+                    repeat: true
+                },
+                index: 0,
+                scale: 2.5
+            }
         },
         desktop:{
             x: -0.418,
             y: 0.217
         },
         mobile: {
-            x: 0,
-            y: 0
+            x: -0.393,
+            y: 0.172
         }
     },
     
@@ -148,7 +172,6 @@ const defaultConfig = {
 export class FSView extends Container {
     
     constructor({
-        game,
         container,
         x = 0.5,
         y = 0.5,
@@ -170,13 +193,10 @@ export class FSView extends Container {
     }
 
     addView(config){
-        if(Array.isArray(config)){
+        if(Array.isArray(config))
             config.forEach(c => this.createViewItem(c))
+        else 
             this.createViewItem(config)
-        } 
-        else {
-            this.createViewItem(config)
-        }
     }
 
     createViewItem(item){
