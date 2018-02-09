@@ -22,6 +22,9 @@ const defaultConfig = {
             name: 'collector',
             y: -0.042,
             x: 0.007
+        },
+        mobile:{
+            y: -0.0375
         }
     },
 

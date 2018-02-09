@@ -40,6 +40,7 @@ export class ElModifier{
     updateCoordsAndParent(el){
         let newPos = this.config.machine.toLocal(this.config.machine.position, el)
         el.setParent(this.config.machine)
+        el.parent.setChildIndex(el, 6)
         el.x = newPos.x - this.config.machine.x
         el.y = newPos.y - this.config.machine.y 
     }
