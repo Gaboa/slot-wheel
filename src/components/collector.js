@@ -271,7 +271,7 @@ export class Collector extends Container {
 
     open(i) {
         TweenMax.to(this.items[i],  0.3, { alpha: 1 })
-        TweenMax.to(this.closed[i], 0.3, { alpha: 0, onComplete: () => this.$.next({ index: i, type: 'OPENED' }) })
+        TweenMax.to(this.closed[i], 0.3, { alpha: 0, y: '-=70', onComplete: () => this.$.next({ index: i, type: 'OPENED' }) })
     }
 
     reset() {
@@ -281,8 +281,10 @@ export class Collector extends Container {
 
     cleanView(){
         this.closed.forEach(door => {
-            door.alpha = 1
-            door.y = 0.0046 * GAME_HEIGHT
+            TweenMax.to(door, 0.3, {
+                alpha: 1,
+                y: 0.004 * GAME_HEIGHT
+            })
         })
     }
 
