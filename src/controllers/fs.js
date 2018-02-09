@@ -324,18 +324,6 @@ export class FSController{
                 this.game.root.disableFS()
             })
         )
-
-        if(this.config.win)  
-        this.subs.push(
-        this.animalAnimSub = this.data.win.lines$
-        .filter(e => e)
-        .filter(e => this.state.mode !== 'root')
-        .sample(this.state.isRolling$.filter(e => !e))
-        .filter(e => e.some(line => line.number === -1))
-        .subscribe(lines => 
-            this.game.root.fs.animal.state.setAnimation(0, 'win', false)
-        ))
-
     }
 
     enableTicker(){

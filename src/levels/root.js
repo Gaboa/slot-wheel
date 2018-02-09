@@ -19,7 +19,8 @@ import {
     FSDesktopBalanceController,
     FSMobileBalanceController,
     FSCounterController,
-    FSCollectorController
+    FSCollectorController,
+    FSWinController
 } from '../controllers'
 
 import { Info } from '../components/info'
@@ -177,7 +178,7 @@ class MobileRoot extends Container {
                 }
             }
         } })
-        this.winCtrl = new WinController({ game: this.game })
+        this.winCtrl = new FSWinController({ game: this.game, config:{ animal: true} })
         
     }
 
@@ -343,7 +344,7 @@ class DesktopRoot extends Container {
                 }
             }
         } })
-        this.winCtrl = new WinController({ game: this.game })
+        this.winCtrl = new FSWinController({ game: this.game, config:{ animal: true} })
     }
 
     disableFS(){
