@@ -57,11 +57,19 @@ class MobileRoot extends Container {
             x: -0.1,
             y: -0.01,
             scale: 1.07,
-            config: {
-                symbols: game.data.symbols,
-                lines:   game.data.lines,
-                panel:   false
-            }
+			views: ['bg', 'lines', 'screen', 'frame', 'logo', 'numbers', 'table'],
+			lines: {
+				data: game.data.lines
+			},
+			screen: {
+				config: {
+					el: {
+						symbols: game.data.symbols,
+                        width: EL_WIDTH,
+                        height: EL_HEIGHT
+					}
+				}
+			}
         })
 
         this.buttons = new MobileButtons({
@@ -208,17 +216,23 @@ class DesktopRoot extends Container {
         this.machine = new Machine({
             container: this,
             y: -0.05,
-            config: {
-                lines:   game.data.lines,
-                symbols: game.data.symbols
+            lines: {
+                data: game.data.lines
+            },
+            screen: {
+                config: {
+                    el: {
+                        symbols: game.data.symbols,
+						width: EL_WIDTH,
+						height: EL_HEIGHT
+                    }
+                }
             }
         })
 
         this.footer = new Footer({
             container: this
         })
-        this.footer.bg.top.visible = false
-        this.footer.balance.top.visible = false
 
         this.darkness = new Darkness({
             container: this,
