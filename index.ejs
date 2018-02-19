@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>The Money</title>
+    <% if (htmlWebpackPlugin.options.description) { %>
+    <meta name="description" content="<%= htmlWebpackPlugin.options.description %>"/>
+    <% } %>
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+  </head>
+  <body>
+    <span style="font-family: Oswald"></span>
+    <div id="app">
+        <div id="popup" class="closed" hidden>
+            <div class="popup__msg"></div>
+            <button class="popup__btn">LOBBY</button>
+        </div>
+    </div>
+  </body>
+</html>
