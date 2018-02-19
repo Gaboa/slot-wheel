@@ -6,10 +6,10 @@ import buildConfig from '../config/config'
 
 import {
     Game,
-    GameController
+    GameController,
+    Preload
 } from '../COREv3'
 
-import { Preload } from './preload'
 import { MobileRoot, DesktopRoot } from './root'
 
 import {
