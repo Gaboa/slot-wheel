@@ -195,6 +195,10 @@ class MobileRoot extends Container {
 
 }
 
+/**
+ * Создает новый рут для десктопа
+ * @constructor
+ */
 class DesktopRoot extends Container {
 
     constructor({
@@ -202,7 +206,19 @@ class DesktopRoot extends Container {
         config
     }) {
         super({ container: game.stage, x: 0.5, y: 0.5 })
-        
+		// super()
+		// game.stage.addChild(this)
+		// this.x = 1920 * 0.5
+		// this.y = 1080 * 0.5
+
+		var squareFar = new PIXI.Sprite(PIXI.Texture.WHITE);
+		squareFar.tint = 0xff0000;
+		squareFar.factor = 0.5;
+		squareFar.anchor.set(0.5);
+		squareFar.position.set(GAME_WIDTH / 2, -400);
+		game.stage.addChild(squareFar)
+		this.sqr = squareFar
+
         this.game  = game
         this.data  = game.data
         this.state = game.state
@@ -213,6 +229,11 @@ class DesktopRoot extends Container {
             name: 'bg'
         })
 
+		// this.proj = new PIXI.projection.Container2d();
+        // this.proj.x = 1920 * 0.5
+        // this.proj.y = 1080 * 0.5
+        // this.addChild(this.proj)
+
         this.machine = new Machine({
             container: this,
             y: -0.05,
@@ -221,6 +242,7 @@ class DesktopRoot extends Container {
             },
             screen: {
                 config: {
+                	lines: game.data.lines,
                     el: {
                         symbols: game.data.symbols,
 						width: EL_WIDTH,
@@ -229,6 +251,37 @@ class DesktopRoot extends Container {
                 }
             }
         })
+
+		// TweenMax.ticker.addEventListener('tick', () => {
+		// 	this.machine.screen.elements.forEach((c, index) => {
+		// 		let container = c
+		//
+		// 		let sqr = this.sqr
+		//
+		// 		container.proj.clear();
+		// 		container.updateTransform();
+		//
+		// 		let pos = container.toLocal(sqr.position);
+		// 		pos.y = -pos.y;
+		// 		pos.x = -pos.x;
+		//
+		// 		if(c.nocon) {
+		//
+		// 		} else {
+		// 			container.proj.setAxisY(pos, -sqr.factor);
+		// 		}
+		//
+		// 	})
+		//
+		// })
+
+		// this.interactive = true
+		// this.addListener("pointermove", (e) => {
+		// 	let sqr = this.sqr
+		// 	sqr.x = e.data.global.x
+		// })
+
+		// this.addFans()
 
         this.footer = new Footer({
             container: this
@@ -243,12 +296,70 @@ class DesktopRoot extends Container {
         this.info = new Info({})
         this.settings = new Settings({})
 
-        this.game.audio.play('main')
+        // this.game.audio.play('main')
 
         setTimeout(() => this.enable(), 0)
         // setTimeout(() => this.enableFR(), 0)
     }
-    
+
+    /** Добавляет фанатов*/
+    addFans() {
+    	this.fan1 = new Sprite({
+			container: this,
+			texture: 'fans',
+			scale: 0.8
+		})
+
+		this.fan2 = new Sprite({
+			container: this,
+			texture: 'fans',
+			y: 100,
+			scale: 0.9
+		})
+
+		this.fan3 = new Sprite({
+			container: this,
+			texture: 'fans',
+			y: 200
+		})
+
+		let items = [this.fan1, this.fan2, this.fan3]
+
+		TweenMax.ticker.addEventListener('tick', () => {
+			items.forEach(c => {
+				let sqr = this.sqr
+
+				c.proj.clear();
+				c.updateTransform();
+
+				let pos = c.toLocal(sqr.position);
+				pos.y = -pos.y;
+				pos.x = -pos.x;
+
+				if(c.nocon) {
+
+				} else {
+					c.proj.setAxisY(pos, -sqr.factor);
+				}
+			})
+		})
+	}
+
+	/** Прчет фанатов*/
+	hideFans() {
+		TweenMax.to(this.fan1.scale, 2, {y: 0.2, x: 1})
+		TweenMax.to(this.fan2.scale, 2, {y: 0.2, x: 1})
+		TweenMax.to(this.fan3.scale, 2, {y: 0.2, x: 1})
+	}
+
+	/** Показывает фанатов*/
+	showFans() {
+		TweenMax.to(this.fan1.scale, 2, {y: 0.8, x: 0.8})
+		TweenMax.to(this.fan2.scale, 2, {y: 0.9, x: 0.9})
+		TweenMax.to(this.fan3.scale, 2, {y: 1, x: 1})
+	}
+
+	/** Активирует основные контроллера*/
     enable() {
         // Balance
         this.commonBalanceCtrl  = new BalanceController({ game: this.game })
@@ -266,6 +377,7 @@ class DesktopRoot extends Container {
         this.autoCtrl = new AutoplayController({ game: this.game })
     }
 
+	/** Активирует контроллера для фрираундов*/
     enableFR () {
         // Balance
         this.commonBalanceCtrl  = new BalanceController({ game: this.game })
@@ -299,6 +411,10 @@ class DesktopRoot extends Container {
         this.autoCtrl = new AutoplayController({ game: this.game })
     }
 
+	/**
+	 * Деактивирует все контроллера
+	 * @access package-private
+	 * */
     disable() {
         this.commonBalanceCtrl.disable()
         this.desktopBalanceCtrl.disable()
@@ -311,6 +427,7 @@ class DesktopRoot extends Container {
         this.autoCtrl.disable()
     }
 
+	/** Удаляет уровень*/
     remove() {
         this.disable()
         this.destroy()

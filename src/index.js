@@ -1,6 +1,7 @@
 import './index.css'
 import 'pixi.js'
 import 'pixi-spine'
+import 'pixi-projection'
 
 import buildConfig from '../config/config'
 
@@ -20,6 +21,7 @@ import {
     preload
 } from './loadlist'
 
+/** Сoздание игры */
 const game = new Game({
     id: '#app',
     fps: 60,

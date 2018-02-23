@@ -7,7 +7,8 @@ const preload = [
 
 const common = [
     { url: 'machine/elements/elements.json' },
-            
+    { name: 'fans', url: 'fans.png' },
+
     { name: 'jack',   url: 'machine/elements/jack.json' },
     { name: 'queen',  url: 'machine/elements/queen.json' },
     { name: 'king',   url: 'machine/elements/king.json' },
